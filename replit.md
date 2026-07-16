@@ -1,36 +1,35 @@
-# [Project name]
+# Market Flow Group
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A multi-user investment platform with dashboards, deposits, withdrawals, team management, and admin controls. Built with Express + EJS server-side rendering backed by PostgreSQL (Supabase).
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- `node server.js` — start the server (port from `$PORT`, defaults to 5000)
+- **Install dependencies first:** `pnpm install`
+
+## Required Secrets
+
+- `SESSION_SECRET` — Express session secret (already set)
+- `SUPABASE_DATABASE_URL` — Supabase PostgreSQL connection string (takes precedence over `DATABASE_URL`)
+- `DATABASE_URL` — fallback PostgreSQL connection string
 
 ## Stack
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Node.js, Express 5, EJS templating
+- PostgreSQL via `pg` (Supabase-hosted), mysql2-compatible wrapper in `config/db.js`
+- Sessions via `express-session`
+- File uploads via `multer`
+- Email via `nodemailer`
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
-
-## Architecture decisions
-
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
-
-## Product
-
-_Describe the high-level user-facing capabilities of this app once they exist._
+- `server.js` — app entry point, route mounts
+- `config/db.js` — PostgreSQL pool with mysql2-compatible API shim
+- `routes/` — Express routers (auth, dashboard, investissement, depot, retrait, compte, equipe, roue, salaire, cadeau, faq, admin)
+- `views/` — EJS templates
+- `services/` — `params.js` (cached app_parametres from DB), `autoPayout.js` (scheduled payouts)
+- `middleware/` — `auth.js` (session guard), `paramLoader.js` (injects appParams into every view)
+- `assets/`, `public/`, `uploads/` — static files
 
 ## User preferences
 
@@ -38,8 +37,5 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- `config/db.js` auto-converts MySQL `?` placeholders to PostgreSQL `$1, $2, ...` and appends `RETURNING id` to plain INSERTs — no need to write PostgreSQL-style placeholders in route queries.
+- App parameters (site name, rates, etc.) are stored in the `app_parametres` table and cached with a 5-second TTL via `services/params.js`.
