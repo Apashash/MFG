@@ -122,8 +122,9 @@ router.get('/', requireAuth, async (req, res) => {
       notifications: []
     });
   } catch (e) {
-    console.error(e);
-    res.redirect('/connexion');
+    console.error('Dashboard error:', e.message);
+    // Destroy session before redirect to avoid infinite redirect loop
+    req.session.destroy(() => res.redirect('/connexion'));
   }
 });
 
