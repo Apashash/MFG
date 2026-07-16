@@ -3,241 +3,430 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Profil - Market Flow Group</title>
+    <title>Moi - Market Flow Group</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
+        :root {
+            --bg: #0B0F1A;
+            --card: #131929;
+            --card2: #1C2540;
+            --border: #1E2D4A;
+            --text: #F1F5F9;
+            --text-mid: #94A3B8;
+            --text-muted: #64748B;
+            --primary: #3B82F6;
+            --green: #10B981;
+            --orange: #F97316;
+            --purple: #8B5CF6;
+        }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins','Segoe UI',sans-serif; -webkit-tap-highlight-color:transparent; }
-        body { background:#EEF2FF; color:#1E293B; min-height:100vh; padding-bottom:90px; }
+        body { background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:90px; }
         .container { max-width:430px; margin:0 auto; }
 
-        /* Hero header */
-        .profile-hero {
-            background: linear-gradient(135deg, rgba(29,78,216,0.82), rgba(80,45,5,0.88)),
-                        url('/images/slide4.jpeg') center/cover no-repeat;
-            padding: 50px 20px 60px;
-            position: relative;
+        /* Header */
+        .page-header {
+            background:var(--bg);
+            padding:18px 18px 14px;
+            display:flex; align-items:center; justify-content:space-between;
+            position:sticky; top:0; z-index:100;
+            border-bottom:1px solid var(--border);
         }
-        .profile-hero-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; }
-        .avatar-wrap { display:flex; align-items:center; gap:14px; }
-        .avatar {
-            width:58px; height:58px; border-radius:50%;
-            background:rgba(255,255,255,0.25); border:2px solid rgba(255,255,255,0.6);
-            display:flex; align-items:center; justify-content:center;
-            font-size:22px; font-weight:800; color:#fff;
-        }
-        .user-meta h2 { font-size:17px; font-weight:700; color:#fff; }
-        .user-meta .uid { font-size:12px; color:rgba(255,255,255,0.8); margin-top:3px; }
-        .badge-active {
-            display:inline-flex; align-items:center; gap:5px;
-            background:rgba(16,185,129,0.25); border:1px solid rgba(16,185,129,0.5);
-            border-radius:20px; padding:3px 10px; font-size:11px; color:#6EE7B7; margin-top:4px;
-        }
-        .logout-btn {
+        .page-header h1 { font-size:22px; font-weight:800; color:var(--text); }
+        .header-actions { display:flex; gap:10px; }
+        .header-btn {
             width:36px; height:36px; border-radius:50%;
-            background:rgba(239,68,68,0.25); border:1px solid rgba(239,68,68,0.4);
-            color:#FCA5A5; display:flex; align-items:center; justify-content:center;
-            cursor:pointer; font-size:16px;
+            background:var(--card2); border:1px solid var(--border);
+            display:flex; align-items:center; justify-content:center;
+            color:var(--text-mid); font-size:16px; cursor:pointer;
+            position:relative;
+        }
+        .notif-badge {
+            position:absolute; top:3px; right:3px;
+            width:14px; height:14px; border-radius:50%;
+            background:#EF4444; color:#fff; font-size:8px; font-weight:700;
+            display:flex; align-items:center; justify-content:center;
         }
 
-        /* VIP progress */
-        .vip-bar-wrap { }
-        .vip-label { font-size:11px; color:rgba(255,255,255,0.75); margin-bottom:6px; display:flex; justify-content:space-between; }
-        .vip-bar-bg { background:rgba(255,255,255,0.2); border-radius:20px; height:6px; overflow:hidden; }
-        .vip-bar-fill { background:#fff; height:100%; border-radius:20px; transition:width 0.8s ease; }
+        .content { padding:14px; }
 
-        /* Balance grid */
-        .content { padding:16px; margin-top:-24px; }
-        .balance-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+        /* Profile card */
+        .profile-card {
+            background:var(--card); border-radius:20px; padding:18px;
+            margin-bottom:12px; border:1px solid var(--border);
+            display:flex; align-items:center; gap:14px;
+        }
+        .avatar-wrap { position:relative; flex-shrink:0; }
+        .avatar {
+            width:62px; height:62px; border-radius:50%;
+            background:linear-gradient(135deg,#3B82F6,#1D4ED8);
+            display:flex; align-items:center; justify-content:center;
+            font-size:24px; font-weight:800; color:#fff;
+            border:3px solid var(--border);
+            overflow:hidden;
+        }
+        .avatar img { width:100%; height:100%; object-fit:cover; }
+        .avatar-edit {
+            position:absolute; bottom:0; right:0;
+            width:20px; height:20px; border-radius:50%;
+            background:var(--primary); border:2px solid var(--bg);
+            display:flex; align-items:center; justify-content:center;
+            font-size:9px; color:#fff;
+        }
+        .user-info { flex:1; min-width:0; }
+        .user-name {
+            font-size:17px; font-weight:800; color:var(--text);
+            display:flex; align-items:center; gap:6px; margin-bottom:3px;
+        }
+        .verified-icon { color:#3B82F6; font-size:14px; }
+        .user-contact { font-size:12px; color:var(--text-muted); margin-bottom:6px; }
+        .premium-badge {
+            display:inline-flex; align-items:center; gap:5px;
+            background:rgba(139,92,246,0.2); border:1px solid rgba(139,92,246,0.4);
+            border-radius:20px; padding:3px 10px;
+            font-size:11px; color:#A78BFA; font-weight:600;
+        }
+
+        /* Balance card */
         .balance-card {
-            background:#fff; border-radius:16px; padding:16px; text-align:center;
-            box-shadow:0 4px 16px rgba(37,99,235,0.10);
+            background:linear-gradient(135deg,#1D4ED8,#3B82F6);
+            border-radius:18px; padding:18px; margin-bottom:12px;
+            position:relative; overflow:hidden;
         }
-        .balance-lbl { font-size:11px; color:#64748B; text-transform:uppercase; letter-spacing:0.5px; font-weight:600; }
-        .balance-val { font-size:22px; font-weight:800; color:#2563EB; margin:4px 0 2px; }
-        .balance-cur { font-size:11px; color:#64748B; }
+        .balance-card::before {
+            content:''; position:absolute; top:-20px; right:-20px;
+            width:100px; height:100px; border-radius:50%;
+            background:rgba(255,255,255,0.07);
+        }
+        .balance-label { font-size:12px; color:rgba(255,255,255,0.75); font-weight:600; margin-bottom:8px; }
+        .balance-amount-row { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+        .balance-amount { font-size:28px; font-weight:900; color:#fff; }
+        .eye-btn { background:none; border:none; color:rgba(255,255,255,0.7); font-size:17px; cursor:pointer; }
+        .wallet-icon { margin-left:auto; font-size:28px; opacity:0.6; }
+        .balance-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .balance-action-btn {
+            display:flex; align-items:center; justify-content:center; gap:8px;
+            background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.3);
+            border-radius:12px; padding:10px; color:#fff; font-size:13px; font-weight:700;
+            text-decoration:none; cursor:pointer; transition:background 0.2s;
+        }
+        .balance-action-btn:hover { background:rgba(255,255,255,0.28); }
 
-        /* Action buttons */
-        .action-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
-        .action-btn {
-            background:#fff; border-radius:14px; padding:16px 10px;
-            text-align:center; cursor:pointer; transition:all 0.2s;
-            text-decoration:none; color:#1E293B; display:block;
-            box-shadow:0 2px 10px rgba(37,99,235,0.08);
-            border:1px solid #BFDBFE;
+        /* Section */
+        .section-head {
+            display:flex; align-items:center; justify-content:space-between;
+            margin-bottom:10px;
         }
-        .action-btn:hover { border-color:#2563EB; background:#F0F4FF; }
-        .action-btn i {
-            display:inline-flex; align-items:center; justify-content:center;
-            width:42px; height:42px; border-radius:13px;
-            background:#0F2D4A; color:#fff;
-            font-size:17px; margin-bottom:8px;
-        }
-        .action-btn span { font-size:12px; font-weight:600; }
-        .collect-btn {
-            background:linear-gradient(135deg,#F97316,#EA580C);
-            border:none; color:#fff;
-        }
-        .collect-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(37,99,235,0.35); }
-        .collect-btn i { color:#fff; }
-        .collect-btn span { color:#fff; }
-        .collect-btn.disabled { background:#DBEAFE; cursor:not-allowed; }
-        .collect-btn.disabled i, .collect-btn.disabled span { color:#64748B; }
+        .section-title { font-size:16px; font-weight:800; color:var(--text); }
+        .section-link { font-size:12px; color:var(--primary); font-weight:600; text-decoration:none; display:flex; align-items:center; gap:4px; }
 
-        /* Payment timing box */
-        .timing-box {
-            background:#EFF6FF; border:1px solid #93C5FD; border-radius:12px;
-            padding:12px 14px; margin-bottom:14px; font-size:13px; color:#92660A;
-            display:none; align-items:center; gap:9px;
+        /* Revenue card */
+        .revenue-card {
+            background:var(--card); border-radius:18px;
+            border:1px solid var(--border); overflow:hidden; margin-bottom:12px;
         }
-        .timing-box.show { display:flex; }
+        .revenue-item {
+            display:flex; align-items:center; gap:12px;
+            padding:13px 16px; border-bottom:1px solid var(--border);
+        }
+        .revenue-item:last-child { border-bottom:none; }
+        .rev-icon {
+            width:38px; height:38px; border-radius:11px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:16px; color:#fff; flex-shrink:0;
+        }
+        .rev-icon.green  { background:linear-gradient(135deg,#10B981,#059669); }
+        .rev-icon.orange { background:linear-gradient(135deg,#F97316,#EA580C); }
+        .rev-icon.blue   { background:linear-gradient(135deg,#3B82F6,#1D4ED8); }
+        .rev-icon.purple { background:linear-gradient(135deg,#8B5CF6,#7C3AED); }
+        .rev-label { flex:1; font-size:13px; color:var(--text-mid); font-weight:500; }
+        .rev-amount { font-size:14px; font-weight:800; color:var(--text); }
+
+        /* Level card */
+        .level-card {
+            background: linear-gradient(135deg, #1A1200, #2D2000);
+            border:1px solid #4A3500; border-radius:18px; padding:18px;
+            margin-bottom:12px;
+        }
+        .level-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
+        .level-label { font-size:12px; color:#B0820A; font-weight:600; letter-spacing:0.5px; }
+        .level-star { font-size:28px; }
+        .level-name { font-size:22px; font-weight:900; color:#F59E0B; margin-bottom:12px; }
+        .prog-bg { background:rgba(255,255,255,0.1); border-radius:20px; height:8px; overflow:hidden; margin-bottom:8px; }
+        .prog-fill-gold { height:100%; border-radius:20px; background:linear-gradient(135deg,#F59E0B,#D97706); transition:width 0.6s ease; }
+        .level-hint { font-size:12px; color:rgba(255,255,255,0.6); }
+
+        /* Tools grid */
+        .tools-card {
+            background:var(--card); border-radius:18px;
+            border:1px solid var(--border); padding:16px; margin-bottom:12px;
+        }
+        .tools-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+        .tool-item {
+            display:flex; flex-direction:column; align-items:center; gap:6px;
+            text-decoration:none; color:var(--text-mid); cursor:pointer;
+        }
+        .tool-icon {
+            width:48px; height:48px; border-radius:14px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:19px; color:#fff;
+        }
+        .tool-label { font-size:9.5px; font-weight:600; text-align:center; line-height:1.3; }
+        .tool-icon.green  { background:linear-gradient(135deg,#10B981,#059669); }
+        .tool-icon.blue   { background:linear-gradient(135deg,#3B82F6,#1D4ED8); }
+        .tool-icon.orange { background:linear-gradient(135deg,#F97316,#EA580C); }
+        .tool-icon.purple { background:linear-gradient(135deg,#8B5CF6,#7C3AED); }
+        .tool-icon.pink   { background:linear-gradient(135deg,#EC4899,#DB2777); }
+        .tool-icon.teal   { background:linear-gradient(135deg,#14B8A6,#0D9488); }
+        .tool-icon.yellow { background:linear-gradient(135deg,#F59E0B,#D97706); }
+        .tool-icon.dark   { background:var(--card2); }
 
         /* Menu list */
-        .menu-card {
-            background:#fff; border-radius:16px; overflow:hidden;
-            margin-bottom:14px; box-shadow:0 2px 10px rgba(37,99,235,0.08);
-            border:1px solid #BFDBFE;
+        .menu-section {
+            background:var(--card); border-radius:18px;
+            border:1px solid var(--border); overflow:hidden; margin-bottom:12px;
+        }
+        .menu-section-title {
+            padding:14px 16px 10px; font-size:13px; font-weight:700;
+            color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;
+            border-bottom:1px solid var(--border);
         }
         .menu-item {
-            display:flex; align-items:center; gap:14px; padding:15px 16px;
-            border-bottom:1px solid #BFDBFE; text-decoration:none;
-            color:#1E293B; cursor:pointer; transition:background 0.2s;
+            display:flex; align-items:center; gap:14px;
+            padding:14px 16px; border-bottom:1px solid var(--border);
+            text-decoration:none; color:var(--text); cursor:pointer;
+            transition:background 0.2s;
         }
         .menu-item:last-child { border-bottom:none; }
-        .menu-item:hover { background:#F0F4FF; }
+        .menu-item:hover { background:var(--card2); }
         .menu-ico {
-            width:34px; height:34px; border-radius:10px;
-            background:#0F2D4A; display:flex; align-items:center;
-            justify-content:center; color:#fff; font-size:14px; flex-shrink:0;
+            width:36px; height:36px; border-radius:10px;
+            background:var(--card2); display:flex; align-items:center;
+            justify-content:center; color:var(--text-mid); font-size:15px; flex-shrink:0;
         }
         .menu-txt { flex:1; font-size:14px; font-weight:500; }
-        .menu-arr { color:#C8A870; font-size:12px; }
+        .menu-val { font-size:12px; color:var(--text-muted); margin-right:6px; }
+        .menu-arr { color:var(--text-muted); font-size:11px; }
+        .verified-text { font-size:12px; color:#10B981; font-weight:600; }
 
-
-        .logout-confirm-overlay {
-            display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5);
-            z-index:200; align-items:center; justify-content:center; padding:20px;
+        /* Logout confirm */
+        .logout-overlay {
+            display:none; position:fixed; inset:0;
+            background:rgba(0,0,0,0.7); backdrop-filter:blur(6px);
+            z-index:2000; align-items:center; justify-content:center; padding:20px;
         }
-        .logout-confirm-overlay.active { display:flex; }
-        .logout-confirm-box {
-            background:#fff; border-radius:20px; padding:28px 24px; width:100%; max-width:320px; text-align:center;
+        .logout-overlay.active { display:flex; }
+        .logout-box {
+            background:var(--card); border-radius:22px; padding:28px 24px;
+            width:100%; max-width:320px; text-align:center;
+            border:1px solid var(--border);
         }
-        .lc-icon { font-size:48px; color:#EF4444; margin-bottom:14px; }
-        .lc-title { font-size:18px; font-weight:700; color:#1E293B; margin-bottom:8px; }
-        .lc-msg { font-size:14px; color:#475569; margin-bottom:22px; }
+        .lc-icon { font-size:44px; color:#EF4444; margin-bottom:14px; }
+        .lc-title { font-size:18px; font-weight:800; color:var(--text); margin-bottom:8px; }
+        .lc-msg { font-size:14px; color:var(--text-muted); margin-bottom:22px; line-height:1.5; }
         .lc-btns { display:flex; gap:12px; }
-        .lc-btn { flex:1; padding:13px; border-radius:12px; font-weight:600; font-size:14px; cursor:pointer; border:none; font-family:'Poppins',sans-serif; }
+        .lc-btn { flex:1; padding:13px; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer; border:none; font-family:'Poppins',sans-serif; }
         .lc-confirm { background:#EF4444; color:#fff; }
-        .lc-cancel { background:#F0F4FF; border:1.5px solid #DBEAFE; color:#475569; }
+        .lc-cancel { background:var(--card2); border:1px solid var(--border); color:var(--text-mid); }
     </style>
 </head>
 <body>
 <%- include('partials/menu', { page: 'compte' }) %>
 
 <div class="container">
-    <div class="profile-hero">
-        <div class="profile-hero-top">
-            <div class="avatar-wrap">
-                <div class="avatar"><%= (user.nom || 'U').charAt(0).toUpperCase() %></div>
-                <div class="user-meta">
-                    <h2><%= user.nom %></h2>
-                    <div class="uid">
-                        ID: <span id="userIdDisplay"><%= custom_id %></span>
-                        <button onclick="copyId(this)" style="background:none;border:none;color:rgba(255,255,255,0.7);cursor:pointer;margin-left:4px;"><i class="fas fa-copy"></i></button>
-                    </div>
-                    <div class="uid" style="opacity:0.85; font-size:0.85em; margin-top:2px;">
-                        <i class="fas fa-phone" style="font-size:11px;"></i>
-                        <%
-                            const telMatch = (user.telephone || '').match(/^\+(\d{3})(\d+)$/);
-                            const telDisplay = telMatch ? `+(${telMatch[1]})${telMatch[2]}` : (user.telephone || '');
-                        %>
-                        <%= telDisplay %>
-                    </div>
-                    <% if (has_active_command) { %>
-                        <div class="badge-active"><i class="fas fa-circle" style="font-size:7px"></i> Plan actif</div>
-                    <% } %>
-                </div>
-            </div>
-            <button class="logout-btn" onclick="document.getElementById('logoutOverlay').classList.add('active')">
-                <i class="fas fa-sign-out-alt"></i>
+
+    <!-- Header -->
+    <div class="page-header">
+        <h1>Moi</h1>
+        <div class="header-actions">
+            <button class="header-btn" onclick="document.getElementById('logoutOverlay').classList.add('active')">
+                <i class="fas fa-cog"></i>
             </button>
-        </div>
-        <div class="vip-bar-wrap">
-            <div class="vip-label">
-                <span><i class="fas fa-crown" style="font-size:10px;margin-right:3px;"></i> VIP <%= vip ? vip.niveau : '0' %> &nbsp;·&nbsp; <%= vip ? (vip.invitations_actuelles || 0) : 0 %>/3 filleuls</span>
-                <span style="font-size:10px;">
-                    <% if (vip && vip.niveau >= 10) { %>
-                        🏆 Niveau max !
-                    <% } else { %>
-                        Encore <%= vip ? (vip.invitations_requises || 3) : 3 %> pour VIP <%= vip ? (parseInt(vip.niveau) + 1) : 1 %>
-                    <% } %>
-                </span>
-            </div>
-            <div class="vip-bar-bg">
-                <div class="vip-bar-fill" style="width:<%= vip ? Math.min(100, vip.pourcentage || 0) : 0 %>%"></div>
+            <div class="header-btn" style="cursor:default;">
+                <i class="fas fa-bell"></i>
+                <div class="notif-badge">!</div>
             </div>
         </div>
     </div>
 
     <div class="content">
-        <!-- Balances -->
-        <div class="balance-grid">
-            <div class="balance-card">
-                <div class="balance-lbl">Solde Principal</div>
-                <div class="balance-val"><%= parseFloat(solde || 0).toLocaleString('fr-FR') %></div>
-                <div class="balance-cur">FCFA</div>
+
+        <!-- Profile -->
+        <div class="profile-card">
+            <div class="avatar-wrap">
+                <div class="avatar"><%= (user.nom || 'U').charAt(0).toUpperCase() %></div>
+                <div class="avatar-edit"><i class="fas fa-camera"></i></div>
             </div>
-            <div class="balance-card">
-                <div class="balance-lbl">Revenus Totaux</div>
-                <div class="balance-val"><%= parseFloat(revenus && revenus.total ? revenus.total : 0).toLocaleString('fr-FR') %></div>
-                <div class="balance-cur">FCFA</div>
+            <div class="user-info">
+                <div class="user-name">
+                    <%= user.nom %>
+                    <i class="fas fa-check-circle verified-icon"></i>
+                </div>
+                <div class="user-contact"><%= user.telephone || '' %></div>
+                <% if (has_active_command) { %>
+                    <div class="premium-badge"><i class="fas fa-crown" style="font-size:10px;"></i> Membre Premium</div>
+                <% } else { %>
+                    <div class="premium-badge"><i class="fas fa-user" style="font-size:10px;"></i> Membre Standard</div>
+                <% } %>
             </div>
         </div>
 
-        <!-- Actions -->
-        <div class="action-grid">
-            <a href="/salaire" class="action-btn">
-                <i class="fas fa-money-bill-wave"></i>
-                <span>Salaire VIP</span>
-            </a>
-            <a href="/investissement?menu=commande" class="action-btn">
-                <i class="fas fa-list-alt"></i>
-                <span>Commandes</span>
-            </a>
+        <!-- Balance -->
+        <div class="balance-card">
+            <div class="balance-label">Solde disponible</div>
+            <div class="balance-amount-row">
+                <div class="balance-amount" id="balDisplay"><%= parseFloat(solde || 0).toLocaleString('fr-FR') %> FCFA</div>
+                <button class="eye-btn" onclick="toggleBal()" id="eyeBtn"><i class="fas fa-eye" id="eyeIcon"></i></button>
+                <i class="fas fa-wallet wallet-icon"></i>
+            </div>
+            <div class="balance-actions">
+                <a href="/depot" class="balance-action-btn">
+                    <i class="fas fa-arrow-down"></i> Déposer
+                </a>
+                <a href="/retrait" class="balance-action-btn">
+                    <i class="fas fa-arrow-up"></i> Retirer
+                </a>
+            </div>
         </div>
 
-        <!-- Menu -->
-        <div class="menu-card">
-            <a href="/depot" class="menu-item">
-                <span class="menu-ico"><i class="fas fa-arrow-down"></i></span>
-                <span class="menu-txt">Dépôt</span>
+        <!-- Mes revenus -->
+        <div class="section-head">
+            <span class="section-title">Mes revenus</span>
+            <a href="/historique" class="section-link">Voir tout <i class="fas fa-chevron-right" style="font-size:10px;"></i></a>
+        </div>
+        <div class="revenue-card">
+            <div class="revenue-item">
+                <div class="rev-icon green"><i class="fas fa-coins"></i></div>
+                <div class="rev-label">Revenus totaux</div>
+                <div class="rev-amount"><%= parseFloat(revenus && revenus.total ? revenus.total : 0).toLocaleString('fr-FR') %> FCFA</div>
+            </div>
+            <div class="revenue-item">
+                <div class="rev-icon orange"><i class="fas fa-user-friends"></i></div>
+                <div class="rev-label">Revenus d'affiliation</div>
+                <div class="rev-amount"><%= parseFloat(revenus && revenus.commission ? revenus.commission : 0).toLocaleString('fr-FR') %> FCFA</div>
+            </div>
+            <div class="revenue-item">
+                <div class="rev-icon blue"><i class="fas fa-chart-line"></i></div>
+                <div class="rev-label">Revenus d'investissement</div>
+                <div class="rev-amount"><%= parseFloat(revenus && revenus.investissement ? revenus.investissement : 0).toLocaleString('fr-FR') %> FCFA</div>
+            </div>
+            <div class="revenue-item">
+                <div class="rev-icon purple"><i class="fas fa-gift"></i></div>
+                <div class="rev-label">Bonus et primes</div>
+                <div class="rev-amount"><%= parseFloat(revenus && revenus.bonus ? revenus.bonus : 0).toLocaleString('fr-FR') %> FCFA</div>
+            </div>
+        </div>
+
+        <!-- Niveau actuel -->
+        <div class="level-card">
+            <div class="level-head">
+                <span class="level-label">Niveau actuel</span>
+                <span class="level-star">⭐</span>
+            </div>
+            <div class="level-name">Gold</div>
+            <div class="prog-bg">
+                <div class="prog-fill-gold" style="width:<%= vip ? Math.min(100, vip.pourcentage || 0) : 0 %>%"></div>
+            </div>
+            <div class="level-hint">
+                <% if (vip && vip.niveau < 10) { %>
+                    Il vous manque <strong style="color:#F59E0B;"><%= vip.invitations_requises || 0 %></strong> points pour passer au niveau <%= vip.niveau < 5 ? 'Platine' : 'Diamant' %>
+                <% } else { %>
+                    🏆 Niveau maximum atteint !
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Mes outils -->
+        <div class="section-head">
+            <span class="section-title">Mes outils</span>
+        </div>
+        <div class="tools-card" style="margin-bottom:12px;">
+            <div class="tools-grid">
+                <a href="/investissement" class="tool-item">
+                    <div class="tool-icon green"><i class="fas fa-chart-bar"></i></div>
+                    <span class="tool-label">Mes investissements</span>
+                </a>
+                <a href="#" class="tool-item">
+                    <div class="tool-icon blue"><i class="fas fa-graduation-cap"></i></div>
+                    <span class="tool-label">Mes formations</span>
+                </a>
+                <a href="#" class="tool-item">
+                    <div class="tool-icon orange"><i class="fas fa-book"></i></div>
+                    <span class="tool-label">Mes e-books</span>
+                </a>
+                <a href="#" class="tool-item">
+                    <div class="tool-icon purple"><i class="fas fa-gamepad"></i></div>
+                    <span class="tool-label">Mes jeux</span>
+                </a>
+                <a href="/investissement?menu=commande" class="tool-item">
+                    <div class="tool-icon pink"><i class="fas fa-shopping-bag"></i></div>
+                    <span class="tool-label">Mes commandes</span>
+                </a>
+                <a href="#" class="tool-item">
+                    <div class="tool-icon teal"><i class="fas fa-heart"></i></div>
+                    <span class="tool-label">Mes favoris</span>
+                </a>
+                <a href="/historique" class="tool-item">
+                    <div class="tool-icon yellow"><i class="fas fa-file-alt"></i></div>
+                    <span class="tool-label">Mes documents</span>
+                </a>
+                <a href="#" class="tool-item">
+                    <div class="tool-icon dark"><i class="fas fa-map-marker-alt" style="color:var(--text-mid);"></i></div>
+                    <span class="tool-label">Mes adresses</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sécurité & compte -->
+        <div class="menu-section">
+            <div class="menu-section-title">Sécurité &amp; compte</div>
+            <div class="menu-item">
+                <span class="menu-ico"><i class="fas fa-id-card"></i></span>
+                <span class="menu-txt">Vérification KYC</span>
+                <span class="verified-text"><i class="fas fa-check-circle"></i> Vérifié</span>
+                <i class="fas fa-chevron-right menu-arr"></i>
+            </div>
+            <div class="menu-item">
+                <span class="menu-ico"><i class="fas fa-shield-alt"></i></span>
+                <span class="menu-txt">Sécurité</span>
+                <i class="fas fa-chevron-right menu-arr"></i>
+            </div>
+            <a href="#" class="menu-item">
+                <span class="menu-ico"><i class="fas fa-lock"></i></span>
+                <span class="menu-txt">Changer le mot de passe</span>
                 <i class="fas fa-chevron-right menu-arr"></i>
             </a>
-            <a href="/retrait" class="menu-item">
-                <span class="menu-ico"><i class="fas fa-arrow-up"></i></span>
-                <span class="menu-txt">Retrait</span>
+            <div class="menu-item">
+                <span class="menu-ico"><i class="fas fa-bell"></i></span>
+                <span class="menu-txt">Notifications</span>
                 <i class="fas fa-chevron-right menu-arr"></i>
-            </a>
-            <a href="/historique" class="menu-item">
-                <span class="menu-ico"><i class="fas fa-exchange-alt"></i></span>
-                <span class="menu-txt">Historique des Transactions</span>
+            </div>
+            <div class="menu-item">
+                <span class="menu-ico"><i class="fas fa-globe"></i></span>
+                <span class="menu-txt">Langue</span>
+                <span class="menu-val">Français</span>
                 <i class="fas fa-chevron-right menu-arr"></i>
-            </a>
-            <a href="/tuto" class="menu-item">
-                <span class="menu-ico"><i class="fas fa-book"></i></span>
-                <span class="menu-txt">Tutoriels</span>
-                <i class="fas fa-chevron-right menu-arr"></i>
-            </a>
+            </div>
+        </div>
+
+        <!-- Support & assistance -->
+        <div class="menu-section">
+            <div class="menu-section-title">Support &amp; assistance</div>
             <a href="/faq" class="menu-item">
                 <span class="menu-ico"><i class="fas fa-question-circle"></i></span>
-                <span class="menu-txt">FAQ</span>
+                <span class="menu-txt">Centre d'aide</span>
                 <i class="fas fa-chevron-right menu-arr"></i>
             </a>
-            <a href="<%= (locals.appParams && appParams.telegram_link) || 'https://t.me/groupeofficielblackrock' %>" target="_blank" class="menu-item">
+            <a href="<%= (locals.appParams && appParams.telegram_link) || 'https://t.me/' %>" target="_blank" class="menu-item">
                 <span class="menu-ico"><i class="fab fa-telegram"></i></span>
-                <span class="menu-txt">Groupe Telegram</span>
+                <span class="menu-txt">Nous contacter</span>
                 <i class="fas fa-chevron-right menu-arr"></i>
             </a>
+            <div class="menu-item">
+                <span class="menu-ico"><i class="fas fa-info-circle"></i></span>
+                <span class="menu-txt">À propos de nous</span>
+                <i class="fas fa-chevron-right menu-arr"></i>
+            </div>
             <% if (user.is_admin) { %>
             <a href="/adminxyz" class="menu-item">
                 <span class="menu-ico"><i class="fas fa-user-shield"></i></span>
@@ -246,12 +435,23 @@
             </a>
             <% } %>
         </div>
+
+        <!-- Logout -->
+        <div style="padding:0 0 8px;">
+            <button onclick="document.getElementById('logoutOverlay').classList.add('active')"
+                style="width:100%;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);
+                       border-radius:14px;padding:14px;color:#F87171;font-size:14px;font-weight:700;
+                       cursor:pointer;font-family:'Poppins',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;">
+                <i class="fas fa-sign-out-alt"></i> Se déconnecter
+            </button>
+        </div>
+
     </div>
 </div>
 
 <!-- Logout Confirm -->
-<div class="logout-confirm-overlay" id="logoutOverlay">
-    <div class="logout-confirm-box">
+<div class="logout-overlay" id="logoutOverlay">
+    <div class="logout-box">
         <div class="lc-icon"><i class="fas fa-sign-out-alt"></i></div>
         <div class="lc-title">Déconnexion</div>
         <div class="lc-msg">Êtes-vous sûr de vouloir vous déconnecter ?</div>
@@ -263,16 +463,15 @@
 </div>
 
 <script>
-function copyId(btn) {
-    const id = document.getElementById('userIdDisplay').textContent;
-    navigator.clipboard.writeText(id).then(() => {
-        btn.innerHTML = '<i class="fas fa-check" style="color:#2563EB"></i>';
-        setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i>'; }, 1500);
-    }).catch(() => {
-        try { document.execCommand('copy'); } catch(e) {}
-    });
+let balVisible = true;
+const realBal = '<%= parseFloat(solde || 0).toLocaleString("fr-FR") %> FCFA';
+function toggleBal() {
+    const el = document.getElementById('balDisplay');
+    const ic = document.getElementById('eyeIcon');
+    balVisible = !balVisible;
+    el.textContent = balVisible ? realBal : '••••••';
+    ic.className = balVisible ? 'fas fa-eye' : 'fas fa-eye-slash';
 }
-
 </script>
 </body>
 </html>

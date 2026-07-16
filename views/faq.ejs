@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins','Segoe UI',sans-serif; -webkit-tap-highlight-color:transparent; }
-        body { background:#EEF2FF; color:#1E293B; min-height:100vh; padding-bottom:90px; user-select:none; -webkit-user-select:none; }
+        body { background:#0B0F1A; color:#F1F5F9; min-height:100vh; padding-bottom:90px; user-select:none; -webkit-user-select:none; }
         .container { max-width:430px; margin:0 auto; }
 
         .page-header {
@@ -35,8 +35,8 @@
         .section-label:first-child { margin-top:0; }
 
         .faq-card {
-            background:#fff; border-radius:14px; margin-bottom:10px;
-            border:1px solid #BFDBFE; overflow:hidden;
+            background:#131929; border-radius:14px; margin-bottom:10px;
+            border:1px solid #1E2D4A; overflow:hidden;
             box-shadow:0 2px 8px rgba(37,99,235,0.07);
             transition:border-color 0.2s;
         }
@@ -45,36 +45,36 @@
         .faq-question {
             padding:15px 16px; display:flex; justify-content:space-between;
             align-items:center; cursor:pointer; font-weight:600;
-            font-size:14px; color:#1E293B; gap:10px;
+            font-size:14px; color:#F1F5F9; gap:10px;
         }
-        .faq-question:hover { background:#F0F4FF; }
+        .faq-question:hover { background:#1C2540; }
         .faq-question .q-text { flex:1; }
         .faq-arrow { color:#C9A84C; transition:transform 0.3s; flex-shrink:0; }
         .faq-card.open .faq-arrow { transform:rotate(180deg); }
 
         .faq-answer {
             display:none; padding:12px 16px 16px; color:#475569;
-            font-size:13px; line-height:1.75; border-top:1px solid #BFDBFE;
+            font-size:13px; line-height:1.75; border-top:1px solid #1E2D4A;
         }
         .faq-card.open .faq-answer { display:block; }
 
         .plans-table { width:100%; border-collapse:collapse; font-size:11px; margin-top:8px; }
-        .plans-table th { background:#1a1a2e; color:#C9A84C; padding:6px 4px; text-align:center; font-weight:700; }
-        .plans-table td { padding:5px 4px; text-align:center; border-bottom:1px solid #BFDBFE; color:#1E293B; }
+        .plans-table th { background:#0B0F1A; color:#F97316; padding:6px 4px; text-align:center; font-weight:700; }
+        .plans-table td { padding:5px 4px; text-align:center; border-bottom:1px solid #BFDBFE; color:#F1F5F9; }
         .plans-table tr:nth-child(even) td { background:#F0F4FF; }
         .plans-table .plan-name { font-weight:600; text-align:left; color:#1a1a2e; }
 
         .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
-        .info-item { background:#F0F4FF; border-radius:10px; padding:10px; border:1px solid #BFDBFE; }
+        .info-item { background:#1C2540; border-radius:10px; padding:10px; border:1px solid #1E2D4A; }
         .info-item .label { font-size:10px; color:#C9A84C; font-weight:700; text-transform:uppercase; margin-bottom:3px; }
         .info-item .value { font-size:12px; color:#1E293B; font-weight:600; }
 
         .sectors-list { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
-        .sector-tag { background:#1a1a2e; color:#C9A84C; border-radius:20px; padding:4px 10px; font-size:11px; font-weight:600; }
+        .sector-tag { background:#0B0F1A; color:#F97316; border-radius:20px; padding:4px 10px; font-size:11px; font-weight:600; }
 
         .commission-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid #BFDBFE; }
         .commission-row:last-child { border:none; }
-        .commission-row .level { font-size:12px; color:#1E293B; font-weight:600; }
+        .commission-row .level { font-size:12px; color:#F1F5F9; font-weight:600; }
         .commission-row .pct { font-size:16px; font-weight:800; color:#C9A84C; }
     </style>
 </head>
@@ -305,7 +305,7 @@
         <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
             <% if (locals.appParams && appParams.telegram_link) { %>
             <a href="<%= appParams.telegram_link %>" target="_blank" rel="noopener"
-               style="display:flex;align-items:center;gap:14px;background:#fff;border:1px solid #BFDBFE;
+               style="display:flex;align-items:center;gap:14px;background:#131929;border:1px solid #1E2D4A;
                       border-radius:14px;padding:14px 16px;text-decoration:none;
                       box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:transform 0.2s;"
                onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
@@ -313,7 +313,7 @@
                     <i class="fab fa-telegram" style="font-size:22px;color:#fff;"></i>
                 </div>
                 <div>
-                    <div style="font-weight:700;font-size:14px;color:#1E293B;">Canal Telegram officiel</div>
+                    <div style="font-weight:700;font-size:14px;color:#F1F5F9;">Canal Telegram officiel</div>
                     <div style="font-size:12px;color:#64748B;margin-top:2px;">Annonces, actualités et offres exclusives</div>
                 </div>
                 <i class="fas fa-chevron-right" style="color:#2563EB;margin-left:auto;"></i>
@@ -322,7 +322,7 @@
 
             <% if (locals.appParams && appParams.whatsapp_group_link) { %>
             <a href="<%= appParams.whatsapp_group_link %>" target="_blank" rel="noopener"
-               style="display:flex;align-items:center;gap:14px;background:#fff;border:1px solid #BFDBFE;
+               style="display:flex;align-items:center;gap:14px;background:#131929;border:1px solid #1E2D4A;
                       border-radius:14px;padding:14px 16px;text-decoration:none;
                       box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:transform 0.2s;"
                onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
@@ -330,7 +330,7 @@
                     <i class="fab fa-whatsapp" style="font-size:22px;color:#fff;"></i>
                 </div>
                 <div>
-                    <div style="font-weight:700;font-size:14px;color:#1E293B;">Groupe WhatsApp</div>
+                    <div style="font-weight:700;font-size:14px;color:#F1F5F9;">Groupe WhatsApp</div>
                     <div style="font-size:12px;color:#64748B;margin-top:2px;">Échangez avec la communauté MFG</div>
                 </div>
                 <i class="fas fa-chevron-right" style="color:#2563EB;margin-left:auto;"></i>

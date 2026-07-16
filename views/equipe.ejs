@@ -3,429 +3,599 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Équipe - Market Flow Group</title>
+    <title>Parrainage - Market Flow Group</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins','Segoe UI',sans-serif; }
-        body { background:#EEF2FF; color:#1E293B; min-height:100vh; padding-bottom:90px; }
+        :root {
+            --bg: #0B0F1A;
+            --card: #131929;
+            --card2: #1C2540;
+            --border: #1E2D4A;
+            --text: #F1F5F9;
+            --text-mid: #94A3B8;
+            --text-muted: #64748B;
+            --primary: #3B82F6;
+            --green: #10B981;
+            --orange: #F97316;
+            --purple: #8B5CF6;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins','Segoe UI',sans-serif; -webkit-tap-highlight-color:transparent; }
+        body { background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:90px; }
         .container { max-width:430px; margin:0 auto; }
 
         /* Header */
         .page-header {
-            background: linear-gradient(135deg, #2563EB, #1D4ED8);
-            padding: 50px 20px 28px; text-align:center; color:#fff;
+            background: var(--bg);
+            padding: 18px 18px 14px;
+            display:flex; align-items:center; justify-content:space-between;
+            position:sticky; top:0; z-index:100;
+            border-bottom:1px solid var(--border);
         }
-        .page-header h1 { font-size:20px; font-weight:700; margin-bottom:4px; }
-        .page-header p { font-size:13px; color:rgba(255,255,255,0.85); }
+        .page-header-title h1 { font-size:22px; font-weight:800; color:var(--text); }
+        .help-btn {
+            width:34px; height:34px; border-radius:50%;
+            background:var(--card2); border:1px solid var(--border);
+            display:flex; align-items:center; justify-content:center;
+            color:var(--text-mid); font-size:15px;
+        }
 
-        .content { padding:16px; }
+        .content { padding:14px 14px 0; }
 
-        /* Referral link box */
+        /* Hero banner */
+        .hero-banner {
+            background: linear-gradient(135deg, #3B1F8C 0%, #6D28D9 50%, #4F46E5 100%);
+            border-radius:20px; padding:22px 18px;
+            margin-bottom:14px; position:relative; overflow:hidden;
+            display:flex; align-items:center; gap:12px;
+        }
+        .hero-banner::before {
+            content:''; position:absolute; top:-30px; right:-20px;
+            width:120px; height:120px; border-radius:50%;
+            background:rgba(255,255,255,0.08);
+        }
+        .hero-text { flex:1; z-index:1; }
+        .hero-text h2 { font-size:17px; font-weight:800; color:#fff; line-height:1.3; margin-bottom:5px; }
+        .hero-text p { font-size:12px; color:rgba(255,255,255,0.75); line-height:1.4; }
+        .hero-img { font-size:52px; z-index:1; flex-shrink:0; }
+
+        /* Referral link */
         .ref-box {
-            background:#fff; border-radius:16px; padding:18px;
-            margin-bottom:14px; box-shadow:0 4px 16px rgba(37,99,235,0.10);
-            border:1px solid #BFDBFE;
+            background:var(--card); border-radius:16px; padding:16px;
+            margin-bottom:12px; border:1px solid var(--border);
         }
-        .ref-label { font-size:11px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
-        .ref-row { display:flex; gap:8px; }
+        .ref-label { font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+        .ref-row { display:flex; gap:8px; margin-bottom:14px; }
         .ref-input {
-            flex:1; background:#F0F4FF; border:1.5px solid #DBEAFE;
-            border-radius:10px; padding:10px 12px; color:#1E293B;
+            flex:1; background:var(--card2); border:1px solid var(--border);
+            border-radius:10px; padding:10px 12px; color:var(--text);
             font-size:12px; font-family:'Poppins',sans-serif; outline:none;
         }
         .copy-btn {
-            background:linear-gradient(135deg,#F97316,#EA580C);
-            color:#fff; border:none; border-radius:10px;
-            padding:10px 16px; cursor:pointer; font-weight:600; font-size:13px;
-            font-family:'Poppins',sans-serif;
+            background:var(--primary); color:#fff; border:none; border-radius:10px;
+            padding:10px 16px; cursor:pointer; font-weight:700; font-size:12px;
+            font-family:'Poppins',sans-serif; display:flex; align-items:center; gap:6px;
+            white-space:nowrap;
         }
 
         /* Share buttons */
-        .share-row {
-            display:flex; justify-content:center; gap:14px; margin-top:12px;
-        }
+        .share-row { display:flex; justify-content:space-around; }
         .share-btn {
-            display:flex; flex-direction:column; align-items:center; gap:4px;
+            display:flex; flex-direction:column; align-items:center; gap:6px;
             background:none; border:none; cursor:pointer; font-size:11px;
-            color:#475569; font-family:'Poppins',sans-serif;
+            color:var(--text-mid); font-family:'Poppins',sans-serif;
         }
         .share-icon {
-            width:42px; height:42px; border-radius:50%;
+            width:44px; height:44px; border-radius:12px;
             display:flex; align-items:center; justify-content:center;
-            font-size:18px; color:#fff;
+            font-size:19px; color:#fff;
         }
-        .share-wa { background:#25D366; }
-        .share-fb { background:#1877F2; }
-        .share-tg { background:#2AABEE; }
-        .share-tw { background:#1DA1F2; }
+        .share-wa { background:linear-gradient(135deg,#25D366,#128C7E); }
+        .share-tg { background:linear-gradient(135deg,#2AABEE,#229ED9); }
+        .share-fb { background:linear-gradient(135deg,#1877F2,#0C63D4); }
+        .share-more { background:var(--card2); color:var(--text-mid); }
+        .share-more i { color:var(--text-mid); }
 
-        /* Stats row */
-        .stats-row {
-            background:#fff; border-radius:16px; padding:16px;
-            margin-bottom:14px; box-shadow:0 2px 10px rgba(37,99,235,0.08);
-            border:1px solid #BFDBFE;
-            display:grid; grid-template-columns:1fr 1px 1fr;
-            gap:0;
+        /* Code parrainage */
+        .code-box {
+            background:var(--card); border-radius:16px; padding:16px;
+            margin-bottom:12px; border:1px solid var(--border);
+            display:flex; align-items:center; justify-content:space-between;
         }
-        .stat-item { text-align:center; padding:4px 0; }
-        .stat-divider { background:#BFDBFE; }
-        .stat-num { font-size:28px; font-weight:800; color:#2563EB; line-height:1.1; }
-        .stat-lbl { font-size:11px; color:#64748B; margin-top:2px; }
+        .code-label { font-size:11px; color:var(--text-muted); margin-bottom:4px; }
+        .code-value { font-size:20px; font-weight:800; color:#F59E0B; letter-spacing:1px; }
+        .share-code-btn {
+            background:var(--primary); color:#fff; border:none; border-radius:10px;
+            padding:9px 16px; cursor:pointer; font-weight:700; font-size:12px;
+            font-family:'Poppins',sans-serif; display:flex; align-items:center; gap:6px;
+        }
+
+        /* Gains totaux */
+        .gains-box {
+            background:var(--card); border-radius:16px; padding:16px;
+            margin-bottom:12px; border:1px solid var(--border);
+        }
+        .gains-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+        .gains-header-label { font-size:13px; font-weight:700; color:var(--text); }
+        .gains-detail-link { font-size:12px; color:var(--primary); font-weight:600; text-decoration:none; display:flex; align-items:center; gap:4px; }
+        .gains-amount { font-size:26px; font-weight:900; color:#10B981; margin-bottom:12px; }
+        .gains-breakdown { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+        .gain-item { background:var(--card2); border-radius:12px; padding:10px 8px; text-align:center; }
+        .gain-item-val { font-size:12px; font-weight:800; color:var(--text); }
+        .gain-item-lbl { font-size:9px; color:var(--text-muted); margin-top:2px; }
+
+        /* Stats grid */
+        .stats-grid {
+            display:grid; grid-template-columns:repeat(4,1fr); gap:8px;
+            margin-bottom:12px;
+        }
+        .stat-card {
+            background:var(--card); border-radius:14px; padding:12px 6px;
+            display:flex; flex-direction:column; align-items:center; gap:4px;
+            border:1px solid var(--border); text-align:center;
+        }
+        .stat-icon {
+            width:36px; height:36px; border-radius:10px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:15px; color:#fff; margin-bottom:2px;
+        }
+        .stat-icon.purple { background:linear-gradient(135deg,#8B5CF6,#7C3AED); }
+        .stat-icon.blue   { background:linear-gradient(135deg,#3B82F6,#1D4ED8); }
+        .stat-icon.orange { background:linear-gradient(135deg,#F97316,#EA580C); }
+        .stat-icon.green  { background:linear-gradient(135deg,#10B981,#059669); }
+        .stat-value { font-size:14px; font-weight:800; color:var(--text); }
+        .stat-label { font-size:8.5px; color:var(--text-muted); line-height:1.3; }
+
+        /* Section head */
+        .section-head {
+            display:flex; align-items:center; justify-content:space-between;
+            margin-bottom:10px; padding-top:4px;
+        }
+        .section-title { font-size:16px; font-weight:800; color:var(--text); }
+        .section-link { font-size:12px; color:var(--primary); font-weight:600; text-decoration:none; display:flex; align-items:center; gap:4px; }
+
+        /* Recent filleuls */
+        .filleul-list { background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); margin-bottom:12px; }
+        .filleul-item {
+            display:flex; align-items:center; gap:12px;
+            padding:13px 14px; border-bottom:1px solid var(--border);
+        }
+        .filleul-item:last-child { border-bottom:none; }
+        .fil-avatar {
+            width:40px; height:40px; border-radius:50%;
+            background:linear-gradient(135deg,#F97316,#EA580C);
+            display:flex; align-items:center; justify-content:center;
+            color:#fff; font-weight:700; font-size:15px; flex-shrink:0;
+        }
+        .fil-info { flex:1; }
+        .fil-name { font-weight:600; font-size:13px; color:var(--text); }
+        .fil-date { font-size:11px; color:var(--text-muted); margin-top:1px; }
+        .fil-badge {
+            font-size:10px; padding:3px 8px; border-radius:20px; font-weight:700;
+            background:rgba(59,130,246,0.2); color:var(--primary);
+        }
+        .fil-gain { font-size:13px; font-weight:800; color:#10B981; }
 
         /* Commission table */
-        .comm-table {
-            background:#fff; border-radius:16px; overflow:hidden;
-            margin-bottom:14px; box-shadow:0 2px 10px rgba(37,99,235,0.08);
-            border:1px solid #BFDBFE;
-        }
-        .comm-header {
-            background:linear-gradient(135deg,#F97316,#EA580C);
-            display:grid; grid-template-columns:60px 1fr 1fr 1fr;
-            padding:10px 14px;
-        }
-        .comm-header span { color:#fff; font-weight:700; font-size:13px; text-align:center; }
-        .comm-header span:first-child { text-align:left; }
+        .comm-section { background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); margin-bottom:12px; }
+        .comm-title { padding:14px 16px 8px; font-size:13px; font-weight:700; color:var(--text); border-bottom:1px solid var(--border); }
         .comm-row {
-            display:grid; grid-template-columns:60px 1fr 1fr 1fr;
-            padding:10px 14px; border-top:1px solid #BFDBFE;
+            padding:12px 16px; border-bottom:1px solid var(--border);
         }
-        .comm-row span { font-size:13px; text-align:center; color:#475569; }
-        .comm-row span:first-child { text-align:left; color:#1E293B; font-weight:500; }
-        .comm-row .pct { color:#2563EB; font-weight:700; }
+        .comm-row:last-child { border-bottom:none; }
+        .comm-row-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+        .comm-row-label { font-size:13px; font-weight:600; color:var(--text); }
+        .comm-row-pct { font-size:13px; font-weight:800; color:var(--primary); }
+        .comm-row-amount { font-size:12px; color:var(--text-muted); }
+        .prog-bg { background:var(--card2); border-radius:20px; height:6px; overflow:hidden; }
+        .prog-fill { height:100%; border-radius:20px; transition:width 0.6s ease; }
+        .prog-fill.blue   { background:linear-gradient(135deg,#3B82F6,#1D4ED8); }
+        .prog-fill.green  { background:linear-gradient(135deg,#10B981,#059669); }
+        .prog-fill.orange { background:linear-gradient(135deg,#F97316,#EA580C); }
 
-        /* VIP card */
-        .vip-card {
-            background:#fff; border:1px solid #DBEAFE; border-radius:16px;
-            padding:16px; margin-bottom:14px;
-            box-shadow:0 2px 10px rgba(37,99,235,0.08);
-        }
-        .vip-title { color:#2563EB; font-weight:700; font-size:15px; margin-bottom:10px; }
-        .vip-prog-bg { background:#BFDBFE; border-radius:20px; height:8px; overflow:hidden; margin:10px 0; }
-        .vip-prog-fill { background:linear-gradient(135deg,#F97316,#EA580C); height:100%; border-radius:20px; transition:width 0.6s ease; }
-        .vip-desc { font-size:13px; color:#475569; }
-        .vip-desc strong { color:#2563EB; }
-
-        /* Accordion levels */
-        .accordion { margin-bottom:10px; border-radius:16px; overflow:hidden; box-shadow:0 2px 10px rgba(37,99,235,0.08); }
+        /* Accordion for old filleul lists */
+        .acc-section { background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); margin-bottom:12px; }
         .acc-head {
-            background:#fff; border:1px solid #BFDBFE;
             display:flex; align-items:center; gap:12px;
             padding:14px 16px; cursor:pointer; user-select:none;
-            transition:background 0.2s;
+            border-bottom:1px solid var(--border);
         }
-        .acc-head:active { background:#F0F4FF; }
+        .acc-head:last-of-type:not(.open + *) { border-bottom:none; }
         .acc-icon-wrap {
-            width:42px; height:42px; border-radius:12px;
-            background:linear-gradient(135deg,#F97316,#EA580C);
+            width:38px; height:38px; border-radius:11px;
             display:flex; align-items:center; justify-content:center;
             flex-shrink:0;
         }
-        .acc-icon-wrap i { color:#fff; font-size:18px; }
+        .acc-icon-wrap.level1 { background:linear-gradient(135deg,#3B82F6,#1D4ED8); }
+        .acc-icon-wrap.level2 { background:linear-gradient(135deg,#8B5CF6,#7C3AED); }
+        .acc-icon-wrap.level3 { background:linear-gradient(135deg,#10B981,#059669); }
+        .acc-icon-wrap i { color:#fff; font-size:16px; }
         .acc-info { flex:1; }
-        .acc-title { font-size:15px; font-weight:700; color:#1E293B; }
-        .acc-sub { font-size:12px; color:#64748B; margin-top:2px; }
+        .acc-title { font-size:14px; font-weight:700; color:var(--text); }
+        .acc-sub { font-size:11px; color:var(--text-muted); margin-top:2px; }
         .acc-chevron {
-            width:32px; height:32px; border-radius:50%;
-            background:#F0F4FF; border:1px solid #DBEAFE;
+            width:28px; height:28px; border-radius:50%;
+            background:var(--card2); border:1px solid var(--border);
             display:flex; align-items:center; justify-content:center;
             flex-shrink:0; transition:transform 0.3s ease;
         }
-        .acc-chevron i { color:#2563EB; font-size:14px; }
+        .acc-chevron i { color:var(--primary); font-size:12px; }
         .accordion.open .acc-chevron { transform:rotate(180deg); }
-
-        /* Accordion body */
         .acc-body {
-            overflow:hidden;
-            transition:height 0.35s ease;
-            background:#fff; border:1px solid #BFDBFE; border-top:none;
-            border-radius:0 0 16px 16px;
-            height:0;
+            overflow:hidden; transition:height 0.35s ease;
+            background:var(--card); height:0;
         }
-        .acc-body-inner { padding:14px 16px; }
+        .acc-body-inner { padding:12px 14px; }
 
-        /* Filleul list */
-        .filleul-item {
-            background:#F0F4FF; border-radius:12px; padding:11px 13px;
+        .fil-item-dark {
+            background:var(--card2); border-radius:12px; padding:11px 13px;
             margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;
-            border:1px solid #BFDBFE;
+            border:1px solid var(--border);
         }
-        .filleul-item:last-child { margin-bottom:0; }
-        .fil-avatar {
-            width:36px; height:36px; border-radius:50%;
+        .fil-item-dark:last-child { margin-bottom:0; }
+        .fil-item-dark .fil-avatar-sm {
+            width:34px; height:34px; border-radius:50%;
             background:linear-gradient(135deg,#F97316,#EA580C);
             display:flex; align-items:center; justify-content:center;
-            color:#fff; font-weight:700; font-size:14px;
+            color:#fff; font-weight:700; font-size:13px;
             flex-shrink:0; margin-right:10px;
         }
-        .fil-info { flex:1; }
-        .fil-name { font-weight:600; font-size:13px; color:#1E293B; }
-        .fil-phone { font-size:11px; color:#64748B; margin-top:1px; }
-        .fil-status { font-size:11px; padding:4px 10px; border-radius:20px; font-weight:600; flex-shrink:0; }
-        .status-active { background:rgba(37,99,235,0.15); color:#2563EB; }
-        .status-inactive { background:#BFDBFE; color:#64748B; }
-        .empty-msg { text-align:center; color:#64748B; font-size:13px; padding:20px; }
+        .fil-item-dark .fil-info-sm { flex:1; }
+        .fil-item-dark .fil-name-sm { font-weight:600; font-size:13px; color:var(--text); }
+        .fil-item-dark .fil-phone-sm { font-size:11px; color:var(--text-muted); margin-top:1px; }
+        .fil-status-badge { font-size:10px; padding:3px 10px; border-radius:20px; font-weight:600; }
+        .status-active { background:rgba(59,130,246,0.2); color:var(--primary); }
+        .status-inactive { background:var(--card2); color:var(--text-muted); }
 
-        /* Pagination */
+        .pag-btn {
+            background:var(--primary); color:#fff; border:none; border-radius:8px;
+            padding:7px 14px; font-size:12px; font-weight:600;
+            font-family:'Poppins',sans-serif; cursor:pointer; transition:opacity 0.2s;
+        }
+        .pag-btn:disabled { opacity:0.3; cursor:default; }
+        .pag-info { font-size:12px; color:var(--text-muted); font-weight:500; }
+
+        .empty-msg { text-align:center; color:var(--text-muted); font-size:13px; padding:20px; }
         .pagination {
             display:flex; align-items:center; justify-content:center;
-            gap:10px; margin-top:12px; padding-top:10px;
-            border-top:1px solid #BFDBFE;
+            gap:10px; margin-top:10px; padding-top:10px;
+            border-top:1px solid var(--border);
         }
-        .pag-btn {
-            background:linear-gradient(135deg,#F97316,#EA580C);
-            color:#fff; border:none; border-radius:10px;
-            padding:7px 16px; font-size:13px; font-weight:600;
-            font-family:'Poppins',sans-serif; cursor:pointer;
-            transition:opacity 0.2s;
+
+        /* Toast */
+        .toast {
+            position:fixed; bottom:100px; left:50%; transform:translateX(-50%);
+            background:#1C2540; color:#fff; padding:10px 22px; border-radius:30px;
+            font-size:13px; font-weight:600; z-index:9999; opacity:0;
+            transition:opacity 0.3s; border:1px solid var(--border);
         }
-        .pag-btn:disabled { opacity:0.35; cursor:default; }
-        .pag-info { font-size:13px; color:#475569; font-weight:500; }
     </style>
 </head>
 <body>
 <%- include('partials/menu', { page: 'equipe' }) %>
 
 <div class="container">
+
+    <!-- Header -->
     <div class="page-header">
-        <h1><i class="fas fa-users"></i> Mon Équipe</h1>
-        <p>Gérez vos filleuls et suivez vos gains de parrainage</p>
+        <div class="page-header-title">
+            <h1>Parrainage</h1>
+        </div>
+        <button class="help-btn"><i class="fas fa-question"></i></button>
     </div>
 
     <div class="content">
 
+        <!-- Hero Banner -->
+        <div class="hero-banner">
+            <div class="hero-text">
+                <h2>Invite tes amis<br>et gagne plus !</h2>
+                <p>Plus tu parraines,<br>plus tu gagneras.</p>
+            </div>
+            <div class="hero-img">🎁</div>
+        </div>
+
         <!-- Referral link -->
         <div class="ref-box">
-            <div class="ref-label">Votre lien de parrainage</div>
+            <div class="ref-label">Ton lien d'affiliation</div>
             <div class="ref-row">
                 <input type="text" class="ref-input" id="referralInput"
                        value="<%= baseUrl %>/inscription1?p=<%= user.code_parrainage %>" readonly>
-                <button class="copy-btn" onclick="copyLink()"><i class="fas fa-copy"></i> Copier</button>
+                <button class="copy-btn" onclick="copyLink()">
+                    <i class="fas fa-copy"></i> Copier
+                </button>
             </div>
-            <!-- Share buttons -->
             <div class="share-row">
                 <button class="share-btn" onclick="shareWA()">
                     <div class="share-icon share-wa"><i class="fab fa-whatsapp"></i></div>
                     <span>WhatsApp</span>
                 </button>
-                <button class="share-btn" onclick="shareFB()">
-                    <div class="share-icon share-fb"><i class="fab fa-facebook-f"></i></div>
-                    <span>Facebook</span>
-                </button>
                 <button class="share-btn" onclick="shareTG()">
                     <div class="share-icon share-tg"><i class="fab fa-telegram-plane"></i></div>
                     <span>Telegram</span>
                 </button>
-                <button class="share-btn" onclick="shareTW()">
-                    <div class="share-icon share-tw"><i class="fab fa-twitter"></i></div>
-                    <span>Twitter</span>
+                <button class="share-btn" onclick="shareFB()">
+                    <div class="share-icon share-fb"><i class="fab fa-facebook-f"></i></div>
+                    <span>Facebook</span>
+                </button>
+                <button class="share-btn" onclick="shareMore()">
+                    <div class="share-icon share-more"><i class="fas fa-ellipsis-h"></i></div>
+                    <span>Plus</span>
                 </button>
             </div>
         </div>
 
-        <!-- Stats -->
-        <div class="stats-row">
-            <div class="stat-item">
-                <div class="stat-num"><%= filleuls_niveau1.length + filleuls_niveau2.length + filleuls_niveau3.length %></div>
-                <div class="stat-lbl">Nombre de personnes</div>
+        <!-- Code parrainage -->
+        <div class="code-box">
+            <div>
+                <div class="code-label">Code de parrainage</div>
+                <div class="code-value"><%= user.code_parrainage %></div>
             </div>
-            <div class="stat-divider"></div>
-            <div class="stat-item">
-                <% const c1 = parseFloat(appParams.commission_niveau1 ?? 20) / 100;
-                   const c2 = parseFloat(appParams.commission_niveau2 ?? 10) / 100;
-                   const c3 = parseFloat(appParams.commission_niveau3 ?? 5)  / 100; %>
-                <div class="stat-num"><%= Math.round((invest_niveau1 * c1) + (invest_niveau2 * c2) + (invest_niveau3 * c3)).toLocaleString('fr-FR') %></div>
-                <div class="stat-lbl">Total commission</div>
+            <button class="share-code-btn" onclick="shareCode()">
+                <i class="fas fa-share-alt"></i> Partager
+            </button>
+        </div>
+
+        <!-- Gains totaux -->
+        <div class="gains-box">
+            <div class="gains-header">
+                <span class="gains-header-label">Gains totaux</span>
+                <a href="/historique" class="gains-detail-link">Détails <i class="fas fa-chevron-right" style="font-size:10px;"></i></a>
+            </div>
+            <%
+                const c1 = parseFloat(appParams.commission_niveau1 ?? 20) / 100;
+                const c2 = parseFloat(appParams.commission_niveau2 ?? 10) / 100;
+                const c3 = parseFloat(appParams.commission_niveau3 ?? 5)  / 100;
+                const totalCommissions = Math.round((invest_niveau1 * c1) + (invest_niveau2 * c2) + (invest_niveau3 * c3));
+            %>
+            <div class="gains-amount"><%= totalCommissions.toLocaleString('fr-FR') %> FCFA</div>
+            <div class="gains-breakdown">
+                <div class="gain-item">
+                    <div class="gain-item-val"><%= Math.round(invest_niveau1 * c1).toLocaleString('fr-FR') %></div>
+                    <div class="gain-item-lbl">Commissions</div>
+                </div>
+                <div class="gain-item">
+                    <div class="gain-item-val">0</div>
+                    <div class="gain-item-lbl">Bonus</div>
+                </div>
+                <div class="gain-item">
+                    <div class="gain-item-val">0</div>
+                    <div class="gain-item-lbl">Prime niveau</div>
+                </div>
             </div>
         </div>
 
-        <!-- Commission table -->
-        <div class="comm-table">
-            <div class="comm-header">
-                <span>Nv</span>
-                <span>Niveau 1</span>
-                <span>Niveau 2</span>
-                <span>Niveau 3</span>
+        <!-- Statistiques -->
+        <div class="section-head">
+            <span class="section-title">Statistiques</span>
+        </div>
+        <div class="stats-grid" style="margin-bottom:14px;">
+            <div class="stat-card">
+                <div class="stat-icon purple"><i class="fas fa-user-friends"></i></div>
+                <div class="stat-value"><%= filleuls_niveau1.length %></div>
+                <div class="stat-label">Filleuls directs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+                <div class="stat-value"><%= filleuls_niveau2.length %></div>
+                <div class="stat-label">Filleuls indirects</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange"><i class="fas fa-sitemap"></i></div>
+                <div class="stat-value"><%= filleuls_niveau1.length + filleuls_niveau2.length + filleuls_niveau3.length %></div>
+                <div class="stat-label">Total filleuls</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="fas fa-shield-alt"></i></div>
+                <div class="stat-value" style="font-size:11px;"><%= vip ? vip.niveau : 0 %></div>
+                <div class="stat-label">Niveau actuel</div>
+            </div>
+        </div>
+
+        <!-- Mes filleuls récents -->
+        <div class="section-head">
+            <span class="section-title">Mes filleuls récents</span>
+            <a href="#" class="section-link" onclick="openAccordion()">Voir tout <i class="fas fa-chevron-right" style="font-size:10px;"></i></a>
+        </div>
+        <div class="filleul-list" style="margin-bottom:14px;">
+            <%
+                const recentFilleuls = (filleuls_details1 || []).slice(0, 3);
+            %>
+            <% if (recentFilleuls.length > 0) { %>
+                <% recentFilleuls.forEach(function(f) { %>
+                <div class="filleul-item">
+                    <div class="fil-avatar"><%= (f.nom || '?').charAt(0).toUpperCase() %></div>
+                    <div class="fil-info">
+                        <div class="fil-name"><%= f.nom || '' %></div>
+                        <div class="fil-date">Inscrit le <%= f.date_inscription ? new Date(f.date_inscription).toLocaleDateString('fr-FR', {day:'2-digit', month:'short', year:'numeric'}) : '–' %></div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div class="fil-gain">+ <%= parseFloat(appParams.commission_niveau1 ?? 20) > 0 && f.montant_investi ? Math.round(parseFloat(f.montant_investi) * c1).toLocaleString('fr-FR') + ' FCFA' : '– FCFA' %></div>
+                        <div class="fil-badge">Niveau 1</div>
+                    </div>
+                </div>
+                <% }); %>
+            <% } else { %>
+                <div class="empty-msg"><i class="fas fa-user-plus" style="display:block;font-size:24px;margin-bottom:8px;opacity:0.3;"></i>Aucun filleul pour l'instant.<br>Partagez votre lien !</div>
+            <% } %>
+        </div>
+
+        <!-- Tableau des commissions -->
+        <div class="section-head">
+            <span class="section-title">Tableau des commissions</span>
+        </div>
+        <div class="comm-section" style="margin-bottom:14px;">
+            <div class="comm-title">Niveaux de commission</div>
+            <div class="comm-row">
+                <div class="comm-row-top">
+                    <span class="comm-row-label">Niveau 1</span>
+                    <span class="comm-row-pct"><%= appParams.commission_niveau1 ?? 20 %>%</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                    <span class="comm-row-amount"><%= filleuls_niveau1.length %> filleul(s)</span>
+                    <span class="comm-row-amount"><%= Math.round(invest_niveau1 * c1).toLocaleString('fr-FR') %> FCFA</span>
+                </div>
+                <div class="prog-bg"><div class="prog-fill blue" style="width:<%= Math.min(100, filleuls_niveau1.length * 10) %>%"></div></div>
             </div>
             <div class="comm-row">
-                <span>1,2,3</span>
-                <span class="pct"><%= appParams.commission_niveau1 ?? 20 %>%</span>
-                <span class="pct"><%= appParams.commission_niveau2 ?? 10 %>%</span>
-                <span class="pct"><%= appParams.commission_niveau3 ?? 5 %>%</span>
+                <div class="comm-row-top">
+                    <span class="comm-row-label">Niveau 2</span>
+                    <span class="comm-row-pct"><%= appParams.commission_niveau2 ?? 10 %>%</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                    <span class="comm-row-amount"><%= filleuls_niveau2.length %> filleul(s)</span>
+                    <span class="comm-row-amount"><%= Math.round(invest_niveau2 * c2).toLocaleString('fr-FR') %> FCFA</span>
+                </div>
+                <div class="prog-bg"><div class="prog-fill green" style="width:<%= Math.min(100, filleuls_niveau2.length * 5) %>%"></div></div>
+            </div>
+            <div class="comm-row">
+                <div class="comm-row-top">
+                    <span class="comm-row-label">Niveau 3</span>
+                    <span class="comm-row-pct"><%= appParams.commission_niveau3 ?? 5 %>%</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                    <span class="comm-row-amount"><%= filleuls_niveau3.length %> filleul(s)</span>
+                    <span class="comm-row-amount"><%= Math.round(invest_niveau3 * c3).toLocaleString('fr-FR') %> FCFA</span>
+                </div>
+                <div class="prog-bg"><div class="prog-fill orange" style="width:<%= Math.min(100, filleuls_niveau3.length * 3) %>%"></div></div>
             </div>
         </div>
 
-        <!-- VIP -->
-        <% if (vip) { %>
-        <div class="vip-card">
-            <div class="vip-title"><i class="fas fa-crown"></i> Niveau VIP <%= vip.niveau %></div>
-            <div class="vip-prog-bg">
-                <div class="vip-prog-fill" style="width:<%= Math.min(100, vip.pourcentage || 0) %>%"></div>
-            </div>
-            <div class="vip-desc">
-                Filleuls actifs: <strong><%= vip.invitations_actuelles || 0 %></strong>
-                <% if (vip.niveau < 5) { %> — Encore <strong><%= vip.invitations_requises || 0 %></strong> pour le niveau suivant<% } else { %> — Niveau maximum atteint 🎉<% } %>
-            </div>
-        </div>
-        <% } %>
-
-        <!-- Accordion Niveau 1 -->
+        <!-- All filleuls accordions -->
         <div class="accordion" id="acc1">
-            <div class="acc-head" onclick="toggleAcc('acc1')">
-                <div class="acc-icon-wrap"><i class="fas fa-users"></i></div>
-                <div class="acc-info">
-                    <div class="acc-title">Équipe niveau 1</div>
-                    <div class="acc-sub"><%= filleuls_niveau1.length %> membre(s) • <%= appParams.commission_niveau1 ?? 20 %>%</div>
+            <div class="acc-section">
+                <div class="acc-head" onclick="toggleAcc('acc1')">
+                    <div class="acc-icon-wrap level1"><i class="fas fa-users"></i></div>
+                    <div class="acc-info">
+                        <div class="acc-title">Équipe niveau 1</div>
+                        <div class="acc-sub"><%= filleuls_niveau1.length %> membre(s) • <%= appParams.commission_niveau1 ?? 20 %>%</div>
+                    </div>
+                    <div class="acc-chevron"><i class="fas fa-chevron-down"></i></div>
                 </div>
-                <div class="acc-chevron"><i class="fas fa-chevron-down"></i></div>
-            </div>
-            <div class="acc-body">
-                <div class="acc-body-inner">
-                    <div id="list1"></div>
-                    <div class="pagination" id="pag1" style="display:none;">
-                        <button class="pag-btn" id="prev1" onclick="changePage(1,-1)"><i class="fas fa-chevron-left"></i> Préc.</button>
-                        <span class="pag-info" id="info1"></span>
-                        <button class="pag-btn" id="next1" onclick="changePage(1,1)">Suiv. <i class="fas fa-chevron-right"></i></button>
+                <div class="acc-body">
+                    <div class="acc-body-inner">
+                        <div id="list1"></div>
+                        <div class="pagination" id="pag1" style="display:none;">
+                            <button class="pag-btn" id="prev1" onclick="changePage(1,-1)"><i class="fas fa-chevron-left"></i></button>
+                            <span class="pag-info" id="info1"></span>
+                            <button class="pag-btn" id="next1" onclick="changePage(1,1)"><i class="fas fa-chevron-right"></i></button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Accordion Niveau 2 -->
-        <div class="accordion" id="acc2">
-            <div class="acc-head" onclick="toggleAcc('acc2')">
-                <div class="acc-icon-wrap"><i class="fas fa-user-friends"></i></div>
-                <div class="acc-info">
-                    <div class="acc-title">Équipe niveau 2</div>
-                    <div class="acc-sub"><%= filleuls_niveau2.length %> membre(s) • <%= appParams.commission_niveau2 ?? 10 %>%</div>
+        <div class="accordion" id="acc2" style="margin-top:8px;">
+            <div class="acc-section">
+                <div class="acc-head" onclick="toggleAcc('acc2')">
+                    <div class="acc-icon-wrap level2"><i class="fas fa-user-friends"></i></div>
+                    <div class="acc-info">
+                        <div class="acc-title">Équipe niveau 2</div>
+                        <div class="acc-sub"><%= filleuls_niveau2.length %> membre(s) • <%= appParams.commission_niveau2 ?? 10 %>%</div>
+                    </div>
+                    <div class="acc-chevron"><i class="fas fa-chevron-down"></i></div>
                 </div>
-                <div class="acc-chevron"><i class="fas fa-chevron-down"></i></div>
-            </div>
-            <div class="acc-body">
-                <div class="acc-body-inner">
-                    <div id="list2"></div>
-                    <div class="pagination" id="pag2" style="display:none;">
-                        <button class="pag-btn" id="prev2" onclick="changePage(2,-1)"><i class="fas fa-chevron-left"></i> Préc.</button>
-                        <span class="pag-info" id="info2"></span>
-                        <button class="pag-btn" id="next2" onclick="changePage(2,1)">Suiv. <i class="fas fa-chevron-right"></i></button>
+                <div class="acc-body">
+                    <div class="acc-body-inner">
+                        <div id="list2"></div>
+                        <div class="pagination" id="pag2" style="display:none;">
+                            <button class="pag-btn" id="prev2" onclick="changePage(2,-1)"><i class="fas fa-chevron-left"></i></button>
+                            <span class="pag-info" id="info2"></span>
+                            <button class="pag-btn" id="next2" onclick="changePage(2,1)"><i class="fas fa-chevron-right"></i></button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Accordion Niveau 3 -->
-        <div class="accordion" id="acc3">
-            <div class="acc-head" onclick="toggleAcc('acc3')">
-                <div class="acc-icon-wrap"><i class="fas fa-sitemap"></i></div>
-                <div class="acc-info">
-                    <div class="acc-title">Équipe niveau 3</div>
-                    <div class="acc-sub"><%= filleuls_niveau3.length %> membre(s) • <%= appParams.commission_niveau3 ?? 5 %>%</div>
+        <div class="accordion" id="acc3" style="margin-top:8px; margin-bottom:14px;">
+            <div class="acc-section">
+                <div class="acc-head" onclick="toggleAcc('acc3')">
+                    <div class="acc-icon-wrap level3"><i class="fas fa-sitemap"></i></div>
+                    <div class="acc-info">
+                        <div class="acc-title">Équipe niveau 3</div>
+                        <div class="acc-sub"><%= filleuls_niveau3.length %> membre(s) • <%= appParams.commission_niveau3 ?? 5 %>%</div>
+                    </div>
+                    <div class="acc-chevron"><i class="fas fa-chevron-down"></i></div>
                 </div>
-                <div class="acc-chevron"><i class="fas fa-chevron-down"></i></div>
-            </div>
-            <div class="acc-body">
-                <div class="acc-body-inner">
-                    <div id="list3"></div>
-                    <div class="pagination" id="pag3" style="display:none;">
-                        <button class="pag-btn" id="prev3" onclick="changePage(3,-1)"><i class="fas fa-chevron-left"></i> Préc.</button>
-                        <span class="pag-info" id="info3"></span>
-                        <button class="pag-btn" id="next3" onclick="changePage(3,1)">Suiv. <i class="fas fa-chevron-right"></i></button>
+                <div class="acc-body">
+                    <div class="acc-body-inner">
+                        <div id="list3"></div>
+                        <div class="pagination" id="pag3" style="display:none;">
+                            <button class="pag-btn" id="prev3" onclick="changePage(3,-1)"><i class="fas fa-chevron-left"></i></button>
+                            <span class="pag-info" id="info3"></span>
+                            <button class="pag-btn" id="next3" onclick="changePage(3,1)"><i class="fas fa-chevron-right"></i></button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-    </div><!-- /content -->
-</div><!-- /container -->
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
-// ── Data from server ──────────────────────────────────────────────
 const DATA = {
   1: <%- JSON.stringify(filleuls_details1 || []) %>,
   2: <%- JSON.stringify(filleuls_details2 || []) %>,
   3: <%- JSON.stringify(filleuls_details3 || []) %>
 };
-const EMPTY_ICONS = {
-  1: 'fa-user-plus',
-  2: 'fa-user-friends',
-  3: 'fa-sitemap'
-};
-const EMPTY_MSGS = {
-  1: 'Aucun filleul au niveau 1.<br>Partagez votre lien !',
-  2: 'Aucun filleul au niveau 2',
-  3: 'Aucun filleul au niveau 3'
-};
-
 const PAGE_SIZE = 20;
 const pages = { 1: 0, 2: 0, 3: 0 };
 
-// ── Render a page for a level ─────────────────────────────────────
 function renderPage(level) {
   const data = DATA[level];
-  const listEl  = document.getElementById('list' + level);
-  const pagEl   = document.getElementById('pag'  + level);
-  const infoEl  = document.getElementById('info' + level);
-  const prevBtn  = document.getElementById('prev' + level);
-  const nextBtn  = document.getElementById('next' + level);
-  const page    = pages[level];
-  const total   = data.length;
+  const listEl = document.getElementById('list' + level);
+  const pagEl  = document.getElementById('pag'  + level);
+  const infoEl = document.getElementById('info' + level);
+  const prevBtn = document.getElementById('prev' + level);
+  const nextBtn = document.getElementById('next' + level);
+  const page   = pages[level];
+  const total  = data.length;
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
   if (total === 0) {
-    listEl.innerHTML = `<div class="empty-msg">
-      <i class="fas ${EMPTY_ICONS[level]}" style="font-size:24px;margin-bottom:8px;display:block;opacity:0.4;"></i>
-      ${EMPTY_MSGS[level]}</div>`;
+    listEl.innerHTML = `<div class="empty-msg"><i class="fas fa-user-plus" style="display:block;font-size:24px;margin-bottom:8px;opacity:0.3;"></i>Aucun filleul</div>`;
     pagEl.style.display = 'none';
     return;
   }
-
-  const start = page * PAGE_SIZE;
-  const slice = data.slice(start, start + PAGE_SIZE);
-
+  const slice = data.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
   listEl.innerHTML = slice.map(f => {
     const initial = (f.nom || '?').charAt(0).toUpperCase();
-    const active  = f.has_active ? true : false;
-    return `<div class="filleul-item">
-      <div class="fil-avatar">${initial}</div>
-      <div class="fil-info">
-        <div class="fil-name">${escHtml(f.nom || '')}</div>
-        <div class="fil-phone">${escHtml(f.telephone || '')}</div>
+    const active  = f.has_active;
+    return `<div class="fil-item-dark">
+      <div style="display:flex;align-items:center;flex:1;gap:10px;">
+        <div class="fil-avatar-sm">${initial}</div>
+        <div class="fil-info-sm">
+          <div class="fil-name-sm">${escHtml(f.nom || '')}</div>
+          <div class="fil-phone-sm">${escHtml(f.telephone || '')}</div>
+        </div>
       </div>
-      <span class="fil-status ${active ? 'status-active' : 'status-inactive'}">
-        ${active ? 'Actif' : 'Inactif'}
-      </span>
+      <span class="fil-status-badge ${active ? 'status-active' : 'status-inactive'}">${active ? 'Actif' : 'Inactif'}</span>
     </div>`;
   }).join('');
-
-  // Pagination bar
   if (totalPages > 1) {
     pagEl.style.display = 'flex';
-    infoEl.textContent  = `Page ${page + 1} / ${totalPages}`;
+    infoEl.textContent  = `${page + 1} / ${totalPages}`;
     prevBtn.disabled    = (page === 0);
     nextBtn.disabled    = (page >= totalPages - 1);
   } else {
     pagEl.style.display = 'none';
   }
-
-  // Recalculate accordion height after content change
   const acc  = document.getElementById('acc' + level);
   const body = acc.querySelector('.acc-body');
-  if (acc.classList.contains('open') && body.style.height !== 'auto') {
-    body.style.height = body.scrollHeight + 'px';
-  } else if (acc.classList.contains('open')) {
-    // already auto — force reflow to new content height
-    body.style.height = 'auto';
-  }
+  if (acc.classList.contains('open')) body.style.height = 'auto';
 }
 
 function changePage(level, delta) {
-  const total      = DATA[level].length;
+  const total = DATA[level].length;
   const totalPages = Math.ceil(total / PAGE_SIZE);
-  pages[level]     = Math.max(0, Math.min(totalPages - 1, pages[level] + delta));
+  pages[level] = Math.max(0, Math.min(totalPages - 1, pages[level] + delta));
   renderPage(level);
 }
 
-// ── Accordion toggle ──────────────────────────────────────────────
 function toggleAcc(id) {
   const el   = document.getElementById(id);
   const body = el.querySelector('.acc-body');
@@ -436,47 +606,51 @@ function toggleAcc(id) {
   } else {
     el.classList.add('open');
     body.style.height = body.scrollHeight + 'px';
-    body.addEventListener('transitionend', function handler() {
+    body.addEventListener('transitionend', function h() {
       body.style.height = 'auto';
-      body.removeEventListener('transitionend', handler);
+      body.removeEventListener('transitionend', h);
     });
   }
 }
 
-// ── Utilities ─────────────────────────────────────────────────────
+function openAccordion() {
+  const el = document.getElementById('acc1');
+  if (!el.classList.contains('open')) toggleAcc('acc1');
+  el.scrollIntoView({ behavior:'smooth' });
+}
+
 function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function copyLink() {
-  const input = document.getElementById('referralInput');
-  navigator.clipboard.writeText(input.value)
-    .then(() => showToast('Lien copié !'))
-    .catch(() => { input.select(); document.execCommand('copy'); showToast('Lien copié !'); });
-}
-function getLink() { return document.getElementById('referralInput').value; }
-function shareWA() { window.open('https://wa.me/?text=' + encodeURIComponent('Rejoins-moi sur Market Flow Group ! ' + getLink()), '_blank'); }
-function shareFB() { window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(getLink()), '_blank'); }
-function shareTG() { window.open('https://t.me/share/url?url=' + encodeURIComponent(getLink()) + '&text=' + encodeURIComponent('Rejoins-moi sur Market Flow Group !'), '_blank'); }
-function shareTW() { window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent('Rejoins-moi sur Market Flow Group ! ' + getLink()), '_blank'); }
-
 function showToast(msg) {
-  const t = document.createElement('div');
+  const t = document.getElementById('toast');
   t.textContent = msg;
-  Object.assign(t.style, {
-    position:'fixed', bottom:'100px', left:'50%', transform:'translateX(-50%)',
-    background:'#1E293B', color:'#fff', padding:'10px 22px', borderRadius:'30px',
-    fontSize:'14px', fontWeight:'600', zIndex:'9999', opacity:'0', transition:'opacity 0.3s'
-  });
-  document.body.appendChild(t);
-  requestAnimationFrame(() => { t.style.opacity = '1'; });
-  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2000);
+  t.style.opacity = '1';
+  setTimeout(() => { t.style.opacity = '0'; }, 2000);
 }
 
-// ── Init ──────────────────────────────────────────────────────────
-renderPage(1);
-renderPage(2);
-renderPage(3);
+function getLink() { return document.getElementById('referralInput').value; }
+function copyLink() {
+  navigator.clipboard.writeText(getLink())
+    .then(() => showToast('Lien copié !'))
+    .catch(() => { document.getElementById('referralInput').select(); document.execCommand('copy'); showToast('Lien copié !'); });
+}
+function shareWA() { window.open('https://wa.me/?text=' + encodeURIComponent('Rejoins-moi sur Market Flow Group ! ' + getLink()), '_blank'); }
+function shareTG() { window.open('https://t.me/share/url?url=' + encodeURIComponent(getLink()) + '&text=' + encodeURIComponent('Rejoins-moi sur Market Flow Group !'), '_blank'); }
+function shareFB() { window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(getLink()), '_blank'); }
+function shareMore() {
+  if (navigator.share) { navigator.share({ title: 'Market Flow Group', text: 'Rejoins-moi !', url: getLink() }); }
+  else { copyLink(); }
+}
+function shareCode() {
+  const code = '<%= user.code_parrainage %>';
+  const msg  = `Rejoins Market Flow Group avec mon code : ${code}\n${getLink()}`;
+  if (navigator.share) { navigator.share({ title:'MFG Code', text:msg }); }
+  else { navigator.clipboard.writeText(msg).then(() => showToast('Code copié !')); }
+}
+
+renderPage(1); renderPage(2); renderPage(3);
 </script>
 </body>
 </html>

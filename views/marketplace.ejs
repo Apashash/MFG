@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Marketplace - Market Flow Group</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0B0F1A;
+            --card: #131929;
+            --card2: #1C2540;
+            --border: #1E2D4A;
+            --text: #F1F5F9;
+            --text-mid: #94A3B8;
+            --text-muted: #64748B;
+            --primary: #3B82F6;
+            --green: #10B981;
+            --orange: #F97316;
+            --purple: #8B5CF6;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins','Segoe UI',sans-serif; -webkit-tap-highlight-color:transparent; }
+        body { background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:90px; overflow-x:hidden; }
+        .container { max-width:430px; margin:0 auto; }
+
+        /* Header */
+        .page-header {
+            background:var(--bg); padding:18px 16px 12px;
+            display:flex; align-items:center; justify-content:space-between;
+            position:sticky; top:0; z-index:100; border-bottom:1px solid var(--border);
+        }
+        .header-left { }
+        .header-title { font-size:22px; font-weight:800; color:var(--text); }
+        .header-subtitle { font-size:12px; color:var(--text-muted); margin-top:1px; }
+        .header-actions { display:flex; gap:10px; }
+        .header-btn {
+            width:36px; height:36px; border-radius:50%;
+            background:var(--card2); border:1px solid var(--border);
+            display:flex; align-items:center; justify-content:center;
+            color:var(--text-mid); font-size:16px; cursor:pointer; position:relative;
+        }
+        .notif-badge {
+            position:absolute; top:3px; right:3px;
+            width:14px; height:14px; border-radius:50%;
+            background:#EF4444; color:#fff; font-size:8px; font-weight:700;
+            display:flex; align-items:center; justify-content:center;
+        }
+
+        .content { padding:14px 14px 0; }
+
+        /* Search */
+        .search-bar {
+            background:var(--card); border:1px solid var(--border);
+            border-radius:14px; padding:12px 14px;
+            display:flex; align-items:center; gap:10px; margin-bottom:16px;
+        }
+        .search-bar i { color:var(--text-muted); font-size:16px; }
+        .search-bar input {
+            flex:1; background:none; border:none; outline:none;
+            color:var(--text); font-size:14px; font-family:'Poppins',sans-serif;
+        }
+        .search-bar input::placeholder { color:var(--text-muted); }
+        .filter-btn {
+            background:none; border:none; color:var(--primary); font-size:16px; cursor:pointer;
+        }
+
+        /* Category chips */
+        .categories-row {
+            display:flex; gap:10px; overflow-x:auto; padding-bottom:4px; margin-bottom:16px;
+            scrollbar-width:none;
+        }
+        .categories-row::-webkit-scrollbar { display:none; }
+        .cat-chip {
+            display:flex; flex-direction:column; align-items:center; gap:5px;
+            flex-shrink:0; cursor:pointer;
+        }
+        .cat-icon {
+            width:52px; height:52px; border-radius:16px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:22px; transition:transform 0.2s;
+        }
+        .cat-icon:hover { transform:scale(1.08); }
+        .cat-icon.all     { background:linear-gradient(135deg,#3B82F6,#1D4ED8); }
+        .cat-icon.form    { background:linear-gradient(135deg,#10B981,#059669); }
+        .cat-icon.ebook   { background:linear-gradient(135deg,#F97316,#EA580C); }
+        .cat-icon.prod    { background:linear-gradient(135deg,#8B5CF6,#7C3AED); }
+        .cat-icon.serv    { background:linear-gradient(135deg,#EC4899,#DB2777); }
+        .cat-icon.prem    { background:linear-gradient(135deg,#F59E0B,#D97706); }
+        .cat-label { font-size:11px; font-weight:600; color:var(--text-mid); white-space:nowrap; }
+
+        /* Special offers banner */
+        .offer-banner {
+            background:linear-gradient(135deg,#3B1F8C,#6D28D9,#4338CA);
+            border-radius:20px; padding:22px 18px;
+            margin-bottom:16px; position:relative; overflow:hidden;
+            display:flex; align-items:center; gap:10px;
+        }
+        .offer-banner::before {
+            content:''; position:absolute; top:-30px; right:-20px;
+            width:120px; height:120px; border-radius:50%;
+            background:rgba(255,255,255,0.06);
+        }
+        .offer-text { flex:1; z-index:1; }
+        .offer-label { font-size:13px; color:rgba(255,255,255,0.8); font-weight:600; margin-bottom:4px; }
+        .offer-title { font-size:22px; font-weight:900; color:#fff; margin-bottom:4px; }
+        .offer-title span { color:#FBBF24; }
+        .offer-sub { font-size:12px; color:rgba(255,255,255,0.7); margin-bottom:14px; }
+        .offer-btn {
+            display:inline-flex; align-items:center;
+            background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.35);
+            border-radius:20px; padding:8px 16px;
+            color:#fff; font-size:12px; font-weight:700;
+            cursor:pointer; text-decoration:none;
+        }
+        .offer-img { font-size:52px; z-index:1; flex-shrink:0; }
+
+        /* Section head */
+        .section-head {
+            display:flex; align-items:center; justify-content:space-between;
+            margin-bottom:12px;
+        }
+        .section-title { font-size:16px; font-weight:800; color:var(--text); }
+        .section-link { font-size:12px; color:var(--primary); font-weight:600; text-decoration:none; display:flex; align-items:center; gap:4px; }
+
+        /* Popular categories */
+        .pop-cats {
+            display:flex; gap:10px; overflow-x:auto; padding-bottom:4px; margin-bottom:16px;
+            scrollbar-width:none;
+        }
+        .pop-cats::-webkit-scrollbar { display:none; }
+        .pop-cat {
+            background:var(--card); border:1px solid var(--border);
+            border-radius:14px; padding:12px 10px;
+            display:flex; flex-direction:column; align-items:center; gap:8px;
+            flex-shrink:0; width:88px; cursor:pointer; transition:border-color 0.2s;
+        }
+        .pop-cat:hover { border-color:var(--primary); }
+        .pop-cat-icon {
+            width:42px; height:42px; border-radius:12px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:18px; color:#fff;
+        }
+        .pop-cat-icon.blue   { background:linear-gradient(135deg,#3B82F6,#1D4ED8); }
+        .pop-cat-icon.green  { background:linear-gradient(135deg,#10B981,#059669); }
+        .pop-cat-icon.brown  { background:linear-gradient(135deg,#92400E,#78350F); }
+        .pop-cat-icon.purple { background:linear-gradient(135deg,#8B5CF6,#7C3AED); }
+        .pop-cat-icon.gray   { background:var(--card2); }
+        .pop-cat-label { font-size:10px; font-weight:600; color:var(--text-mid); text-align:center; line-height:1.3; }
+
+        /* Products grid */
+        .products-grid {
+            display:grid; grid-template-columns:1fr 1fr;
+            gap:10px; margin-bottom:16px;
+        }
+        .product-card {
+            background:var(--card); border-radius:16px; overflow:hidden;
+            border:1px solid var(--border); cursor:pointer;
+            transition:transform 0.2s, box-shadow 0.2s;
+        }
+        .product-card:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.3); }
+        .product-img {
+            height:110px; position:relative; overflow:hidden;
+            background:linear-gradient(135deg,#1C2540,#0B0F1A);
+            display:flex; align-items:center; justify-content:center;
+        }
+        .product-img img { width:100%; height:100%; object-fit:cover; }
+        .product-img-placeholder { font-size:40px; }
+        .product-type-badge {
+            position:absolute; top:8px; left:8px;
+            font-size:9px; font-weight:800; padding:3px 8px;
+            border-radius:6px; text-transform:uppercase; letter-spacing:0.5px;
+        }
+        .badge-formation { background:#3B82F6; color:#fff; }
+        .badge-ebook     { background:#10B981; color:#fff; }
+        .badge-produit   { background:#F97316; color:#fff; }
+        .badge-service   { background:#8B5CF6; color:#fff; }
+        .cart-btn {
+            position:absolute; bottom:8px; right:8px;
+            width:28px; height:28px; border-radius:8px;
+            background:var(--primary); border:none;
+            display:flex; align-items:center; justify-content:center;
+            color:#fff; font-size:12px; cursor:pointer;
+        }
+        .product-info { padding:10px 10px 12px; }
+        .product-name { font-size:12px; font-weight:700; color:var(--text); margin-bottom:2px; line-height:1.3; }
+        .product-author { font-size:10px; color:var(--text-muted); margin-bottom:6px; }
+        .product-rating { display:flex; align-items:center; gap:4px; margin-bottom:6px; }
+        .stars { color:#F59E0B; font-size:10px; }
+        .rating-count { font-size:10px; color:var(--text-muted); }
+        .product-price { font-size:13px; font-weight:800; color:var(--text); }
+
+        /* Best sellers */
+        .bestsellers-list { background:var(--card); border-radius:16px; border:1px solid var(--border); overflow:hidden; margin-bottom:16px; }
+        .bestseller-item {
+            display:flex; align-items:center; gap:12px;
+            padding:12px 14px; border-bottom:1px solid var(--border);
+        }
+        .bestseller-item:last-child { border-bottom:none; }
+        .bs-rank {
+            width:24px; height:24px; border-radius:8px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:12px; font-weight:800; flex-shrink:0;
+        }
+        .rank-1 { background:linear-gradient(135deg,#F59E0B,#D97706); color:#fff; }
+        .rank-2 { background:linear-gradient(135deg,#94A3B8,#64748B); color:#fff; }
+        .rank-3 { background:linear-gradient(135deg,#F97316,#EA580C); color:#fff; }
+        .rank-4 { background:var(--card2); color:var(--text-muted); border:1px solid var(--border); }
+        .bs-img {
+            width:44px; height:44px; border-radius:12px; overflow:hidden; flex-shrink:0;
+            background:var(--card2); display:flex; align-items:center; justify-content:center;
+            font-size:20px;
+        }
+        .bs-img img { width:100%; height:100%; object-fit:cover; }
+        .bs-info { flex:1; min-width:0; }
+        .bs-name { font-size:12px; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .bs-price { font-size:11px; color:var(--orange); font-weight:700; margin-top:2px; }
+        .bs-rating { font-size:11px; color:var(--text-muted); display:flex; align-items:center; gap:3px; }
+        .bs-rating i { color:#F59E0B; }
+
+        /* Seller CTA */
+        .seller-cta {
+            background:var(--card); border:1px solid var(--border);
+            border-radius:18px; padding:18px 16px;
+            display:flex; align-items:center; gap:12px; margin-bottom:14px;
+        }
+        .seller-cta-text { flex:1; }
+        .seller-cta-text h3 { font-size:14px; font-weight:800; color:var(--text); margin-bottom:4px; }
+        .seller-cta-text p { font-size:11px; color:var(--text-muted); }
+        .seller-btn {
+            background:var(--primary); color:#fff; border:none;
+            border-radius:12px; padding:10px 16px; font-size:12px;
+            font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif;
+            white-space:nowrap;
+        }
+    </style>
+</head>
+<body>
+<%- include('partials/menu', { page: 'marketplace' }) %>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div class="header-left">
+            <div class="header-title">Marketplace</div>
+            <div class="header-subtitle">Achetez, vendez et gagnez</div>
+        </div>
+        <div class="header-actions">
+            <div class="header-btn" style="cursor:default;">
+                <i class="fas fa-shopping-cart"></i>
+                <div class="notif-badge">3</div>
+            </div>
+            <div class="header-btn" style="cursor:default;">
+                <i class="fas fa-bell"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+
+        <!-- Search -->
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Rechercher un produit, service...">
+            <button class="filter-btn"><i class="fas fa-sliders-h"></i></button>
+        </div>
+
+        <!-- Category chips -->
+        <div class="categories-row">
+            <div class="cat-chip">
+                <div class="cat-icon all"><i class="fas fa-th-large" style="font-size:20px;color:#fff;"></i></div>
+                <span class="cat-label">Tout</span>
+            </div>
+            <div class="cat-chip">
+                <div class="cat-icon form"><i class="fas fa-graduation-cap" style="font-size:20px;color:#fff;"></i></div>
+                <span class="cat-label">Formations</span>
+            </div>
+            <div class="cat-chip">
+                <div class="cat-icon ebook"><i class="fas fa-book" style="font-size:20px;color:#fff;"></i></div>
+                <span class="cat-label">E-books</span>
+            </div>
+            <div class="cat-chip">
+                <div class="cat-icon prod"><i class="fas fa-box" style="font-size:20px;color:#fff;"></i></div>
+                <span class="cat-label">Produits</span>
+            </div>
+            <div class="cat-chip">
+                <div class="cat-icon serv"><i class="fas fa-headset" style="font-size:20px;color:#fff;"></i></div>
+                <span class="cat-label">Services</span>
+            </div>
+            <div class="cat-chip">
+                <div class="cat-icon prem"><i class="fas fa-gem" style="font-size:20px;color:#fff;"></i></div>
+                <span class="cat-label">Premium</span>
+            </div>
+        </div>
+
+        <!-- Special offers banner -->
+        <div class="offer-banner">
+            <div class="offer-text">
+                <div class="offer-label">Offres spéciales</div>
+                <div class="offer-title">Jusqu'à <span>-50%</span></div>
+                <div class="offer-sub">sur une sélection de produits</div>
+                <a href="#" class="offer-btn">Découvrir maintenant</a>
+            </div>
+            <div class="offer-img">🛒</div>
+        </div>
+
+        <!-- Popular categories -->
+        <div class="section-head">
+            <span class="section-title">Catégories populaires</span>
+            <a href="#" class="section-link">Voir tout <i class="fas fa-chevron-right" style="font-size:10px;"></i></a>
+        </div>
+        <div class="pop-cats">
+            <div class="pop-cat">
+                <div class="pop-cat-icon blue"><i class="fas fa-bullhorn"></i></div>
+                <span class="pop-cat-label">Marketing digital</span>
+            </div>
+            <div class="pop-cat">
+                <div class="pop-cat-icon green"><i class="fas fa-seedling"></i></div>
+                <span class="pop-cat-label">Développement personnel</span>
+            </div>
+            <div class="pop-cat">
+                <div class="pop-cat-icon brown"><i class="fas fa-chart-line"></i></div>
+                <span class="pop-cat-label">Investissement</span>
+            </div>
+            <div class="pop-cat">
+                <div class="pop-cat-icon purple"><i class="fas fa-pen-nib"></i></div>
+                <span class="pop-cat-label">Design</span>
+            </div>
+            <div class="pop-cat">
+                <div class="pop-cat-icon gray"><i class="fas fa-briefcase" style="color:var(--text-mid);"></i></div>
+                <span class="pop-cat-label">Business</span>
+            </div>
+        </div>
+
+        <!-- Popular products -->
+        <div class="section-head">
+            <span class="section-title">Produits populaires</span>
+            <a href="#" class="section-link">Voir tout <i class="fas fa-chevron-right" style="font-size:10px;"></i></a>
+        </div>
+        <div class="products-grid">
+            <div class="product-card">
+                <div class="product-img" style="background:linear-gradient(135deg,#1E3A5F,#0B1E35);">
+                    <span class="product-img-placeholder">📱</span>
+                    <div class="product-type-badge badge-formation">Formation</div>
+                    <button class="cart-btn"><i class="fas fa-shopping-cart"></i></button>
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Formation Marketing Digital Complète</div>
+                    <div class="product-author">Par Digital Boost</div>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-count">(245)</span>
+                    </div>
+                    <div class="product-price">25,000 FCFA</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img" style="background:linear-gradient(135deg,#064E3B,#022C22);">
+                    <span class="product-img-placeholder">📗</span>
+                    <div class="product-type-badge badge-ebook">E-Book</div>
+                    <button class="cart-btn"><i class="fas fa-shopping-cart"></i></button>
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Liberté Financière Les clés pour réussir</div>
+                    <div class="product-author">Par Invest Pro</div>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-count">(128)</span>
+                    </div>
+                    <div class="product-price">10,000 FCFA</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img" style="background:linear-gradient(135deg,#1C1C1E,#000);">
+                    <span class="product-img-placeholder">⌚</span>
+                    <div class="product-type-badge badge-produit">Produit</div>
+                    <button class="cart-btn"><i class="fas fa-shopping-cart"></i></button>
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Montre Connectée Série 8</div>
+                    <div class="product-author">Par TechStore</div>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-count">(89)</span>
+                    </div>
+                    <div class="product-price">45,000 FCFA</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img" style="background:linear-gradient(135deg,#2D1B69,#1A0F3C);">
+                    <span class="product-img-placeholder">💻</span>
+                    <div class="product-type-badge badge-service">Service</div>
+                    <button class="cart-btn"><i class="fas fa-shopping-cart"></i></button>
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Création de Site Web Professionnel</div>
+                    <div class="product-author">Par Web Expert</div>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-count">(312)</span>
+                    </div>
+                    <div class="product-price">75,000 FCFA</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Best sellers -->
+        <div class="section-head">
+            <span class="section-title">Meilleures ventes</span>
+            <a href="#" class="section-link">Voir tout <i class="fas fa-chevron-right" style="font-size:10px;"></i></a>
+        </div>
+        <div class="bestsellers-list" style="margin-bottom:16px;">
+            <div class="bestseller-item">
+                <div class="bs-rank rank-1">1</div>
+                <div class="bs-img">🎵</div>
+                <div class="bs-info">
+                    <div class="bs-name">Formation TikTok Monétisation</div>
+                    <div class="bs-price">15,000 FCFA</div>
+                </div>
+                <div class="bs-rating"><i class="fas fa-star"></i> 4.8</div>
+            </div>
+            <div class="bestseller-item">
+                <div class="bs-rank rank-2">2</div>
+                <div class="bs-img">📖</div>
+                <div class="bs-info">
+                    <div class="bs-name">E-book: Affiliation Business</div>
+                    <div class="bs-price">8,000 FCFA</div>
+                </div>
+                <div class="bs-rating"><i class="fas fa-star"></i> 4.6</div>
+            </div>
+            <div class="bestseller-item">
+                <div class="bs-rank rank-3">3</div>
+                <div class="bs-img">🎨</div>
+                <div class="bs-info">
+                    <div class="bs-name">Pack Templates Canva Pro</div>
+                    <div class="bs-price">5,000 FCFA</div>
+                </div>
+                <div class="bs-rating"><i class="fas fa-star"></i> 4.7</div>
+            </div>
+            <div class="bestseller-item">
+                <div class="bs-rank rank-4">4</div>
+                <div class="bs-img">👥</div>
+                <div class="bs-info">
+                    <div class="bs-name">Service Community Management</div>
+                    <div class="bs-price">50,000 FCFA</div>
+                </div>
+                <div class="bs-rating"><i class="fas fa-star"></i> 4.9</div>
+            </div>
+        </div>
+
+        <!-- Become a seller CTA -->
+        <div class="seller-cta">
+            <div style="font-size:32px;">🛍️</div>
+            <div class="seller-cta-text">
+                <h3>Devenez vendeur sur notre marketplace</h3>
+                <p>Vendez vos produits et services à des milliers de personnes</p>
+            </div>
+            <button class="seller-btn">Commencer</button>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

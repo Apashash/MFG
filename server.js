@@ -44,6 +44,7 @@ app.use('/', require('./routes/salaire'));
 app.use('/', require('./routes/cadeau'));
 app.use('/', require('./routes/faq'));
 app.use('/', require('./routes/admin'));
+app.use('/', require('./routes/marketplace'));
 
 // 404
 app.use((req, res) => res.status(404).redirect('/'));
