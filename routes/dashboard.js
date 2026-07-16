@@ -28,7 +28,7 @@ router.get('/', requireAuth, async (req, res) => {
       'SELECT u.*, s.solde FROM utilisateurs u LEFT JOIN soldes s ON u.id = s.user_id WHERE u.id = ?',
       [user_id]
     );
-    if (!user) return res.redirect('/connexion');
+    if (!user) return req.session.destroy(() => res.redirect('/connexion'));
 
     // Total revenues
     const [[rev]] = await db.query(
