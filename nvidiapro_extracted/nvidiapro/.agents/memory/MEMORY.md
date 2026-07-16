@@ -1,0 +1,2 @@
+- [MFG theme redesign](mfg-theme.md) — all views redesigned to blue/orange/white palette (ref dashboard image); MFG logo; app renamed Market Flow Group; logic intact.
+- [Supabase DB connection](supabase-db-connection.md) — app's real DB is Supabase via SUPABASE_DATABASE_URL secret, takes precedence over Replit's DATABASE_URL.
