@@ -1,114 +1,117 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
     :root {
-        --primary: #2563EB;
-        --primary-dark: #1D4ED8;
         --nav-bg: #FFFFFF;
-        --nav-inactive: #64748B;
+        --nav-inactive: #94A3B8;
         --nav-active: #2563EB;
-        --nav-border: #DBEAFE;
+        --nav-border: #E2E8F0;
     }
     .bottom-nav {
         position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
+        bottom: 0; left: 0; width: 100%;
         background: var(--nav-bg);
         border-top: 1px solid var(--nav-border);
         display: flex;
         justify-content: space-around;
-        align-items: center;
-        padding: 8px 0 12px;
+        align-items: flex-end;
+        padding: 8px 4px 14px;
         z-index: 9999;
-        box-shadow: 0 -4px 20px rgba(37,99,235,0.10);
+        box-shadow: 0 -4px 20px rgba(37,99,235,0.08);
     }
     .nav-item {
         flex: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
+        gap: 4px;
         color: var(--nav-inactive);
         text-decoration: none;
+        font-family: 'Poppins', 'Inter', sans-serif;
         font-size: 10px;
-        padding: 4px 0;
-        font-family: 'Inter', 'Segoe UI', sans-serif;
         font-weight: 500;
+        padding: 2px 0;
         transition: color 0.2s;
-        gap: 4px;
+        cursor: pointer;
+        border: none;
+        background: none;
     }
-    .nav-item .nav-icon {
-        width: 40px; height: 40px;
-        border-radius: 12px;
-        background: #E8EEF8;
+    .nav-icon {
+        width: 42px; height: 42px;
+        border-radius: 14px;
+        background: transparent;
         display: flex; align-items: center; justify-content: center;
         transition: background 0.2s;
     }
-    .nav-item i { font-size: 18px; color: var(--nav-inactive); transition: color 0.2s; }
-    .nav-item span { font-size: 10px; letter-spacing: 0.2px; }
-    .nav-item.active .nav-icon { background: #0F2D4A; }
-    .nav-item.active i { color: #fff; }
+    .nav-item i { font-size: 20px; color: var(--nav-inactive); transition: color 0.2s; }
+    .nav-item span { font-size: 10px; letter-spacing: 0.1px; line-height: 1; }
+
     .nav-item.active { color: var(--nav-active); font-weight: 700; }
+    .nav-item.active .nav-icon { background: rgba(37,99,235,0.1); }
+    .nav-item.active i { color: var(--nav-active); }
+
+    /* Centre elevated button */
     .nav-center {
         flex: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
-        text-decoration: none;
         gap: 4px;
-        margin-top: -22px;
+        text-decoration: none;
+        font-family: 'Poppins', 'Inter', sans-serif;
+        font-size: 10px;
+        font-weight: 500;
+        color: var(--nav-inactive);
+        padding: 2px 0;
+        margin-top: -20px;
     }
     .nav-center-btn {
-        width: 54px;
-        height: 54px;
+        width: 52px; height: 52px;
         border-radius: 16px;
-        background: #0F2D4A;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 16px rgba(15,45,74,0.45);
+        background: linear-gradient(135deg, #2563EB, #1D4ED8);
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 6px 18px rgba(37,99,235,0.45);
         border: 3px solid #fff;
     }
     .nav-center-btn i { font-size: 22px; color: #fff; }
-    .nav-center span { font-size: 10px; color: var(--nav-inactive); font-weight: 500; font-family: 'Inter', 'Segoe UI', sans-serif; }
-    .nav-center.active .nav-center-btn { background: #0F2D4A; }
+    .nav-center span { font-size: 10px; color: var(--nav-inactive); font-weight: 600; }
     .nav-center.active span { color: var(--nav-active); font-weight: 700; }
+
     body { padding-bottom: 80px !important; }
 
-    /* ── Global language switcher (dashboard pages) ── */
+    /* Global lang switcher — hidden on index (has its own) */
+    body.page-index .dash-lang-wrap { display: none; }
     .dash-lang-wrap {
         position: fixed; top: 12px; right: 14px; z-index: 10000;
     }
-    /* Hide on index — it has its own in the header */
-    body.page-index .dash-lang-wrap { display: none; }
     .dash-lang-btn {
         display: flex; align-items: center; gap: 6px;
-        background: #fff; border: 1.5px solid #1E293B;
+        background: #fff; border: 1.5px solid #E2E8F0;
         border-radius: 50px; padding: 6px 12px 6px 9px;
         cursor: pointer; font-family: 'Poppins', sans-serif;
         font-size: 13px; font-weight: 600; color: #1E293B;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08); white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07); white-space: nowrap;
         transition: box-shadow 0.2s;
     }
-    .dash-lang-btn:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.14); }
-    .dash-lang-btn i.fa-globe { font-size: 16px; }
+    .dash-lang-btn:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+    .dash-lang-btn i.fa-globe { font-size: 15px; }
     .dash-lang-btn i.fa-chevron-down { font-size: 10px; transition: transform 0.2s; }
     .dash-lang-btn.open i.fa-chevron-down { transform: rotate(180deg); }
     .dash-lang-dropdown {
         display: none; position: absolute; top: calc(100% + 8px); right: 0;
         background: #fff; border: 1.5px solid #E2E8F0; border-radius: 14px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.12); overflow: hidden; min-width: 150px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.10); overflow: hidden; min-width: 150px;
     }
     .dash-lang-dropdown.open { display: block; }
     .dash-lang-option {
         display: flex; align-items: center; gap: 10px;
-        padding: 12px 16px; cursor: pointer; font-size: 14px;
+        padding: 12px 16px; cursor: pointer; font-size: 13px;
         font-weight: 500; color: #1E293B; transition: background 0.15s;
     }
     .dash-lang-option:hover { background: #F0F4FF; }
     .dash-lang-option.active { color: #2563EB; font-weight: 700; }
 </style>
 
-<!-- Global language switcher (all dashboard pages) -->
+<!-- Global language switcher -->
 <div class="dash-lang-wrap">
     <button class="dash-lang-btn" id="dashLangBtn" onclick="toggleDashLang()">
         <i class="fas fa-globe"></i>
@@ -123,20 +126,24 @@
 
 <nav class="bottom-nav">
     <a href="/" class="nav-item <%= locals.page === 'index' ? 'active' : '' %>">
-        <div class="nav-icon"><i class="fas fa-home"></i></div><span>Accueil</span>
+        <div class="nav-icon"><i class="fas fa-home"></i></div>
+        <span>Accueil</span>
     </a>
     <a href="/investissement" class="nav-item <%= locals.page === 'investissement' ? 'active' : '' %>">
-        <div class="nav-icon"><i class="fas fa-chart-bar"></i></div><span>Investir</span>
+        <div class="nav-icon"><i class="fas fa-chart-bar"></i></div>
+        <span>Investir</span>
     </a>
-    <a href="/salaire" class="nav-center <%= locals.page === 'salaire' ? 'active' : '' %>">
-        <div class="nav-center-btn"><i class="fas fa-coins"></i></div>
+    <a href="/equipe" class="nav-center <%= locals.page === 'equipe' ? 'active' : '' %>">
+        <div class="nav-center-btn"><i class="fas fa-user-friends"></i></div>
+        <span>Parrainage</span>
+    </a>
+    <a href="/salaire" class="nav-item <%= locals.page === 'salaire' ? 'active' : '' %>">
+        <div class="nav-icon"><i class="fas fa-coins"></i></div>
         <span>Salaire</span>
     </a>
-    <a href="/equipe" class="nav-item <%= locals.page === 'equipe' ? 'active' : '' %>">
-        <div class="nav-icon"><i class="fas fa-users"></i></div><span>Équipe</span>
-    </a>
     <a href="/compte" class="nav-item <%= locals.page === 'compte' ? 'active' : '' %>">
-        <div class="nav-icon"><i class="fas fa-user"></i></div><span>Profil</span>
+        <div class="nav-icon"><i class="fas fa-user"></i></div>
+        <span>Profil</span>
     </a>
 </nav>
 
@@ -145,7 +152,7 @@
     const lang = localStorage.getItem('mfg_lang') || 'fr';
     const label = document.getElementById('dashLangLabel');
     if (label) label.textContent = lang === 'fr' ? 'Langue' : 'Language';
-    document.querySelectorAll('.dash-lang-option').forEach((el, i) => {
+    document.querySelectorAll('.dash-lang-option').forEach(function(el, i) {
         el.classList.toggle('active', (lang === 'fr' && i === 0) || (lang === 'en' && i === 1));
     });
 })();
@@ -158,11 +165,11 @@ function setDashLang(lang) {
     document.getElementById('dashLangLabel').textContent = lang === 'fr' ? 'Langue' : 'Language';
     document.getElementById('dashLangBtn').classList.remove('open');
     document.getElementById('dashLangDropdown').classList.remove('open');
-    document.querySelectorAll('.dash-lang-option').forEach((el, i) => {
+    document.querySelectorAll('.dash-lang-option').forEach(function(el, i) {
         el.classList.toggle('active', (lang === 'fr' && i === 0) || (lang === 'en' && i === 1));
     });
 }
-document.addEventListener('click', e => {
+document.addEventListener('click', function(e) {
     if (!e.target.closest('.dash-lang-wrap')) {
         document.getElementById('dashLangBtn')?.classList.remove('open');
         document.getElementById('dashLangDropdown')?.classList.remove('open');
@@ -172,10 +179,10 @@ document.addEventListener('click', e => {
 
 <% if (locals.appParams && appParams.whatsapp_link) { %>
 <a href="<%= appParams.whatsapp_link %>" target="_blank" rel="noopener"
-   style="position:fixed;bottom:100px;right:16px;width:52px;height:52px;border-radius:50%;
+   style="position:fixed;bottom:100px;right:16px;width:50px;height:50px;border-radius:50%;
           background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;
-          box-shadow:0 6px 20px rgba(37,211,102,0.5);z-index:9998;text-decoration:none;
+          box-shadow:0 6px 18px rgba(37,211,102,0.45);z-index:9998;text-decoration:none;
           transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-  <i class="fab fa-whatsapp" style="font-size:26px;"></i>
+  <i class="fab fa-whatsapp" style="font-size:24px;"></i>
 </a>
 <% } %>

@@ -10,642 +10,608 @@
     :root {
         --primary: #2563EB;
         --primary-dark: #1D4ED8;
-        --primary-light: #F97316;
-        --bg: #EEF2FF;
-        --card-bg: #FFFFFF;
-        --text-dark: #1E293B;
+        --accent: #F97316;
+        --green: #10B981;
+        --purple: #8B5CF6;
+        --bg: #F0F4FF;
+        --card: #FFFFFF;
+        --text: #1E293B;
         --text-mid: #475569;
-        --text-muted: #64748B;
-        --border: #DBEAFE;
-        --light-bg: #F0F4FF;
-        --transition: all 0.3s ease;
+        --text-muted: #94A3B8;
+        --border: #E2E8F0;
+        --shadow: 0 2px 12px rgba(37,99,235,0.08);
+        --shadow-md: 0 4px 20px rgba(37,99,235,0.13);
     }
-
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    html, body { height:100%; overflow-x:hidden; overflow-y:auto; }
+    html, body { height:100%; overflow-x:hidden; }
     body {
-        font-family: 'Poppins', 'Inter', sans-serif;
+        font-family: 'Poppins', sans-serif;
         background: var(--bg);
-        color: var(--text-dark);
-        line-height: 1.6;
+        color: var(--text);
         -webkit-text-size-adjust: 100%;
         touch-action: pan-y;
         user-select: none;
         -webkit-user-select: none;
     }
-    body * { -webkit-user-select:none; -webkit-touch-callout:none; }
+    .container { max-width: 430px; margin: 0 auto; padding-bottom: 90px; }
 
-    .container { max-width:430px; margin:0 auto; padding:0 0 90px; }
-
-    /* ───────────── HEADER ───────────── */
+    /* ── HEADER ── */
     .header {
-        background: linear-gradient(135deg, #2563EB, #1D4ED8);
-        padding: 8px 16px;
-        display: flex; align-items: center; justify-content: space-between;
+        background: var(--card);
+        padding: 14px 18px;
+        display: flex; align-items: center; gap: 12px;
+        box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+        position: sticky; top: 0; z-index: 100;
     }
-    .logo { display:flex; align-items:center; gap:16px; }
-    .logo-icon {
-        width: 50px; height: 50px;
-        flex-shrink: 0;
+    .menu-btn {
+        width: 38px; height: 38px; border-radius: 10px;
+        background: var(--bg); border: none; cursor: pointer;
         display: flex; align-items: center; justify-content: center;
+        color: var(--text); font-size: 18px; flex-shrink: 0;
     }
-    .logo-icon img { width:100%; height:100%; object-fit:contain; }
-
-    /* ───────────── TRUST BANNER ───────────── */
-    .trust-banner {
-        margin: 14px 16px 0;
-        background: linear-gradient(135deg, rgba(249,115,22,0.12), rgba(29,78,216,0.08));
-        border: 1px solid rgba(37,99,235,0.25);
-        border-radius: 14px;
-        padding: 10px 14px;
-        display: flex; align-items: center; gap: 10px;
-    }
-    .trust-icon {
-        width: 34px; height: 34px; border-radius: 50%;
-        background: linear-gradient(135deg, #2563EB, #1D4ED8);
+    .header-greeting { flex: 1; }
+    .header-greeting .greet-top { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+    .header-greeting .greet-name { font-size: 17px; font-weight: 800; color: var(--text); line-height: 1.2; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .notif-wrap { position: relative; }
+    .notif-btn {
+        width: 38px; height: 38px; border-radius: 10px;
+        background: var(--bg); border: none; cursor: pointer;
         display: flex; align-items: center; justify-content: center;
-        flex-shrink: 0;
+        color: var(--text); font-size: 18px;
     }
-    .trust-icon i { color: #fff; font-size: 14px; }
-    .trust-text { font-size: 12px; color: #475569; line-height: 1.5; }
-    .trust-text strong { color: #2563EB; font-weight: 700; }
-    .logo-text { color: #fff; font-size: 22px; font-weight: 800; letter-spacing: 0.2px; line-height: 1.1; }
-    .logo-subtext { color: rgba(255,255,255,0.85); font-size: 11px; font-weight: 600; letter-spacing: 2px; margin-top: 4px; }
-    .header-right { display:flex; gap:8px; align-items:center; }
-    .hdr-btn {
+    .notif-badge {
+        position: absolute; top: 4px; right: 4px;
+        width: 16px; height: 16px; border-radius: 50%;
+        background: #EF4444; color: #fff;
+        font-size: 9px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center;
+        border: 2px solid #fff;
+    }
+    .avatar-circle {
         width: 38px; height: 38px; border-radius: 50%;
-        background: rgba(255,255,255,0.2); border: none; cursor: pointer;
-        display: flex; align-items: center; justify-content: center;
-        color: #fff; font-size: 17px; transition: background 0.2s;
-    }
-    .hdr-btn:hover { background: rgba(255,255,255,0.3); }
-    /* ── Language switcher (header) ── */
-    .hdr-lang-wrap { position: relative; }
-    .hdr-lang-btn {
-        display: flex; align-items: center; gap: 6px;
-        background: rgba(255,255,255,0.18); border: 1.5px solid rgba(255,255,255,0.55);
-        border-radius: 50px; padding: 6px 12px 6px 9px;
-        cursor: pointer; font-family: 'Poppins', sans-serif;
-        font-size: 13px; font-weight: 600; color: #fff;
-        transition: background 0.2s; white-space: nowrap;
-    }
-    .hdr-lang-btn:hover { background: rgba(255,255,255,0.28); }
-    .hdr-lang-btn i.fa-globe { font-size: 16px; }
-    .hdr-lang-btn i.fa-chevron-down { font-size: 10px; transition: transform 0.2s; }
-    .hdr-lang-btn.open i.fa-chevron-down { transform: rotate(180deg); }
-    .hdr-lang-dropdown {
-        display: none; position: absolute; top: calc(100% + 8px); right: 0;
-        background: #fff; border: 1.5px solid #E2E8F0; border-radius: 14px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.14); overflow: hidden; min-width: 150px; z-index: 10001;
-    }
-    .hdr-lang-dropdown.open { display: block; }
-    .hdr-lang-option {
-        display: flex; align-items: center; gap: 10px;
-        padding: 12px 16px; cursor: pointer; font-size: 14px;
-        font-weight: 500; color: #1E293B; transition: background 0.15s;
-    }
-    .hdr-lang-option:hover { background: #F0F4FF; }
-    .hdr-lang-option.active { color: #2563EB; font-weight: 700; }
-
-    /* ───────────── PHOTO SLIDER ───────────── */
-    .photos-section { padding: 16px 16px 0; }
-    .photo-slider {
-        position: relative; border-radius: 18px; overflow: hidden;
-        height: 200px; box-shadow: 0 8px 28px rgba(37,99,235,0.18);
-        background: var(--border);
-    }
-    .photo-slides { position:relative; width:100%; height:100%; }
-    .photo-slide {
-        position: absolute; inset: 0; opacity: 0;
-        transition: opacity 0.6s ease;
-    }
-    .photo-slide.active { opacity: 1; }
-    .photo-image { width:100%; height:100%; object-fit:cover; }
-    .photo-overlay {
-        position: absolute; bottom: 0; left: 0; right: 0;
-        background: linear-gradient(to top, rgba(30,15,0,0.75) 0%, transparent 100%);
-        padding: 12px 14px;
-    }
-    .photo-title { font-size: 15px; font-weight: 700; color: #fff; }
-    .photo-subtitle { font-size: 12px; color: rgba(255,255,255,0.8); }
-    .photo-indicators { display:flex; gap:6px; justify-content:center; margin-top:10px; }
-    .photo-indicator {
-        width: 8px; height: 8px; border-radius: 50%;
-        background: var(--border); cursor: pointer; transition: all 0.3s;
-    }
-    .photo-indicator.active { background: var(--primary); width: 22px; border-radius: 4px; }
-
-    /* ───────────── BALANCE + ACTIONS ───────────── */
-    .main-section {
-        padding: 16px;
-    }
-    .premium-card {
         background: linear-gradient(135deg, #2563EB, #1D4ED8);
-        border-radius: 18px; padding: 18px;
-        box-shadow: 0 8px 24px rgba(37,99,235,0.35);
-        min-width: 0;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 15px; font-weight: 800;
+        overflow: hidden; flex-shrink: 0;
+        border: 2px solid var(--border);
     }
-    .card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 14px; }
-    .balance-label { color: rgba(255,255,255,0.85); font-size: 12px; font-weight: 600;
-        display: flex; align-items: center; gap: 6px; }
-    .balance-label i { font-size: 13px; }
-    .card-logo {
-        width: 32px; height: 32px; border-radius: 50%;
-        background: rgba(255,255,255,0.25); display: flex; align-items: center;
-        justify-content: center; font-size: 12px; font-weight: 800; color: #fff;
-    }
-    .balance-container { margin-bottom: 10px; }
-    .balance-amount { font-size: 26px; font-weight: 900; color: #fff; line-height: 1.1; }
-    .revenue-info { display:flex; justify-content:space-between; padding-top:10px;
-        border-top:1px solid rgba(255,255,255,0.2); }
-    .revenue-label { color: rgba(255,255,255,0.7); font-size: 11px; font-weight: 500; }
-    .revenue-amount { color: #fff; font-size: 13px; font-weight: 700; }
+    .avatar-circle img { width:100%; height:100%; object-fit:cover; }
 
-    /* Action sidebar removed — now uses same .h-action-btn style */
-
-    /* ───────────── HORIZONTAL ACTIONS ───────────── */
-    .horizontal-actions { display:flex; gap:10px; padding:0 16px 14px; }
-    .h-action-btn {
-        flex: 1; background: var(--card-bg); border: 1px solid var(--border);
-        border-radius: 14px; padding: 13px 8px; text-align: center;
-        display: flex; flex-direction: column; align-items: center; gap: 6px;
-        text-decoration: none; cursor: pointer; transition: all 0.2s;
-        box-shadow: 0 2px 8px rgba(37,99,235,0.07);
+    /* ── BALANCE CARD ── */
+    .balance-section { padding: 16px 16px 0; }
+    .balance-card {
+        background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 50%, #3B82F6 100%);
+        border-radius: 22px;
+        padding: 20px 18px 18px;
+        display: flex; gap: 12px;
+        box-shadow: 0 12px 32px rgba(37,99,235,0.38);
+        position: relative; overflow: hidden;
     }
-    .h-action-btn:hover { border-color: var(--primary); background: var(--light-bg); transform: translateY(-2px); }
-    .h-action-icon {
-        display: inline-flex; align-items: center; justify-content: center;
+    .balance-card::before {
+        content: '';
+        position: absolute; top: -30px; right: -30px;
+        width: 130px; height: 130px; border-radius: 50%;
+        background: rgba(255,255,255,0.07);
+    }
+    .balance-card::after {
+        content: '';
+        position: absolute; bottom: -40px; left: 40%;
+        width: 100px; height: 100px; border-radius: 50%;
+        background: rgba(255,255,255,0.05);
+    }
+    .balance-left { flex: 1; min-width: 0; }
+    .balance-label-top {
+        color: rgba(255,255,255,0.75); font-size: 11px; font-weight: 600;
+        letter-spacing: 0.5px; margin-bottom: 8px;
+    }
+    .balance-amount-row {
+        display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    }
+    .balance-amount {
+        font-size: 24px; font-weight: 900; color: #fff; line-height: 1.1;
+    }
+    .eye-btn {
+        background: none; border: none; cursor: pointer;
+        color: rgba(255,255,255,0.7); font-size: 16px; padding: 2px;
+    }
+    .portefeuille-btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35);
+        border-radius: 20px; padding: 6px 13px;
+        color: #fff; font-size: 11px; font-weight: 600;
+        text-decoration: none; cursor: pointer;
+        transition: background 0.2s;
+    }
+    .portefeuille-btn:hover { background: rgba(255,255,255,0.28); }
+    .balance-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; flex-shrink: 0; }
+    .gains-label { color: rgba(255,255,255,0.7); font-size: 10px; font-weight: 600; letter-spacing: 0.3px; }
+    .gains-amount { color: #4ADE80; font-size: 14px; font-weight: 800; margin-top: 3px; }
+    .sparkline { display: block; margin-top: 8px; }
+
+    /* ── ACTION BUTTONS ── */
+    .actions-section { padding: 18px 16px 0; }
+    .actions-grid {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    }
+    .action-item {
+        display: flex; flex-direction: column; align-items: center; gap: 7px;
+        background: var(--card); border-radius: 16px;
+        padding: 14px 6px; text-decoration: none;
+        box-shadow: var(--shadow); border: 1px solid var(--border);
+        cursor: pointer; transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .action-item:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .action-icon {
+        width: 46px; height: 46px; border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px; color: #fff; flex-shrink: 0;
+    }
+    .action-icon.blue   { background: linear-gradient(135deg, #2563EB, #1D4ED8); }
+    .action-icon.green  { background: linear-gradient(135deg, #10B981, #059669); }
+    .action-icon.orange { background: linear-gradient(135deg, #F97316, #EA580C); }
+    .action-icon.purple { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+    .action-label {
+        font-size: 10px; font-weight: 700; color: var(--text-mid);
+        text-align: center; line-height: 1.3;
+    }
+
+    /* ── REFERRAL BANNER ── */
+    .referral-section { padding: 18px 16px 0; }
+    .referral-banner {
+        background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+        border-radius: 20px; padding: 20px 18px 20px 20px;
+        display: flex; align-items: center; gap: 12px;
+        box-shadow: 0 8px 24px rgba(15,23,42,0.22);
+        overflow: hidden; position: relative;
+    }
+    .referral-banner::before {
+        content: '';
+        position: absolute; top: -20px; right: 30%;
+        width: 80px; height: 80px; border-radius: 50%;
+        background: rgba(37,99,235,0.15);
+    }
+    .referral-text { flex: 1; z-index: 1; }
+    .referral-title {
+        font-size: 16px; font-weight: 800; color: #fff; line-height: 1.3; margin-bottom: 6px;
+    }
+    .referral-title span { color: #60A5FA; }
+    .referral-subtitle { font-size: 11px; color: rgba(255,255,255,0.6); margin-bottom: 14px; line-height: 1.4; }
+    .referral-btn {
+        display: inline-flex; align-items: center; gap: 7px;
+        background: var(--primary); border: none; border-radius: 20px;
+        padding: 9px 16px; color: #fff; font-size: 12px; font-weight: 700;
+        cursor: pointer; font-family: 'Poppins', sans-serif;
+        transition: background 0.2s;
+    }
+    .referral-btn:hover { background: var(--primary-dark); }
+    .referral-img { flex-shrink: 0; font-size: 56px; z-index: 1; }
+
+    /* ── SECTION TITLE ── */
+    .section-head {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 20px 16px 10px;
+    }
+    .section-title { font-size: 16px; font-weight: 800; color: var(--text); }
+    .section-link { font-size: 12px; font-weight: 600; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px; }
+
+    /* ── APERÇU STATS ── */
+    .stats-section { padding: 0 16px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .stat-card {
+        background: var(--card); border-radius: 16px; padding: 12px 8px 10px;
+        display: flex; flex-direction: column; align-items: center; gap: 4px;
+        box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+    .stat-icon {
         width: 40px; height: 40px; border-radius: 12px;
-        background: #0F2D4A; color: #fff; font-size: 16px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 17px; color: #fff; margin-bottom: 2px;
     }
-    .h-action-text { font-size: 11px; font-weight: 600; color: var(--text-mid); }
+    .stat-icon.purple { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+    .stat-icon.green  { background: linear-gradient(135deg, #10B981, #059669); }
+    .stat-icon.orange { background: linear-gradient(135deg, #F97316, #EA580C); }
+    .stat-icon.blue   { background: linear-gradient(135deg, #2563EB, #1D4ED8); }
+    .stat-value { font-size: 13px; font-weight: 800; color: var(--text); text-align: center; line-height: 1.2; }
+    .stat-label { font-size: 9px; font-weight: 600; color: var(--text-muted); text-align: center; }
+    .stat-sub { font-size: 8.5px; color: var(--text-muted); text-align: center; }
 
-    /* ───────────── NOTIFICATION BAR ───────────── */
-    .notification-bar {
-        margin: 0 16px 14px;
-        background: linear-gradient(135deg, rgba(249,115,22,0.12), rgba(176,112,24,0.08));
-        border: 1px solid rgba(37,99,235,0.2);
-        border-radius: 12px; padding: 12px 14px;
+    /* ── ACTIVITIES ── */
+    .activities-section { padding: 0 16px; }
+    .activities-card {
+        background: var(--card); border-radius: 18px;
+        box-shadow: var(--shadow); border: 1px solid var(--border);
+        overflow: hidden;
+    }
+    .activity-item {
+        display: flex; align-items: center; gap: 12px;
+        padding: 13px 14px; border-bottom: 1px solid var(--border);
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-icon {
+        width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 16px; color: #fff;
+    }
+    .activity-icon.green  { background: linear-gradient(135deg, #10B981, #059669); }
+    .activity-icon.blue   { background: linear-gradient(135deg, #2563EB, #1D4ED8); }
+    .activity-icon.orange { background: linear-gradient(135deg, #F97316, #EA580C); }
+    .activity-icon.purple { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+    .activity-body { flex: 1; min-width: 0; }
+    .activity-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .activity-desc { font-size: 10px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .activity-right { text-align: right; flex-shrink: 0; }
+    .activity-amount { font-size: 12px; font-weight: 800; color: #10B981; }
+    .activity-time { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+    .activity-empty {
+        padding: 28px; text-align: center; color: var(--text-muted); font-size: 13px;
+    }
+    .activity-empty i { font-size: 32px; display: block; margin-bottom: 10px; color: var(--border); }
+
+    /* ── NOTIFICATION BAR ── */
+    .notif-bar-section { padding: 18px 16px 0; }
+    .notif-bar {
+        background: var(--card); border-radius: 14px; padding: 12px 14px;
+        display: flex; align-items: center; gap: 10px;
+        box-shadow: var(--shadow); border: 1px solid var(--border);
         overflow: hidden; height: 48px; position: relative;
     }
-    .notification-container { position:relative; height:100%; }
-    .notification-item {
+    .notif-bar-icon { color: var(--primary); font-size: 15px; flex-shrink: 0; }
+    .notif-scroll { flex: 1; overflow: hidden; position: relative; height: 22px; }
+    .notif-item {
         position: absolute; top: 0; left: 0; right: 0;
-        display: flex; align-items: center; gap: 8px;
-        font-size: 13px; font-weight: 500; color: var(--text-mid);
-        opacity: 0; transition: opacity 0.5s ease;
+        font-size: 12px; font-weight: 500; color: var(--text-mid);
         white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        opacity: 0; transition: opacity 0.5s;
     }
-    .notification-item.visible { opacity: 1; }
-    .notification-item i { color: var(--primary); flex-shrink: 0; }
+    .notif-item.visible { opacity: 1; }
 
-    /* ───────────── POSTS SECTION ───────────── */
-    .posts-section { padding: 0 16px 16px; }
-    .posts-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-    .posts-title { font-size: 15px; font-weight: 700; color: var(--text-dark);
-        display: flex; align-items: center; gap: 8px; }
-    .posts-title i { color: var(--primary); }
-    .post-btn {
+    /* ── PLANS SECTION ── */
+    .plans-section { padding: 0 16px 10px; }
+    .plan-card {
+        background: var(--card); border-radius: 18px; overflow: hidden;
+        box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 12px;
+    }
+    .plan-img { height: 100px; background: #0F172A; position: relative; }
+    .plan-img img { width:100%; height:100%; object-fit:cover; }
+    .plan-badge {
+        position: absolute; top: 8px; right: 8px;
         background: linear-gradient(135deg, #F97316, #EA580C);
-        color: #fff; border: none; border-radius: 20px;
-        padding: 7px 14px; font-size: 12px; font-weight: 600; cursor: pointer;
-        display: flex; align-items: center; gap: 6px; font-family: 'Poppins', sans-serif;
+        color: #fff; font-size: 10px; font-weight: 700;
+        padding: 3px 10px; border-radius: 20px;
     }
-    .post-slider-container { position: relative; }
-    .post-slider {
-        border-radius: 18px; overflow: hidden;
-        background: var(--card-bg); position: relative;
-        box-shadow: 0 4px 16px rgba(37,99,235,0.10); border: 1px solid var(--border);
+    .plan-body { padding: 12px 14px; }
+    .plan-name { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+    .plan-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: var(--bg); border-radius: 10px; padding: 8px 10px; margin-bottom: 10px; }
+    .plan-stat-val { font-size: 13px; font-weight: 800; color: var(--primary); }
+    .plan-stat-lbl { font-size: 9px; color: var(--text-muted); margin-top: 1px; }
+    .plan-price-row { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 8px; }
+    .plan-price-lbl { font-size: 11px; color: var(--text-muted); }
+    .plan-price-val { font-size: 14px; font-weight: 800; color: var(--text); }
+    .plan-invest-btn {
+        display: block; width: 100%;
+        background: linear-gradient(135deg, #F97316, #EA580C);
+        color: #fff; border: none; border-radius: 12px;
+        padding: 10px; font-size: 13px; font-weight: 700;
+        cursor: pointer; text-align: center;
+        font-family: 'Poppins', sans-serif;
+        margin-top: 10px; text-decoration: none;
     }
-    /* Horizontal track */
-    .post-slides {
-        display: flex;
-        transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
-        will-change: transform;
-        cursor: grab;
-    }
-    .post-slides.dragging { transition: none; cursor: grabbing; }
-    .post-slide {
-        flex: 0 0 100%;
-        min-width: 0;
-    }
-    .post-image-container { height: 220px; overflow:hidden; background: var(--light-bg); }
-    .post-image { width:100%; height:100%; object-fit:contain; }
-    .post-content { padding: 12px 14px 8px; }
-    .post-text { color: var(--text-dark); font-size: 13px; line-height: 1.5;
-        overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
-        -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
-    .post-indicators { display:flex; gap:6px; justify-content:center; padding:8px 8px 12px; }
-    .post-indicator { width:7px; height:7px; border-radius:50%; background:var(--border);
-        cursor:pointer; transition:all 0.3s; flex-shrink:0; }
-    .post-indicator.active { background:var(--primary); width:20px; border-radius:4px; }
-
-    /* ───────────── MINI PLANS SECTION ───────────── */
-    .mini-plans-section { padding: 0 16px 16px; }
-    .mini-plans-header {
-        display:flex; justify-content:space-between; align-items:center;
-        margin-bottom:12px;
-    }
-    .mini-plans-title {
-        font-size:15px; font-weight:700; color:var(--text-dark);
-        display:flex; align-items:center; gap:8px;
-    }
-    .mini-plans-title i { color:var(--primary); }
-    .mini-plan-card {
-        background:#fff; border-radius:16px;
-        border:1px solid var(--border);
-        box-shadow:0 3px 12px rgba(37,99,235,0.10);
-        overflow:hidden; margin-bottom:12px;
-        display:flex; flex-direction:column;
-    }
-    .mini-plan-img {
-        height:110px; overflow:hidden; background:#000;
-        position:relative;
-    }
-    .mini-plan-img img { width:100%; height:100%; object-fit:contain; }
-    .mini-plan-badge {
-        position:absolute; top:8px; right:8px;
-        background:linear-gradient(135deg,#F97316,#EA580C);
-        color:#fff; font-size:11px; font-weight:700;
-        padding:3px 10px; border-radius:20px;
-    }
-    .mini-plan-body { padding:12px 14px; }
-    .mini-plan-name { font-size:14px; font-weight:700; color:var(--primary); margin-bottom:8px; }
-    .mini-plan-stats {
-        display:grid; grid-template-columns:1fr 1fr;
-        gap:6px; background:var(--light-bg); border-radius:10px;
-        padding:8px 10px; margin-bottom:10px;
-    }
-    .mini-stat-val { font-size:14px; font-weight:800; color:var(--primary); }
-    .mini-stat-lbl { font-size:10px; color:var(--text-muted); margin-top:1px; }
-    .mini-plan-price {
-        display:flex; align-items:center; justify-content:space-between;
-        border-top:1px solid var(--border); padding-top:8px;
-    }
-    .mini-price-lbl { font-size:12px; color:var(--text-muted); }
-    .mini-price-val { font-size:15px; font-weight:800; color:var(--text-dark); }
-    .mini-invest-btn {
-        display:block; width:100%;
-        background:linear-gradient(135deg,#F97316,#EA580C);
-        color:#fff; border:none; border-radius:12px;
-        padding:10px; font-size:13px; font-weight:700;
-        cursor:pointer; text-align:center;
-        font-family:'Poppins',sans-serif;
-        margin-top:10px; text-decoration:none;
-    }
-    .mini-voir-plus-btn {
-        display:flex; align-items:center; justify-content:center; gap:8px;
-        width:100%; background:var(--light-bg);
-        border:2px solid var(--primary); border-radius:14px;
-        padding:12px; font-size:14px; font-weight:700;
-        color:var(--primary); text-decoration:none;
-        box-shadow:0 2px 8px rgba(37,99,235,0.12);
-        margin-top:4px;
+    .voir-plus-btn {
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        width: 100%; background: var(--bg);
+        border: 2px solid var(--primary); border-radius: 14px;
+        padding: 12px; font-size: 13px; font-weight: 700;
+        color: var(--primary); text-decoration: none;
+        box-shadow: var(--shadow); margin-bottom: 8px;
     }
 
-    /* ───────────── POPUP GENERIC ───────────── */
+    /* ── POPUP ── */
     .popup {
         display: none; position: fixed; inset: 0;
-        background: rgba(0,0,0,0.55); backdrop-filter: blur(8px);
+        background: rgba(0,0,0,0.5); backdrop-filter: blur(6px);
         z-index: 2000; align-items: center; justify-content: center; padding: 20px;
     }
-    .popup-content {
-        background: var(--card-bg); border-radius: 22px;
-        width: 100%; max-width: 370px; overflow: hidden;
-        box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+    .popup-box {
+        background: var(--card); border-radius: 22px; width: 100%; max-width: 370px;
+        overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.22);
     }
     .popup-header {
         background: linear-gradient(135deg, #2563EB, #1D4ED8);
-        padding: 18px 20px;
+        padding: 16px 18px;
         display: flex; justify-content: space-between; align-items: center;
     }
-    .popup-header h3 { color: #fff; font-size: 17px; font-weight: 700; }
-    .popup-close { background: rgba(255,255,255,0.2); border: none; color: #fff;
-        width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 18px;
-        display: flex; align-items: center; justify-content: center; }
-    .popup-body { padding: 20px; }
-    .popup-text { color: var(--text-mid); font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
-    .community-buttons { display:flex; flex-direction:column; gap:10px; }
-    .community-btn {
-        display: flex; align-items: center; gap: 12px;
-        padding: 13px 15px; border-radius: 12px; text-decoration: none;
-        transition: all 0.2s;
-        background: rgba(37,99,235,0.06); border: 1px solid rgba(37,99,235,0.2);
+    .popup-header h3 { color: #fff; font-size: 16px; font-weight: 700; }
+    .popup-close {
+        background: rgba(255,255,255,0.2); border: none; color: #fff;
+        width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+        font-size: 16px; display: flex; align-items: center; justify-content: center;
     }
-    .community-btn:hover { background: rgba(37,99,235,0.12); transform: translateY(-2px); }
-    .community-btn i { font-size: 22px; color: #2AABEE; }
-    .community-btn-text h4 { color: var(--text-dark); font-size: 14px; margin-bottom: 2px; }
-    .community-btn-text p { color: var(--text-muted); font-size: 12px; }
+    .popup-body { padding: 18px; }
+    .popup-text { color: var(--text-mid); font-size: 13px; line-height: 1.6; margin-bottom: 14px; }
+    .comm-btn {
+        display: flex; align-items: center; gap: 12px;
+        padding: 13px 14px; border-radius: 12px; text-decoration: none;
+        background: rgba(37,99,235,0.06); border: 1px solid rgba(37,99,235,0.2);
+        margin-bottom: 8px; transition: all 0.2s;
+    }
+    .comm-btn:hover { background: rgba(37,99,235,0.12); }
+    .comm-btn i { font-size: 22px; }
+    .comm-btn-text h4 { color: var(--text); font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+    .comm-btn-text p { color: var(--text-muted); font-size: 11px; }
 
-    /* ───────────── POST FORM ───────────── */
-    .form-group { margin-bottom: 16px; }
-    .form-label { display:block; color: var(--text-muted); font-size: 12px; font-weight:600; margin-bottom:7px; }
+    /* ── POST POPUP ── */
+    .form-group { margin-bottom: 14px; }
+    .form-label { display: block; color: var(--text-muted); font-size: 11px; font-weight: 600; margin-bottom: 6px; }
     .form-textarea {
-        width: 100%; background: var(--light-bg); border: 1.5px solid var(--border);
-        border-radius: 12px; padding: 12px; color: var(--text-dark);
-        font-size: 14px; font-family: 'Poppins', sans-serif; outline: none;
-        min-height: 90px; resize: vertical; transition: border-color 0.2s;
+        width: 100%; background: var(--bg); border: 1.5px solid var(--border);
+        border-radius: 12px; padding: 10px 12px; color: var(--text);
+        font-size: 13px; font-family: 'Poppins', sans-serif; outline: none;
+        min-height: 80px; resize: vertical;
     }
     .form-textarea:focus { border-color: var(--primary); }
     .file-upload { position: relative; }
     .file-upload-btn {
-        background: var(--light-bg); border: 2px dashed var(--border);
-        border-radius: 12px; padding: 20px; text-align: center;
-        color: var(--text-muted); cursor: pointer; font-size: 13px;
-        transition: border-color 0.2s;
+        background: var(--bg); border: 2px dashed var(--border);
+        border-radius: 12px; padding: 18px; text-align: center;
+        color: var(--text-muted); cursor: pointer; font-size: 12px;
     }
-    .file-upload-btn:hover { border-color: var(--primary); }
     .file-upload-input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width:100%; height:100%; }
-    .image-preview-small { max-width: 100%; max-height: 80px; border-radius: 8px; margin-top: 8px; display: none; }
+    .image-preview-small { max-width:100%; max-height:70px; border-radius:8px; margin-top:8px; display:none; }
     .submit-btn {
         width: 100%; background: linear-gradient(135deg, #F97316, #EA580C);
-        color: #fff; border: none; border-radius: 12px; padding: 14px;
-        font-size: 15px; font-weight: 700; cursor: pointer;
-        box-shadow: 0 5px 16px rgba(37,99,235,0.35); font-family: 'Poppins', sans-serif;
+        color: #fff; border: none; border-radius: 12px; padding: 13px;
+        font-size: 14px; font-weight: 700; cursor: pointer;
+        font-family: 'Poppins', sans-serif;
     }
 
-    /* ───────────── WELCOME POPUP ───────────── */
+    /* ── WELCOME POPUP ── */
     .welcome-popup {
-        display: flex; position: fixed; inset: 0;
-        background: rgba(0,0,0,0.65); backdrop-filter: blur(8px);
-        z-index: 2500; align-items: center; justify-content: center; padding: 20px;
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+        z-index: 2500; display: flex; align-items: center; justify-content: center; padding: 20px;
     }
     .welcome-content {
-        background: var(--card-bg); border-radius: 24px;
-        width: 100%; max-width: 360px; overflow: hidden;
-        box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-        animation: popupIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        background: var(--card); border-radius: 22px; width: 100%; max-width: 360px;
+        overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+        animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
     }
-    @keyframes popupIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes popIn { from{transform:scale(0.9);opacity:0} to{transform:scale(1);opacity:1} }
     .welcome-header {
-        padding: 24px 20px;
         background: linear-gradient(135deg, #2563EB, #1D4ED8);
-        color: white; text-align: center; position: relative;
+        padding: 22px 18px; text-align: center; position: relative;
     }
-    .welcome-header h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
-    .welcome-message { font-size: 13px; color: rgba(255,255,255,0.9); line-height: 1.5; }
+    .welcome-header h3 { color:#fff; font-size:19px; font-weight:800; margin-bottom:6px; }
+    .welcome-msg { font-size:12px; color:rgba(255,255,255,0.85); line-height:1.5; }
     .welcome-close-top {
-        position: absolute; top: 12px; right: 14px;
-        background: rgba(255,255,255,0.2); border: none; color: #fff;
-        width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 16px;
-        display: flex; align-items: center; justify-content: center;
+        position:absolute; top:10px; right:12px;
+        background:rgba(255,255,255,0.2); border:none; color:#fff;
+        width:26px; height:26px; border-radius:50%; cursor:pointer;
+        font-size:15px; display:flex; align-items:center; justify-content:center;
     }
-    .welcome-body { padding: 20px; }
-    .bonus-section {
-        background: linear-gradient(135deg, #2563EB, #1D4ED8);
-        border-radius: 12px; padding: 14px; margin-bottom: 14px; text-align: center; color: #fff;
-    }
-    .bonus-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
-    .bonus-text { font-size: 13px; opacity: 0.9; }
-    .welcome-buttons { display:flex; flex-direction:column; gap:10px; }
+    .welcome-body { padding:18px; }
     .welcome-btn {
-        padding: 13px; border-radius: 12px; font-weight: 700; cursor: pointer;
-        transition: all 0.2s; text-decoration: none; display: flex;
-        align-items: center; justify-content: center; gap: 9px;
-        font-size: 14px; border: none; font-family: 'Poppins', sans-serif;
+        display:flex; align-items:center; justify-content:center; gap:8px;
+        padding:12px; border-radius:12px; font-weight:700; cursor:pointer;
+        text-decoration:none; font-size:13px; border:none;
+        font-family:'Poppins',sans-serif; margin-bottom:8px; transition:transform 0.2s;
     }
-    .button-row { display:flex; gap:10px; }
-    .button-row .welcome-btn { flex:1; }
-    .welcome-btn-join { background: linear-gradient(135deg, #F97316, #EA580C); color: #fff; }
-    .welcome-btn-close { background: var(--light-bg); color: var(--text-mid); border: 1.5px solid var(--border); }
-    .welcome-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.15); }
+    .welcome-btn:hover { transform:translateY(-2px); }
+    .welcome-btn-join { background:linear-gradient(135deg,#F97316,#EA580C); color:#fff; }
+    .welcome-btn-close { background:var(--bg); color:var(--text-mid); border:1.5px solid var(--border); }
 
-    /* ───────────── FLOATING SERVICE ───────────── */
-    .floating-service {
-        position: fixed; bottom: 100px; right: 18px;
-        width: 56px; height: 56px; border-radius: 50%;
-        background: linear-gradient(135deg, #2563EB, #1D4ED8);
-        color: #fff; display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 8px 24px rgba(37,99,235,0.45); cursor: pointer;
-        z-index: 99; transition: transform 0.3s; border: none;
+    /* ── SHARE POPUP ── */
+    .share-link-box {
+        background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px;
+        padding: 12px 14px; display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
     }
-    .floating-service:hover { transform: scale(1.08); }
-    .floating-service i { font-size: 22px; transform: scaleX(-1); }
-
-    .service-popup {
-        position: fixed; bottom: 165px; right: 18px;
-        background: var(--card-bg); border-radius: 16px;
-        box-shadow: 0 14px 40px rgba(0,0,0,0.18);
-        z-index: 100; display: none; flex-direction: column;
-        border: 1px solid var(--primary); width: 200px; overflow: hidden;
-        animation: slideUp 0.3s ease;
+    .share-link-text {
+        flex: 1; font-size: 12px; color: var(--text-mid);
+        word-break: break-all; font-family: monospace;
     }
-    @keyframes slideUp { from { opacity:0; transform: translateY(14px); } to { opacity:1; transform: translateY(0); } }
-    .service-header {
-        padding: 13px 15px;
-        background: linear-gradient(135deg, #2563EB, #1D4ED8);
-        color: #fff; text-align: center; font-weight: 700; font-size: 13px;
+    .copy-btn {
+        background: var(--primary); color: #fff; border: none;
+        border-radius: 8px; padding: 6px 12px; font-size: 11px; font-weight: 700;
+        cursor: pointer; font-family: 'Poppins', sans-serif; flex-shrink: 0;
     }
-    .service-option {
-        display: flex; align-items: center; gap: 10px; padding: 13px 15px;
-        cursor: pointer; background: none; border: none; width: 100%;
-        color: var(--text-dark); font-size: 13px; font-weight: 600;
-        transition: background 0.2s;
+    .share-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .share-method-btn {
+        display: flex; align-items: center; gap: 8px;
+        padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--border);
+        background: var(--card); cursor: pointer;
+        font-size: 12px; font-weight: 600; color: var(--text);
+        font-family: 'Poppins', sans-serif; transition: background 0.2s;
     }
-    .service-option:hover { background: var(--light-bg); }
-    .service-option i { color: var(--primary); font-size: 17px; width: 22px; text-align: center; }
-
-    /* ───────────── RESPONSIVE ───────────── */
-    @media (max-width: 480px) {
-        .main-section { flex-direction: column; gap: 12px; }
-        .action-bar { flex-direction: row; min-width: unset; }
-        .action-item { min-width: 0; }
-        .balance-amount { font-size: 22px; }
-        .photo-slider { height: 170px; }
-        .post-slider { height: 280px; }
-        .post-image-container { height: 200px; }
-    }
+    .share-method-btn:hover { background: var(--bg); }
     </style>
 </head>
 <body class="page-index">
 <%- include('partials/menu', { page: 'index' }) %>
 
 <div class="container">
-    <!-- Header -->
+
+    <!-- ══ HEADER ══ -->
     <div class="header">
-        <div class="logo">
-            <div class="logo-icon"><img src="/images/logo-mfg-nobg.png" alt="MFG"></div>
-            <div>
-            </div>
+        <button class="menu-btn" onclick="openTelegramPopup()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="header-greeting">
+            <div class="greet-top">Bienvenue,</div>
+            <div class="greet-name"><%= user.nom.split(' ')[0] %> 👋</div>
         </div>
         <div class="header-right">
-            <div class="hdr-lang-wrap">
-                <button class="hdr-lang-btn" id="hdrLangBtn" onclick="toggleHdrLang()">
-                    <i class="fas fa-globe"></i>
-                    <span id="hdrLangLabel">Langue</span>
-                    <i class="fas fa-chevron-down"></i>
+            <div class="notif-wrap">
+                <button class="notif-btn"><i class="fas fa-bell"></i></button>
+                <div class="notif-badge">!</div>
+            </div>
+            <div class="avatar-circle">
+                <%= user.nom.charAt(0).toUpperCase() %>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ BALANCE CARD ══ -->
+    <div class="balance-section">
+        <div class="balance-card">
+            <div class="balance-left">
+                <div class="balance-label-top">Solde disponible</div>
+                <div class="balance-amount-row">
+                    <div class="balance-amount" id="balanceDisplay"><%= parseFloat(user.solde || 0).toLocaleString('fr-FR') %> FCFA</div>
+                    <button class="eye-btn" onclick="toggleBalance()" id="eyeBtn">
+                        <i class="fas fa-eye" id="eyeIcon"></i>
+                    </button>
+                </div>
+                <a href="/compte" class="portefeuille-btn">
+                    Voir mon portefeuille <i class="fas fa-chevron-right" style="font-size:9px;"></i>
+                </a>
+            </div>
+            <div class="balance-right">
+                <div class="gains-label">Gains du jour</div>
+                <div class="gains-amount">+ <%= parseFloat(revenus_jour || 0).toLocaleString('fr-FR') %> FCFA</div>
+                <svg class="sparkline" width="80" height="40" viewBox="0 0 80 40">
+                    <defs>
+                        <linearGradient id="sparkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#4ADE80;stop-opacity:0.3"/>
+                            <stop offset="100%" style="stop-color:#4ADE80;stop-opacity:0"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M0,38 C8,35 14,30 22,24 C30,18 36,28 44,18 C52,10 58,14 66,8 C72,4 76,6 80,2" 
+                          fill="none" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M0,38 C8,35 14,30 22,24 C30,18 36,28 44,18 C52,10 58,14 66,8 C72,4 76,6 80,2 L80,40 L0,40 Z" 
+                          fill="url(#sparkGrad)"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ ACTION BUTTONS ══ -->
+    <div class="actions-section">
+        <div class="actions-grid">
+            <a href="/investissement" class="action-item">
+                <div class="action-icon blue"><i class="fas fa-wallet"></i></div>
+                <span class="action-label">Investir</span>
+            </a>
+            <a href="/retrait" class="action-item">
+                <div class="action-icon green"><i class="fas fa-arrow-circle-down"></i></div>
+                <span class="action-label">Retirer</span>
+            </a>
+            <a href="#" class="action-item" onclick="openSharePopup();return false;">
+                <div class="action-icon orange"><i class="fas fa-link"></i></div>
+                <span class="action-label">Partager<br>mon lien</span>
+            </a>
+            <a href="/cadeau" class="action-item">
+                <div class="action-icon purple"><i class="fas fa-gift"></i></div>
+                <span class="action-label">Bonus<br>quotidien</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- ══ REFERRAL BANNER ══ -->
+    <div class="referral-section">
+        <div class="referral-banner">
+            <div class="referral-text">
+                <div class="referral-title">Invitez vos amis et<br><span>gagnez plus !</span></div>
+                <div class="referral-subtitle">Plus vous parrainez,<br>plus vous gagnez.</div>
+                <button class="referral-btn" onclick="openSharePopup()">
+                    <i class="fas fa-share-alt"></i> Partager maintenant
                 </button>
-                <div class="hdr-lang-dropdown" id="hdrLangDropdown">
-                    <div class="hdr-lang-option" onclick="setHdrLang('fr')">🇫🇷 Français</div>
-                    <div class="hdr-lang-option" onclick="setHdrLang('en')">🇬🇧 English</div>
-                </div>
+            </div>
+            <div class="referral-img">🎁</div>
+        </div>
+    </div>
+
+    <!-- ══ NOTIFICATION BAR ══ -->
+    <div class="notif-bar-section">
+        <div class="notif-bar">
+            <i class="fas fa-bell notif-bar-icon"></i>
+            <div class="notif-scroll" id="notifContainer"></div>
+        </div>
+    </div>
+
+    <!-- ══ APERÇU STATS ══ -->
+    <div class="section-head">
+        <div class="section-title">Aperçu</div>
+        <a href="/equipe" class="section-link">Détails <i class="fas fa-chevron-right" style="font-size:10px;"></i></a>
+    </div>
+    <div class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon purple"><i class="fas fa-user-friends"></i></div>
+                <div class="stat-value"><%= filleuls_count %></div>
+                <div class="stat-label">Filleuls</div>
+                <div class="stat-sub">Total</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="fas fa-chart-line"></i></div>
+                <div class="stat-value"><%= parseFloat(revenus_jour || 0).toLocaleString('fr-FR') %></div>
+                <div class="stat-label">Aujourd'hui</div>
+                <div class="stat-sub">FCFA</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange"><i class="fas fa-coins"></i></div>
+                <div class="stat-value"><%= parseFloat(revenus && revenus.total ? revenus.total : 0).toLocaleString('fr-FR') %></div>
+                <div class="stat-label">Rev. totaux</div>
+                <div class="stat-sub">FCFA</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="fas fa-star"></i></div>
+                <div class="stat-value" style="font-size:11px;"><%= niveau_label %></div>
+                <div class="stat-label">Niveau actuel</div>
+                <div class="stat-sub">Niveau <%= niveau_num %></div>
             </div>
         </div>
     </div>
 
-    <!-- Photo slider -->
-    <div class="photos-section">
-        <div class="photo-slider" id="photoSlider">
-            <div class="photo-slides">
-                <div class="photo-slide active">
-                    <img src="/images/slide1.jpeg" class="photo-image" alt="Market Flow Group">
-                    <div class="photo-overlay">
-                        <div class="photo-title">Market Flow Group</div>
-                        <div class="photo-subtitle">Investissez aujourd'hui, bâtir l'avenir de l'Afrique</div>
+    <!-- ══ ACTIVITÉS RÉCENTES ══ -->
+    <div class="section-head">
+        <div class="section-title">Activités récentes</div>
+        <a href="/historique" class="section-link">Voir tout <i class="fas fa-chevron-right" style="font-size:10px;"></i></a>
+    </div>
+    <div class="activities-section">
+        <div class="activities-card">
+            <% if (activites && activites.length > 0) { %>
+                <% activites.forEach(function(act) {
+                    let iconClass = 'blue';
+                    let iconFa = 'fa-coins';
+                    let titre = 'Transaction';
+                    if (act.type === 'commission' || act.type === 'parrainage') { iconClass='green'; iconFa='fa-user-plus'; titre='Commission d\'affiliation'; }
+                    else if (act.type === 'retrait') { iconClass='orange'; iconFa='fa-arrow-circle-up'; titre='Retrait effectué'; }
+                    else if (act.type === 'investissement' || act.type === 'rendement') { iconClass='blue'; iconFa='fa-chart-line'; titre='Retour sur investissement'; }
+                    else if (act.type === 'salaire') { iconClass='purple'; iconFa='fa-money-bill-wave'; titre='Salaire reçu'; }
+                    else if (act.type === 'cadeau') { iconClass='orange'; iconFa='fa-gift'; titre='Bonus cadeau'; }
+                    else if (act.type === 'depot') { iconClass='green'; iconFa='fa-arrow-circle-down'; titre='Dépôt reçu'; }
+                    else { titre = act.type || 'Transaction'; }
+                    const montant = parseFloat(act.montant || 0);
+                    const desc = act.description || '';
+                    const dateStr = act.date_creation ? new Date(act.date_creation).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) : '';
+                %>
+                <div class="activity-item">
+                    <div class="activity-icon <%= iconClass %>"><i class="fas <%= iconFa %>"></i></div>
+                    <div class="activity-body">
+                        <div class="activity-title"><%= titre %></div>
+                        <div class="activity-desc"><%= desc || titre %></div>
+                    </div>
+                    <div class="activity-right">
+                        <div class="activity-amount">+ <%= montant.toLocaleString('fr-FR') %> FCFA</div>
+                        <div class="activity-time"><%= dateStr %></div>
                     </div>
                 </div>
-                <div class="photo-slide">
-                    <img src="/images/slide2.jpeg" class="photo-image" alt="Notre Communauté">
-                    <div class="photo-overlay">
-                        <div class="photo-title">Notre Communauté</div>
-                        <div class="photo-subtitle">Plus de 10 000 investisseurs nous font confiance</div>
-                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="activity-empty">
+                    <i class="fas fa-receipt"></i>
+                    Aucune activité récente
                 </div>
-                <div class="photo-slide">
-                    <img src="/images/slide3.jpeg" class="photo-image" alt="Événements Altiora">
-                    <div class="photo-overlay">
-                        <div class="photo-title">Événements & Formations</div>
-                        <div class="photo-subtitle">Ensemble, construisons la richesse de demain</div>
-                    </div>
-                </div>
-                <div class="photo-slide">
-                    <img src="/images/slide4.jpeg" class="photo-image" alt="Siège Altiora">
-                    <div class="photo-overlay">
-                        <div class="photo-title">Notre Siège Social</div>
-                        <div class="photo-subtitle">Agriculture · Énergie · Immobilier · Finance</div>
-                    </div>
-                </div>
-            </div>
-            <div class="photo-indicators">
-                <div class="photo-indicator active" onclick="showPhoto(0)"></div>
-                <div class="photo-indicator" onclick="showPhoto(1)"></div>
-                <div class="photo-indicator" onclick="showPhoto(2)"></div>
-                <div class="photo-indicator" onclick="showPhoto(3)"></div>
-            </div>
+            <% } %>
         </div>
     </div>
 
-    <!-- Balance + Actions -->
-    <div class="main-section">
-        <div class="premium-card">
-            <div class="card-header">
-                <div class="balance-label">
-                    <i class="fas fa-wallet"></i> Solde Principal
-                </div>
-                <div class="card-logo" style="overflow:hidden;padding:0;"><img src="/assets/logo-mfg.jpeg" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="A"></div>
-            </div>
-            <div class="balance-container">
-                <div class="balance-amount"><%= user.solde.toLocaleString() %> <%= devise %></div>
-            </div>
-            <div class="revenue-info">
-                <div class="revenue-label">Revenus Totaux</div>
-                <div class="revenue-amount"><%= (revenus.total || 0).toLocaleString() %> <%= devise %></div>
-            </div>
-        </div>
-
+    <!-- ══ PLANS SECTION ══ -->
+    <div class="section-head">
+        <div class="section-title"><i class="fas fa-crown" style="color:#F97316;margin-right:6px;font-size:14px;"></i>Plans VIP</div>
+        <a href="/investissement" class="section-link">Voir tout <i class="fas fa-chevron-right" style="font-size:10px;"></i></a>
     </div>
-
-    <!-- Retrait / Roue / Cadeau -->
-    <div class="horizontal-actions">
-        <a href="/retrait" class="h-action-btn">
-            <div class="h-action-icon"><i class="fas fa-hand-holding-usd"></i></div>
-            <span class="h-action-text">Retrait</span>
-        </a>
-        <a href="/roue" class="h-action-btn">
-            <div class="h-action-icon"><i class="fas fa-coins"></i></div>
-            <span class="h-action-text">Slot</span>
-        </a>
-        <a href="/cadeau" class="h-action-btn">
-            <div class="h-action-icon"><i class="fas fa-gift"></i></div>
-            <span class="h-action-text">Cadeau</span>
-        </a>
-    </div>
-
-    <!-- Dépôt / Tuto / VIP / Rejoindre -->
-    <div class="horizontal-actions">
-        <a href="/depot" class="h-action-btn">
-            <div class="h-action-icon"><i class="fas fa-arrow-down"></i></div>
-            <span class="h-action-text">Dépôt</span>
-        </a>
-        <a href="/faq" class="h-action-btn">
-            <div class="h-action-icon"><i class="fas fa-play-circle"></i></div>
-            <span class="h-action-text">Tuto</span>
-        </a>
-        <a href="/investissement" class="h-action-btn">
-            <div class="h-action-icon"><i class="fas fa-crown"></i></div>
-            <span class="h-action-text">VIP</span>
-        </a>
-        <button class="h-action-btn" onclick="openTelegramPopup()">
-            <div class="h-action-icon"><i class="fab fa-telegram"></i></div>
-            <span class="h-action-text">Rejoindre</span>
-        </button>
-    </div>
-
-    <!-- Notification bar -->
-    <div class="notification-bar">
-        <div class="notification-container" id="notificationContainer"></div>
-    </div>
-
-    <!-- Posts section -->
-    <div class="posts-section">
-        <div class="posts-header">
-            <div class="posts-title">
-                <i class="fas fa-newspaper"></i>
-                Actualités Communauté
-            </div>
-            <button class="post-btn" onclick="openPostPopup()">
-                <i class="fas fa-plus"></i> Poster
-            </button>
-        </div>
-
-        <div class="post-slider-container">
-            <div class="post-slider" id="postSlider">
-                <div class="post-slides" id="postTrack">
-                    <% if (posts.length > 0) { %>
-                        <% posts.forEach((post) => { %>
-                            <div class="post-slide">
-                                <% if (post.image) { %>
-                                <div class="post-image-container">
-                                    <img src="uploads/<%= post.image %>" class="post-image" alt="Post image"
-                                         onerror="this.parentElement.style.display='none'">
-                                </div>
-                                <% } %>
-                                <div class="post-content">
-                                    <div class="post-text"><%= post.message %></div>
-                                </div>
-                            </div>
-                        <% }); %>
-                    <% } else { %>
-                        <div class="post-slide">
-                            <div class="post-image-container" style="display:flex;align-items:center;justify-content:center;background:var(--light-bg);">
-                                <div style="text-align:center;color:var(--text-muted);padding:30px 0;">
-                                    <i class="fas fa-images" style="font-size:40px;margin-bottom:10px;display:block;color:var(--border)"></i>
-                                    <p>Aucun post pour le moment</p>
-                                </div>
-                            </div>
-                        </div>
-                    <% } %>
-                </div>
-                <% if (posts.length > 1) { %>
-                <div class="post-indicators" id="postIndicators">
-                    <% posts.forEach((post, index) => { %>
-                        <div class="post-indicator <%= index === 0 ? 'active' : '' %>" onclick="showPost(<%= index %>)"></div>
-                    <% }); %>
-                </div>
-                <% } %>
-            </div>
-        </div>
-    </div>
-
-    <!-- Mini Plans VIP section -->
-    <div class="mini-plans-section">
-        <div class="mini-plans-header">
-            <div class="mini-plans-title">
-                <i class="fas fa-crown"></i>
-                Plans Actions VIP
-            </div>
-        </div>
-
+    <div class="plans-section">
         <% if (typeof plans !== 'undefined' && plans && plans.length > 0) { %>
             <% plans.forEach(function(plan) {
                 const prix   = parseFloat(plan.prix || 0);
@@ -654,311 +620,252 @@
                 const duree  = parseInt(plan.duree_jours || 0);
                 const total  = gain_j * duree;
             %>
-            <div class="mini-plan-card">
-                <div class="mini-plan-img">
+            <div class="plan-card">
+                <div class="plan-img">
                     <img src="/images/altiora-logo-banner.jpeg" alt="<%= plan.nom %>"
                          onerror="this.src='/images/altiora-logo.png'">
-                    <div class="mini-plan-badge"><%= duree %> Jours</div>
+                    <div class="plan-badge"><%= duree %> Jours</div>
                 </div>
-                <div class="mini-plan-body">
-                    <div class="mini-plan-name"><%= plan.nom %></div>
-                    <div class="mini-plan-stats">
+                <div class="plan-body">
+                    <div class="plan-name"><%= plan.nom %></div>
+                    <div class="plan-stats">
                         <div>
-                            <div class="mini-stat-val"><%= gain_j.toLocaleString('fr-FR') %> FCFA</div>
-                            <div class="mini-stat-lbl">Gain / jour</div>
+                            <div class="plan-stat-val"><%= gain_j.toLocaleString('fr-FR') %> FCFA</div>
+                            <div class="plan-stat-lbl">Gain / jour</div>
                         </div>
                         <div>
-                            <div class="mini-stat-val"><%= total.toLocaleString('fr-FR') %> FCFA</div>
-                            <div class="mini-stat-lbl">Gain total</div>
-                        </div>
-                    </div>
-                    <div class="mini-plan-price">
-                        <div>
-                            <div class="mini-price-lbl">Investissement</div>
-                            <div class="mini-price-val"><%= prix.toLocaleString('fr-FR') %> FCFA</div>
+                            <div class="plan-stat-val"><%= total.toLocaleString('fr-FR') %> FCFA</div>
+                            <div class="plan-stat-lbl">Gain total</div>
                         </div>
                     </div>
-                    <a href="/investissement" class="mini-invest-btn">
+                    <div class="plan-price-row">
+                        <div>
+                            <div class="plan-price-lbl">Investissement</div>
+                            <div class="plan-price-val"><%= prix.toLocaleString('fr-FR') %> FCFA</div>
+                        </div>
+                    </div>
+                    <a href="/investissement" class="plan-invest-btn">
                         <i class="fas fa-crown" style="margin-right:6px;"></i> Investir maintenant
                     </a>
                 </div>
             </div>
             <% }); %>
         <% } %>
-
-        <a href="/investissement" class="mini-voir-plus-btn">
+        <a href="/investissement" class="voir-plus-btn">
             <i class="fas fa-th-large"></i> Voir tous les plans
-            <i class="fas fa-chevron-right" style="font-size:12px;"></i>
+            <i class="fas fa-chevron-right" style="font-size:11px;"></i>
         </a>
     </div>
-</div>
 
-<!-- Welcome popup — contrôlé par l'admin (popup_active + popup_message) -->
-<% const _p = locals.appParams || {}; %>
-<div class="welcome-popup" id="welcomePopup" style="<%= _p.popup_active === '1' ? '' : 'display:none' %>">
-    <div class="welcome-content">
-        <div class="welcome-header">
-            <h3>Market Flow Group</h3>
-            <div class="welcome-message">
-                <%= _p.popup_message || 'Bienvenue sur Market Flow Group ! Investissez dans des projets à fort potentiel et générez des revenus quotidiens.' %>
-            </div>
-            <button class="welcome-close-top" onclick="closeWelcomePopup()">&times;</button>
-        </div>
-        <div class="welcome-body">
-            <div class="welcome-buttons">
-                <% if (_p.telegram_link) { %>
-                <a href="<%= _p.telegram_link %>" target="_blank" rel="noopener" class="welcome-btn welcome-btn-join">
-                    <i class="fab fa-telegram"></i> Canal Telegram
-                </a>
-                <% } %>
-                <% if (_p.whatsapp_group_link) { %>
-                <a href="<%= _p.whatsapp_group_link %>" target="_blank" rel="noopener" class="welcome-btn" style="background:#25D366;color:#fff;">
-                    <i class="fab fa-whatsapp"></i> Groupe WhatsApp
-                </a>
-                <% } %>
-                <button class="welcome-btn welcome-btn-close" onclick="closeWelcomePopup()">
-                    <i class="fas fa-times"></i> Fermer
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+</div><!-- /container -->
 
-<!-- Communauté popup (bouton "Rejoindre") -->
-<div class="popup" id="telegramPopup">
-    <div class="popup-content">
+<!-- ══ POPUP COMMUNAUTÉ ══ -->
+<div class="popup" id="telegramPopup" style="display:none;">
+    <div class="popup-box">
         <div class="popup-header">
             <h3>Rejoignez notre Communauté</h3>
             <button class="popup-close" onclick="closePopup('telegramPopup')">&times;</button>
         </div>
         <div class="popup-body">
-            <p class="popup-text">Restez connecté et ne manquez aucune opportunité d'investissement !</p>
-            <div class="community-buttons">
-                <% if (_p.telegram_link) { %>
-                <a href="<%= _p.telegram_link %>" target="_blank" rel="noopener" class="community-btn">
-                    <i class="fab fa-telegram" style="color:#2AABEE"></i>
-                    <div class="community-btn-text">
-                        <h4>Canal Telegram officiel</h4>
-                        <p>Annonces et actualités</p>
-                    </div>
-                </a>
-                <% } %>
-                <% if (_p.whatsapp_group_link) { %>
-                <a href="<%= _p.whatsapp_group_link %>" target="_blank" rel="noopener" class="community-btn">
-                    <i class="fab fa-whatsapp" style="color:#25D366"></i>
-                    <div class="community-btn-text">
-                        <h4>Groupe WhatsApp</h4>
-                        <p>Échangez avec la communauté</p>
-                    </div>
-                </a>
-                <% } %>
-                <% if (!_p.telegram_link && !_p.whatsapp_group_link) { %>
-                <p style="color:#64748B;font-size:13px;text-align:center;">Liens de communauté non configurés.</p>
-                <% } %>
+            <p class="popup-text">Restez connecté et ne manquez aucune opportunité !</p>
+            <% const _p = locals.appParams || {}; %>
+            <% if (_p.telegram_link) { %>
+            <a href="<%= _p.telegram_link %>" target="_blank" rel="noopener" class="comm-btn">
+                <i class="fab fa-telegram" style="color:#2AABEE;font-size:22px;"></i>
+                <div class="comm-btn-text">
+                    <h4>Canal Telegram officiel</h4>
+                    <p>Annonces et actualités</p>
+                </div>
+            </a>
+            <% } %>
+            <% if (_p.whatsapp_group_link) { %>
+            <a href="<%= _p.whatsapp_group_link %>" target="_blank" rel="noopener" class="comm-btn">
+                <i class="fab fa-whatsapp" style="color:#25D366;font-size:22px;"></i>
+                <div class="comm-btn-text">
+                    <h4>Groupe WhatsApp</h4>
+                    <p>Échangez avec la communauté</p>
+                </div>
+            </a>
+            <% } %>
+            <% if (!_p.telegram_link && !_p.whatsapp_group_link) { %>
+            <p style="text-align:center;color:var(--text-muted);font-size:13px;">Liens non configurés.</p>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<!-- ══ POPUP PARTAGE ══ -->
+<div class="popup" id="sharePopup" style="display:none;">
+    <div class="popup-box">
+        <div class="popup-header">
+            <h3><i class="fas fa-share-alt" style="margin-right:8px;"></i>Partager mon lien</h3>
+            <button class="popup-close" onclick="closePopup('sharePopup')">&times;</button>
+        </div>
+        <div class="popup-body">
+            <p class="popup-text">Partagez votre lien de parrainage et gagnez des commissions sur chaque filleul !</p>
+            <div class="share-link-box">
+                <div class="share-link-text" id="referralLinkText">
+                    <%= (typeof appParams !== 'undefined' && appParams && appParams.site_url ? appParams.site_url : '') %>/inscription1?ref=<%= user.code_parrainage || user.id %>
+                </div>
+                <button class="copy-btn" onclick="copyReferralLink()">Copier</button>
+            </div>
+            <div class="share-methods">
+                <button class="share-method-btn" onclick="shareWhatsApp()">
+                    <i class="fab fa-whatsapp" style="color:#25D366;font-size:18px;"></i> WhatsApp
+                </button>
+                <button class="share-method-btn" onclick="shareTelegram()">
+                    <i class="fab fa-telegram" style="color:#2AABEE;font-size:18px;"></i> Telegram
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Post popup -->
-<div class="popup" id="postPopup">
-    <div class="popup-content">
+<!-- ══ POPUP POST ══ -->
+<div class="popup" id="postPopup" style="display:none;">
+    <div class="popup-box">
         <div class="popup-header">
             <h3>Créer un post</h3>
             <button class="popup-close" onclick="closePopup('postPopup')">&times;</button>
         </div>
         <div class="popup-body">
-            <form id="postForm" enctype="multipart/form-data" method="POST">
+            <form id="postForm" enctype="multipart/form-data" method="POST" action="/">
                 <div class="form-group">
-                    <label class="form-label" for="postMessage">Message</label>
-                    <textarea id="postMessage" name="message" class="form-textarea" placeholder="Partagez votre expérience avec MFG..." required></textarea>
+                    <label class="form-label">Message</label>
+                    <textarea name="message" class="form-textarea" placeholder="Partagez votre expérience avec MFG..." required></textarea>
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="postImage">Image</label>
+                    <label class="form-label">Image</label>
                     <div class="file-upload">
                         <div class="file-upload-btn">
-                            <i class="fas fa-cloud-upload-alt" style="font-size:24px;margin-bottom:8px;display:block;color:var(--primary)"></i>
-                            <div>Cliquez pour télécharger une image</div>
-                            <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">PNG, JPG, JPEG max 5MB</div>
-                            <img id="imagePreview" class="image-preview-small" alt="Aperçu">
+                            <i class="fas fa-cloud-upload-alt" style="font-size:22px;margin-bottom:6px;display:block;color:var(--primary)"></i>
+                            Cliquez pour ajouter une image
+                            <img id="imgPreview" class="image-preview-small" alt="">
                         </div>
-                        <input type="file" id="postImage" name="image" class="file-upload-input"
-                               accept="image/*" required onchange="previewImage(this)">
+                        <input type="file" name="image" class="file-upload-input" accept="image/*" required onchange="previewImg(this)">
                     </div>
                 </div>
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-paper-plane"></i> Publier le post
-                </button>
+                <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Publier</button>
             </form>
         </div>
     </div>
-
 </div>
 
+<!-- ══ WELCOME POPUP ══ -->
+<% const _pw = locals.appParams || {}; %>
+<% if (_pw.popup_active === '1') { %>
+<div class="welcome-popup" id="welcomePopup">
+    <div class="welcome-content">
+        <div class="welcome-header">
+            <h3>Market Flow Group</h3>
+            <div class="welcome-msg"><%= _pw.popup_message || 'Bienvenue sur Market Flow Group ! Investissez dans des projets à fort potentiel.' %></div>
+            <button class="welcome-close-top" onclick="closePopup('welcomePopup')">&times;</button>
+        </div>
+        <div class="welcome-body">
+            <% if (_pw.telegram_link) { %>
+            <a href="<%= _pw.telegram_link %>" target="_blank" rel="noopener" class="welcome-btn welcome-btn-join">
+                <i class="fab fa-telegram"></i> Canal Telegram
+            </a>
+            <% } %>
+            <% if (_pw.whatsapp_group_link) { %>
+            <a href="<%= _pw.whatsapp_group_link %>" target="_blank" rel="noopener" class="welcome-btn" style="background:#25D366;color:#fff;">
+                <i class="fab fa-whatsapp"></i> Groupe WhatsApp
+            </a>
+            <% } %>
+            <button class="welcome-btn welcome-btn-close" onclick="closePopup('welcomePopup')">
+                <i class="fas fa-times"></i> Fermer
+            </button>
+        </div>
+    </div>
+</div>
+<% } %>
+
 <script>
-// ── POPUP UTILITIES ──
-function closePopup(id) { const p = document.getElementById(id); if (p) p.style.display = 'none'; }
-function closeWelcomePopup() { closePopup('welcomePopup'); }
-function openTelegramPopup() { document.getElementById('telegramPopup').style.display = 'flex'; }
-function openPostPopup() { document.getElementById('postPopup').style.display = 'flex'; }
-
-// (floating WhatsApp button is rendered by menu partial)
-
-// ── PHOTO SLIDER ──
-let currentPhoto = 0;
-const photoSlides = document.querySelectorAll('.photo-slide');
-const photoIndicators = document.querySelectorAll('.photo-indicator');
-function showPhoto(index) {
-    photoSlides.forEach(s => s.classList.remove('active'));
-    photoIndicators.forEach(i => i.classList.remove('active'));
-    currentPhoto = index;
-    if (photoSlides[index]) photoSlides[index].classList.add('active');
-    if (photoIndicators[index]) photoIndicators[index].classList.add('active');
+// ── POPUP UTILS ──
+function closePopup(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
 }
-setInterval(() => { showPhoto((currentPhoto + 1) % photoSlides.length); }, 4000);
+function openTelegramPopup() { document.getElementById('telegramPopup').style.display = 'flex'; }
+function openPostPopup()     { document.getElementById('postPopup').style.display = 'flex'; }
+function openSharePopup()    { document.getElementById('sharePopup').style.display = 'flex'; }
 
-// ── POST SLIDER (horizontal carousel) ──
-(function() {
-    const track      = document.getElementById('postTrack');
-    const slider     = document.getElementById('postSlider');
-    const indicators = document.querySelectorAll('.post-indicator');
-    if (!track) return;
-
-    const slides = track.querySelectorAll('.post-slide');
-    const total  = slides.length;
-    if (total === 0) return;
-
-    let current  = 0;
-    let paused   = false;
-    let autoTimer = null;
-
-    function goTo(idx) {
-        current = (idx + total) % total;
-        track.style.transform = `translateX(-${current * 100}%)`;
-        indicators.forEach((dot, i) => dot.classList.toggle('active', i === current));
-    }
-
-    // Expose for inline onclick on indicators
-    window.showPost = goTo;
-
-    function startAuto() {
-        stopAuto();
-        autoTimer = setInterval(() => {
-            if (!paused) goTo(current + 1);
-        }, 2000);
-    }
-    function stopAuto() { clearInterval(autoTimer); }
-
-    // ── Touch / swipe support ──
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let isDragging  = false;
-    let dragDelta   = 0;
-    const MIN_SWIPE = 40;
-
-    slider.addEventListener('touchstart', e => {
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-        isDragging  = true;
-        dragDelta   = 0;
-        paused      = true;          // pause while finger is down
-        track.classList.add('dragging');
-    }, { passive: true });
-
-    slider.addEventListener('touchmove', e => {
-        if (!isDragging) return;
-        const dx = e.touches[0].clientX - touchStartX;
-        const dy = e.touches[0].clientY - touchStartY;
-        if (Math.abs(dx) > Math.abs(dy)) {
-            dragDelta = dx;
-            const baseOffset = current * 100;
-            const dragPct    = (dx / slider.offsetWidth) * 100;
-            track.style.transform = `translateX(calc(-${baseOffset}% + ${dragDelta}px))`;
-        }
-    }, { passive: true });
-
-    slider.addEventListener('touchend', () => {
-        isDragging = false;
-        track.classList.remove('dragging');
-        if (dragDelta < -MIN_SWIPE)       goTo(current + 1);
-        else if (dragDelta > MIN_SWIPE)   goTo(current - 1);
-        else                              goTo(current);   // snap back
-        paused = false;                   // resume auto-scroll
+// Close popup on outside click
+document.querySelectorAll('.popup').forEach(function(p) {
+    p.addEventListener('click', function(e) {
+        if (e.target === p) closePopup(p.id);
     });
+});
 
-    // Pause on mouse hold (desktop)
-    slider.addEventListener('mousedown', () => { paused = true; });
-    document.addEventListener('mouseup', () => { paused = false; });
+// ── BALANCE TOGGLE ──
+let balanceHidden = false;
+const realBalance = '<%= parseFloat(user.solde || 0).toLocaleString("fr-FR") %> FCFA';
+function toggleBalance() {
+    balanceHidden = !balanceHidden;
+    document.getElementById('balanceDisplay').textContent = balanceHidden ? '●●●●● FCFA' : realBalance;
+    document.getElementById('eyeIcon').className = balanceHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+}
 
-    if (total > 1) startAuto();
-    goTo(0);
-})();
+// ── SHARE ──
+function copyReferralLink() {
+    const txt = document.getElementById('referralLinkText').textContent.trim();
+    navigator.clipboard.writeText(txt).then(function() {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = '✓ Copié !';
+        btn.style.background = '#10B981';
+        setTimeout(function() { btn.textContent = 'Copier'; btn.style.background = ''; }, 2000);
+    });
+}
+function shareWhatsApp() {
+    const txt = document.getElementById('referralLinkText').textContent.trim();
+    const msg = encodeURIComponent('Rejoignez Market Flow Group et commencez à investir ! ' + txt);
+    window.open('https://wa.me/?text=' + msg, '_blank');
+}
+function shareTelegram() {
+    const txt = document.getElementById('referralLinkText').textContent.trim();
+    const msg = encodeURIComponent('Rejoignez Market Flow Group ! ' + txt);
+    window.open('https://t.me/share/url?url=' + encodeURIComponent(txt) + '&text=' + msg, '_blank');
+}
 
 // ── NOTIFICATIONS ──
 const notifications = <%- JSON.stringify(notifications || []) %>;
-let notifIndex = 0;
-function showNotifications() {
-    const container = document.getElementById('notificationContainer');
-    if (!container || notifications.length === 0) {
-        if (container) container.innerHTML = '<div class="notification-item visible" style="font-size:13px;"><i class="fas fa-bell"></i> Bienvenue sur Market Flow Group !</div>';
-        return;
-    }
-    container.innerHTML = '';
-    const item = document.createElement('div');
-    item.className = 'notification-item';
-    item.innerHTML = `<i class="fas fa-bell"></i> ${notifications[notifIndex % notifications.length].message || notifications[notifIndex % notifications.length]}`;
-    container.appendChild(item);
-    setTimeout(() => item.classList.add('visible'), 50);
-    notifIndex++;
+let notifIdx = 0;
+function showNotif() {
+    const c = document.getElementById('notifContainer');
+    if (!c) return;
+    c.innerHTML = '';
+    const msgs = notifications.length > 0
+        ? notifications.map(function(n) { return n.message || n; })
+        : ['Bienvenue sur Market Flow Group ! 🎉'];
+    const el = document.createElement('div');
+    el.className = 'notif-item';
+    el.textContent = msgs[notifIdx % msgs.length];
+    c.appendChild(el);
+    setTimeout(function() { el.classList.add('visible'); }, 50);
+    notifIdx++;
 }
-showNotifications();
-setInterval(() => {
-    const current = document.querySelector('.notification-item.visible');
-    if (current) { current.classList.remove('visible'); setTimeout(showNotifications, 500); }
-    else showNotifications();
+showNotif();
+setInterval(function() {
+    const cur = document.querySelector('.notif-item.visible');
+    if (cur) { cur.classList.remove('visible'); setTimeout(showNotif, 500); }
+    else showNotif();
 }, 3500);
 
 // ── IMAGE PREVIEW ──
-function previewImage(input) {
-    const preview = document.getElementById('imagePreview');
+function previewImg(input) {
     if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; };
-        reader.readAsDataURL(input.files[0]);
+        const r = new FileReader();
+        r.onload = function(e) {
+            const p = document.getElementById('imgPreview');
+            p.src = e.target.result; p.style.display = 'block';
+        };
+        r.readAsDataURL(input.files[0]);
     }
 }
 
 // ── DISABLE ZOOM ──
-document.addEventListener('wheel', e => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
-document.addEventListener('gesturestart', e => e.preventDefault());
-
-// ── LANGUAGE SWITCHER (header) ──
-function toggleHdrLang() {
-    document.getElementById('hdrLangBtn').classList.toggle('open');
-    document.getElementById('hdrLangDropdown').classList.toggle('open');
-}
-function setHdrLang(lang) {
-    localStorage.setItem('mfg_lang', lang);
-    document.getElementById('hdrLangLabel').textContent = lang === 'fr' ? 'Langue' : 'Language';
-    document.getElementById('hdrLangBtn').classList.remove('open');
-    document.getElementById('hdrLangDropdown').classList.remove('open');
-    document.querySelectorAll('.hdr-lang-option').forEach((el, i) => {
-        el.classList.toggle('active', (lang === 'fr' && i === 0) || (lang === 'en' && i === 1));
-    });
-}
-document.addEventListener('click', e => {
-    if (!e.target.closest('.hdr-lang-wrap')) {
-        document.getElementById('hdrLangBtn')?.classList.remove('open');
-        document.getElementById('hdrLangDropdown')?.classList.remove('open');
-    }
-});
-(function() {
-    const lang = localStorage.getItem('mfg_lang') || 'fr';
-    document.getElementById('hdrLangLabel').textContent = lang === 'fr' ? 'Langue' : 'Language';
-    document.querySelectorAll('.hdr-lang-option').forEach((el, i) => {
-        el.classList.toggle('active', (lang === 'fr' && i === 0) || (lang === 'en' && i === 1));
-    });
-})();
+document.addEventListener('wheel', function(e) { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
 </script>
 </body>
 </html>
