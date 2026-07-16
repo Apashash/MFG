@@ -1,8 +1,23 @@
 kind = "api"
-previewPath = "/api" # TODO - should be excluded from preview in the first place
-title = "API Server"
+previewPath = "/"
+title = "Market Flow Group"
 version = "1.0.0"
 id = "3B4_FFSkEVBkAeYMFRJ2e"
+
+[[services]]
+localPort = 5000
+name = "Market Flow Group"
+paths = ["/"]
+
+[services.development]
+run = "node /home/runner/workspace/server.js"
+
+[services.production.run]
+args = ["node", "/home/runner/workspace/server.js"]
+
+[services.production.run.env]
+PORT = "5000"
+NODE_ENV = "production"
 
 [[services]]
 localPort = 8080
@@ -12,8 +27,6 @@ paths = ["/api"]
 [services.development]
 run = "pnpm --filter @workspace/api-server run dev"
 
-[services.production]
-
 [services.production.build]
 args = ["pnpm", "--filter", "@workspace/api-server", "run", "build"]
 
@@ -21,12 +34,8 @@ args = ["pnpm", "--filter", "@workspace/api-server", "run", "build"]
 NODE_ENV = "production"
 
 [services.production.run]
-# we don't run through pnpm to make startup faster in production
 args = ["node", "--enable-source-maps", "artifacts/api-server/dist/index.mjs"]
 
 [services.production.run.env]
 PORT = "8080"
 NODE_ENV = "production"
-
-[services.production.health.startup]
-path = "/api/healthz"

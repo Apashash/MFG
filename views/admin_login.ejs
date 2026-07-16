@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Market Flow Group</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins','Segoe UI',sans-serif; }
+        body { background:#EEF2FF; color:#1E293B; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
+        .login-card { background:#fff; border:1px solid #DBEAFE; border-radius:20px; padding:36px 28px; width:100%; max-width:380px; box-shadow:0 8px 28px rgba(37,99,235,0.15); }
+        .logo { text-align:center; margin-bottom:28px; }
+        .logo h1 { color:#2563EB; font-size:1.5rem; font-weight:800; }
+        .logo p { color:#64748B; font-size:0.85rem; margin-top:4px; }
+        .error { background:#FFF0EE; border:1px solid #F5A9A0; color:#C0392B; padding:10px 14px; border-radius:10px; margin-bottom:16px; font-size:0.85rem; }
+        .form-group { margin-bottom:16px; }
+        .form-group label { display:block; color:#64748B; font-size:0.8rem; margin-bottom:6px; font-weight:600; }
+        .form-group input {
+            width:100%; background:#F0F4FF; border:1.5px solid #DBEAFE; border-radius:10px;
+            padding:12px 14px; color:#1E293B; font-size:0.9rem; font-family:'Poppins',sans-serif;
+            outline:none; transition:border-color 0.2s;
+        }
+        .form-group input:focus { border-color:#2563EB; }
+        .btn {
+            width:100%; background:linear-gradient(135deg,#F97316,#EA580C); color:#fff;
+            border:none; border-radius:12px; padding:14px; font-weight:700; font-size:1rem;
+            cursor:pointer; font-family:'Poppins',sans-serif; box-shadow:0 4px 14px rgba(37,99,235,0.35);
+            transition:transform 0.2s; margin-bottom:12px;
+        }
+        .btn:hover { transform:translateY(-2px); }
+        .btn-back {
+            width:100%; background:transparent; color:#64748B; border:1.5px solid #DBEAFE;
+            border-radius:12px; padding:13px; font-weight:600; font-size:0.9rem;
+            cursor:pointer; font-family:'Poppins',sans-serif; text-decoration:none;
+            display:block; text-align:center; transition:background 0.2s;
+        }
+        .btn-back:hover { background:#F0F4FF; }
+    </style>
+</head>
+<body>
+<div class="login-card">
+    <div class="logo">
+        <h1>⚡ MFG Admin</h1>
+        <p>Accès administrateur sécurisé</p>
+    </div>
+    <% if (error) { %><div class="error"><%= error %></div><% } %>
+    <form action="/adminxyz" method="POST">
+        <div class="form-group">
+            <label>Code de sécurité</label>
+            <input type="password" name="security_code" placeholder="Entrez le code" required autofocus autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn">Accéder au panneau admin</button>
+    </form>
+    <a href="/" class="btn-back">← Retour au tableau de bord</a>
+</div>
+</body>
+</html>

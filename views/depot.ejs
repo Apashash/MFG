@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dépôt - Market Flow Group</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins','Segoe UI',sans-serif; }
+        body { background:#EEF2FF; color:#1E293B; min-height:100vh; padding-bottom:90px; }
+        .container { max-width:430px; margin:0 auto; }
+
+        .page-header {
+            background: linear-gradient(135deg, #2563EB, #1D4ED8);
+            padding: 50px 20px 28px; color:#fff;
+            display:flex; align-items:center; gap:14px;
+        }
+        .back-btn {
+            width:36px; height:36px; border-radius:50%;
+            background:rgba(255,255,255,0.2); display:flex; align-items:center;
+            justify-content:center; color:#fff; text-decoration:none; font-size:16px; flex-shrink:0;
+        }
+        .header-text h1 { font-size:20px; font-weight:700; }
+        .header-text p  { font-size:13px; color:rgba(255,255,255,0.85); margin-top:2px; }
+
+        .content { padding:16px; }
+
+        .info-card {
+            background:#EFF6FF; border:1px solid #93C5FD; border-radius:14px;
+            padding:14px 16px; margin-bottom:16px;
+        }
+        .info-card h3 { color:#1D4ED8; font-size:13px; font-weight:700; margin-bottom:8px;
+            display:flex; align-items:center; gap:7px; }
+        .info-card li {
+            font-size:12px; color:#475569; margin-bottom:4px;
+            padding-left:18px; position:relative; list-style:none;
+        }
+        .info-card li::before { content:'✓'; position:absolute; left:0; color:#2563EB; font-weight:700; }
+
+        .alert-box {
+            border-radius:12px; padding:13px 16px; margin-bottom:16px;
+            font-size:14px; display:flex; align-items:center; gap:10px;
+        }
+        .alert-error   { background:#FFF0EE; border:1px solid #F5A9A0; color:#C0392B; }
+        .alert-success { background:#F0FFF4; border:1px solid #86EFAC; color:#166534; }
+        .alert-warning { background:#EFF6FF; border:1px solid #93C5FD; color:#92570E; }
+
+        .form-card {
+            background:#fff; border-radius:18px; padding:22px 18px;
+            margin-bottom:14px; box-shadow:0 4px 16px rgba(37,99,235,0.10);
+            border:1px solid #BFDBFE;
+        }
+        .form-group  { margin-bottom:16px; }
+        .form-label  {
+            display:flex; align-items:center; gap:8px;
+            color:#475569; font-size:13px; font-weight:600; margin-bottom:8px;
+        }
+        .form-label i { color:#2563EB; }
+        .form-input {
+            width:100%; background:#F0F4FF; border:1.5px solid #DBEAFE;
+            border-radius:12px; padding:13px 15px; color:#1E293B; font-size:14px;
+            font-family:'Poppins',sans-serif; outline:none; transition:border-color 0.2s;
+        }
+        .form-input:focus { border-color:#2563EB; box-shadow:0 0 0 3px rgba(37,99,235,0.12); }
+        .form-input:disabled { opacity:0.5; cursor:not-allowed; }
+        .form-input option { background:#fff; color:#1E293B; }
+
+        .currency-badge {
+            display:inline-block; background:#FEF3DA; color:#1D4ED8;
+            border:1px solid #93C5FD; border-radius:8px;
+            font-size:11px; font-weight:700; padding:2px 8px; margin-left:8px;
+        }
+
+        .btn-submit {
+            width:100%; background:linear-gradient(135deg,#F97316,#EA580C);
+            color:#fff; border:none; border-radius:14px; padding:16px;
+            font-size:16px; font-weight:700; cursor:pointer; margin-top:8px;
+            box-shadow:0 6px 18px rgba(37,99,235,0.38); transition:transform 0.2s;
+            font-family:'Poppins',sans-serif;
+        }
+        .btn-submit:hover    { transform:translateY(-2px); }
+        .btn-submit:disabled { background:#DBEAFE; cursor:not-allowed; transform:none; box-shadow:none; }
+
+        .powered-by {
+            text-align:center; font-size:11px; color:#B09070; margin-top:10px;
+            display:flex; align-items:center; justify-content:center; gap:5px;
+        }
+        .powered-by i { color:#2563EB; }
+
+        .loading-wrap { display:none; text-align:center; padding:24px; }
+        .spinner {
+            width:44px; height:44px; margin:0 auto 12px;
+            border:4px solid #BFDBFE; border-top-color:#2563EB;
+            border-radius:50%; animation:spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .loading-wrap p { color:#64748B; font-size:14px; font-weight:500; }
+        .loading-wrap small { color:#C4A07A; font-size:12px; display:block; margin-top:4px; }
+
+        /* ── Payment pending card ── */
+        .payment-pending-card {
+            background:#fff; border-radius:18px;
+            border:2px solid #2563EB;
+            box-shadow:0 6px 24px rgba(37,99,235,0.18);
+            padding:20px 18px; margin-bottom:16px;
+            transition:border-color 0.4s, box-shadow 0.4s;
+        }
+        .payment-pending-card.success { border-color:#16A34A; box-shadow:0 6px 24px rgba(22,163,74,0.18); }
+        .payment-pending-card.failed  { border-color:#DC2626; box-shadow:0 6px 24px rgba(220,38,38,0.18); }
+
+        .ppc-header { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+        .ppc-spinner {
+            width:32px; height:32px; flex-shrink:0;
+            border:3px solid #BFDBFE; border-top-color:#2563EB;
+            border-radius:50%; animation:spin 1s linear infinite;
+        }
+        .ppc-spinner.done { animation:none; border-color:#16A34A; border-top-color:#16A34A; background:#F0FFF4;
+            display:flex; align-items:center; justify-content:center; font-size:14px; color:#16A34A; }
+        .ppc-spinner.failed { animation:none; border-color:#DC2626; border-top-color:#DC2626; background:#FFF0EE;
+            display:flex; align-items:center; justify-content:center; font-size:14px; color:#DC2626; }
+        .ppc-title { font-size:16px; font-weight:700; color:#1E293B; }
+        .payment-pending-card.success .ppc-title { color:#16A34A; }
+        .payment-pending-card.failed  .ppc-title { color:#DC2626; }
+
+        .ppc-phone {
+            display:flex; align-items:center; gap:8px;
+            background:#F0F4FF; border-radius:12px; padding:10px 14px;
+            margin-bottom:12px;
+        }
+        .ppc-phone i { color:#2563EB; font-size:18px; flex-shrink:0; }
+        .ppc-phone span { font-size:13px; color:#475569; }
+        .ppc-phone strong { font-size:16px; font-weight:800; color:#1E293B; margin-left:auto; letter-spacing:0.5px; }
+
+        .ppc-note { font-size:12px; color:#475569; display:flex; align-items:flex-start; gap:7px; margin-bottom:14px; line-height:1.5; }
+        .ppc-note i { color:#2563EB; margin-top:2px; flex-shrink:0; }
+
+        .ppc-progress-bar { background:#BFDBFE; border-radius:20px; height:5px; overflow:hidden; }
+        .ppc-progress-fill {
+            height:100%; width:0%; border-radius:20px;
+            background:linear-gradient(90deg,#F97316,#EA580C);
+            transition:width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+<%- include('partials/menu', { page: 'compte' }) %>
+<div class="container">
+    <div class="page-header">
+        <a href="/" class="back-btn"><i class="fas fa-chevron-left"></i></a>
+        <div class="header-text">
+            <h1>Effectuer un Dépôt</h1>
+            <p>Rechargez votre compte Mobile Money</p>
+        </div>
+    </div>
+
+    <div class="content">
+
+        <div class="info-card">
+            <h3><i class="fas fa-bolt"></i> Dépôt automatique</h3>
+            <ul>
+                <li>Confirmez le paiement sur votre téléphone</li>
+                <li>Le solde est crédité automatiquement</li>
+                <li>Aucune action manuelle requise</li>
+                <li>Disponible dans 7 pays africains</li>
+            </ul>
+        </div>
+
+        <% if (locals.failed) { %>
+            <div class="alert-box alert-error"><i class="fas fa-times-circle"></i> <%= failed %></div>
+        <% } %>
+        <% if (locals.error) { %>
+            <div class="alert-box alert-error"><i class="fas fa-exclamation-circle"></i> <%= error %></div>
+        <% } %>
+
+        <% if (locals.pending_depot_id) { %>
+        <div class="payment-pending-card" id="paymentStatusCard">
+            <div class="ppc-header">
+                <div class="ppc-spinner" id="ppcSpinner"></div>
+                <div class="ppc-title" id="ppcTitle">Paiement initié</div>
+            </div>
+            <div class="ppc-phone">
+                <i class="fas fa-mobile-alt"></i>
+                <span>Confirmez sur votre téléphone</span>
+                <strong><%= pending_numero %></strong>
+            </div>
+            <div class="ppc-note" id="ppcNote">
+                <i class="fas fa-clock"></i> Votre solde sera crédité automatiquement dès confirmation.
+            </div>
+            <div class="ppc-progress-bar"><div class="ppc-progress-fill" id="ppcBar"></div></div>
+        </div>
+        <% } %>
+
+        <div class="form-card" id="formCard">
+            <form id="depotForm" method="POST" action="/depot/process">
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-money-bill-wave"></i> Montant du dépôt
+                        <span class="currency-badge" id="currencyBadge" style="display:none"></span>
+                    </label>
+                    <input type="number" name="montant" id="montant" min="<%= depotMin %>" step="100" required
+                           placeholder="Montant minimum : <%= depotMin.toLocaleString('fr-FR') %>" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-globe-africa"></i> Pays</label>
+                    <select name="pays_display" id="pays" required class="form-input">
+                        <option value="">Sélectionnez votre pays</option>
+                        <% countries.forEach(function(c) { %>
+                            <option value="<%= c.code %>"
+                                    data-currency="<%= c.currency %>"
+                                    data-operators="<%= c.operators.join('|') %>"
+                                    data-name="<%= c.name %>">
+                                <%= c.name %>
+                            </option>
+                        <% }); %>
+                    </select>
+                    <input type="hidden" name="country_code" id="countryCode">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-mobile-alt"></i> Opérateur Mobile Money</label>
+                    <select name="operateur" id="operateur" required disabled class="form-input">
+                        <option value="">Sélectionnez d'abord un pays</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-phone"></i> Numéro Mobile Money</label>
+                    <input type="tel" name="numero" id="numero" required
+                           placeholder="Ex : 690000001" pattern="[0-9]{6,15}"
+                           class="form-input" autocomplete="tel">
+                    <p style="font-size:11px;color:#B09070;margin-top:5px;">
+                        <i class="fas fa-info-circle"></i> Saisissez le numéro sans indicatif (+237…)
+                    </p>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <i class="fas fa-lock"></i> Confirmer le paiement
+                </button>
+            </form>
+
+            <div class="loading-wrap" id="loadingDiv">
+                <div class="spinner"></div>
+                <p>Paiement en cours de traitement…</p>
+                <small>Une notification va apparaître sur votre téléphone</small>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+const paysSelect      = document.getElementById('pays');
+const operateurSelect = document.getElementById('operateur');
+const countryCodeInput= document.getElementById('countryCode');
+const currencyBadge   = document.getElementById('currencyBadge');
+
+paysSelect.addEventListener('change', function () {
+    const opt = this.options[this.selectedIndex];
+    operateurSelect.innerHTML = '<option value="">Sélectionnez un opérateur</option>';
+
+    if (this.value) {
+        const operators = opt.dataset.operators.split('|');
+        operateurSelect.disabled = false;
+        operators.forEach(function (op) {
+            const o = document.createElement('option');
+            o.value = op; o.textContent = op;
+            operateurSelect.appendChild(o);
+        });
+        countryCodeInput.value = this.value;
+        currencyBadge.textContent = opt.dataset.currency;
+        currencyBadge.style.display = 'inline-block';
+    } else {
+        operateurSelect.disabled = true;
+        countryCodeInput.value = '';
+        currencyBadge.style.display = 'none';
+    }
+});
+
+document.getElementById('depotForm').addEventListener('submit', function (e) {
+    const countryCode = document.getElementById('countryCode').value;
+    if (!countryCode) {
+        e.preventDefault();
+        alert('Veuillez sélectionner un pays.');
+        return;
+    }
+    document.getElementById('formCard').style.opacity = '0.6';
+    document.getElementById('depotForm').style.display  = 'none';
+    document.getElementById('loadingDiv').style.display = 'block';
+    document.getElementById('submitBtn').disabled = true;
+});
+
+// ── Polling du statut de paiement ──────────────────────────────────────────
+<% if (locals.pending_depot_id) { %>
+(function () {
+    const depotId  = <%= pending_depot_id %>;
+    const card     = document.getElementById('paymentStatusCard');
+    const spinner  = document.getElementById('ppcSpinner');
+    const title    = document.getElementById('ppcTitle');
+    const note     = document.getElementById('ppcNote');
+    const bar      = document.getElementById('ppcBar');
+
+    let elapsed = 0;
+    const MAX_WAIT = 180; // 3 minutes max
+
+    // Animate progress bar slowly over MAX_WAIT seconds
+    function tickBar() {
+        elapsed += 3;
+        const pct = Math.min(95, Math.round(elapsed / MAX_WAIT * 100));
+        bar.style.width = pct + '%';
+    }
+
+    function setSuccess() {
+        card.classList.add('success');
+        spinner.classList.add('done');
+        spinner.innerHTML = '✓';
+        title.textContent = 'Paiement confirmé !';
+        note.innerHTML = '<i class="fas fa-check-circle"></i> Votre solde a été crédité automatiquement.';
+        bar.style.width = '100%';
+        bar.style.background = '#16A34A';
+        clearInterval(pollInterval);
+        setTimeout(() => { window.location.href = '/'; }, 2500);
+    }
+
+    function setFailed() {
+        card.classList.add('failed');
+        spinner.classList.add('failed');
+        spinner.innerHTML = '✗';
+        title.textContent = 'Paiement échoué';
+        note.innerHTML = '<i class="fas fa-times-circle"></i> La transaction a été rejetée. Veuillez réessayer.';
+        bar.style.width = '100%';
+        bar.style.background = '#DC2626';
+        clearInterval(pollInterval);
+    }
+
+    function setTimeout_() {
+        title.textContent = 'En attente de confirmation…';
+        note.innerHTML = '<i class="fas fa-info-circle"></i> Vérifiez votre téléphone. Le solde sera crédité dès validation.';
+        clearInterval(pollInterval);
+    }
+
+    const pollInterval = setInterval(async function () {
+        tickBar();
+        if (elapsed >= MAX_WAIT) { setTimeout_(); return; }
+        try {
+            const r = await fetch('/depot/status/' + depotId);
+            const d = await r.json();
+            if (d.statut === 'valide')  setSuccess();
+            else if (d.statut === 'rejete') setFailed();
+            // en_attente → continuer
+        } catch(e) { /* réseau — continuer */ }
+    }, 3000);
+})();
+<% } %>
+</script>
+</body>
+</html>

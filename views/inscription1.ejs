@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Inscription - Market Flow Group</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+        html, body { min-height:100vh; overflow-x:hidden; font-family:'Poppins',sans-serif; }
+        body {
+            background:#fff;
+            display:flex;
+            flex-direction:column;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        /* ── Top-left logo ── */
+        .top-logo {
+            padding: 12px 16px 0;
+        }
+        .top-logo img {
+            height: 120px;
+            width: auto;
+            object-fit: contain;
+        }
+        .form-card {
+            background:#fff;
+            flex-shrink:0; padding:8px 24px calc(40px + env(safe-area-inset-bottom, 0px));
+        }
+        .bonus-notice {
+            background: linear-gradient(135deg, rgba(249,115,22,0.12), rgba(176,112,24,0.08));
+            border: 1px solid rgba(37,99,235,0.25);
+            border-radius:12px; padding:12px 16px; margin-bottom:20px;
+            display:flex; align-items:center; gap:10px;
+            color:#475569; font-size:13px; font-weight:600;
+        }
+        .bonus-notice i { color:#2563EB; font-size:18px; }
+        .referral-notice {
+            background: #F0F4FF; border:1px solid #DBEAFE; border-radius:12px;
+            padding:11px 14px; margin-bottom:16px; display:flex; align-items:center;
+            gap:9px; color:#475569; font-size:13px;
+        }
+        .referral-notice i { color:#2563EB; }
+        .form-title { font-size:20px; font-weight:700; color:#1E293B; margin-bottom:20px; }
+        .form-group { margin-bottom:16px; }
+        .form-label { display:block; font-size:13px; font-weight:600; color:#475569; margin-bottom:7px; }
+        .input-wrap {
+            display:flex; align-items:center;
+            background:#F0F4FF; border:1.5px solid #DBEAFE; border-radius:14px;
+            overflow:hidden; transition:border-color 0.2s, box-shadow 0.2s;
+            position:relative;
+        }
+        .input-wrap input[type="password"],
+        .input-wrap input[type="text"] { padding-right:48px !important; }
+        .input-wrap:focus-within { border-color:#2563EB; box-shadow:0 0 0 3px rgba(37,99,235,0.15); }
+        .input-icon {
+            width:46px; height:46px;
+            background:#0F2D4A;
+            display:flex; align-items:center; justify-content:center;
+            flex-shrink:0; border-radius:14px; margin:5px;
+        }
+        .input-icon i { color:#fff; font-size:17px; }
+        .input-wrap input, .input-wrap select {
+            flex:1; border:none; background:transparent;
+            padding:13px 13px 13px 10px; font-size:14px; color:#1E293B;
+            font-family:'Poppins',sans-serif; outline:none;
+        }
+        .input-wrap select { cursor:pointer; -webkit-appearance:none; max-width:95px; }
+        .phone-divider { width:1px; height:22px; background:#DBEAFE; flex-shrink:0; }
+        .input-wrap.locked { background:#F3ECDE; border-color:#D9C49A; }
+        .input-wrap.locked input {
+            color:#475569; font-weight:600; cursor:not-allowed;
+        }
+        .lock-icon {
+            width:40px; display:flex; align-items:center; justify-content:center;
+            color:#64748B; font-size:14px; flex-shrink:0;
+        }
+        .eye-toggle {
+            position:absolute; right:0; top:0; bottom:0;
+            background:none; border:none; cursor:pointer;
+            color:#64748B; font-size:16px;
+            display:flex; align-items:center; justify-content:center;
+            width:44px; z-index:2;
+        }
+        .error-box {
+            background:#FFF0EE; border:1px solid #F5A9A0; border-radius:12px;
+            padding:12px 16px; margin-bottom:18px; color:#C0392B;
+            font-size:13px; display:flex; align-items:center; gap:10px;
+        }
+        .btn-submit {
+            width:100%; padding:16px;
+            background:linear-gradient(135deg,#1B3A8A,#0F2254);
+            border:none; border-radius:16px;
+            font-size:16px; font-weight:700; color:#fff;
+            cursor:pointer; margin-top:8px;
+            box-shadow:0 6px 20px rgba(27,58,138,0.4);
+            transition:transform 0.2s; font-family:'Poppins',sans-serif;
+        }
+        .btn-submit:hover { transform:translateY(-2px); }
+        .login-link { text-align:center; margin-top:20px; font-size:13px; color:#64748B; }
+        .login-link a { color:#2563EB; font-weight:600; text-decoration:none; }
+
+        /* ── Language switcher ── */
+        .lang-wrap {
+            position: fixed; top: 16px; right: 16px; z-index: 9999;
+        }
+        .lang-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: #fff; border: 2px solid #1E293B;
+            border-radius: 50px; padding: 8px 14px 8px 10px;
+            cursor: pointer; font-family: 'Poppins', sans-serif;
+            font-size: 14px; font-weight: 600; color: #1E293B;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: box-shadow 0.2s;
+            white-space: nowrap;
+        }
+        .lang-btn:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.14); }
+        .lang-btn i.fa-globe { font-size: 20px; }
+        .lang-btn i.fa-chevron-down { font-size: 12px; transition: transform 0.2s; }
+        .lang-btn.open i.fa-chevron-down { transform: rotate(180deg); }
+        .lang-dropdown {
+            display: none; position: absolute; top: calc(100% + 8px); right: 0;
+            background: #fff; border: 1.5px solid #E2E8F0; border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12); overflow: hidden; min-width: 150px;
+        }
+        .lang-dropdown.open { display: block; }
+        .lang-option {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; cursor: pointer; font-size: 14px;
+            font-weight: 500; color: #1E293B; transition: background 0.15s;
+        }
+        .lang-option:hover { background: #F0F4FF; }
+        .lang-option.active { color: #2563EB; font-weight: 700; }
+        .lang-option .flag { font-size: 20px; }
+    </style>
+</head>
+<body>
+
+    <!-- Language Switcher -->
+    <div class="lang-wrap">
+        <button class="lang-btn" id="langBtn" onclick="toggleLangMenu()">
+            <i class="fas fa-globe"></i>
+            <span id="langLabel">Language</span>
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="lang-dropdown" id="langDropdown">
+            <div class="lang-option" onclick="setLang('fr')">
+                <span class="flag">🇫🇷</span> Français
+            </div>
+            <div class="lang-option" onclick="setLang('en')">
+                <span class="flag">🇬🇧</span> English
+            </div>
+        </div>
+    </div>
+
+    <!-- Top-left Logo -->
+    <div class="top-logo">
+        <img src="/images/logo-mfg-nobg.png" alt="Market Flow Group">
+    </div>
+
+    <div class="form-card">
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="error-box"><i class="fas fa-exclamation-circle"></i> <%= error %></div>
+        <% } %>
+
+        <% if (typeof code_parrain !== 'undefined' && code_parrain) { %>
+            <div class="referral-notice"><i class="fas fa-user-friends"></i> Vous êtes invité par un ambassadeur Market Flow Group</div>
+        <% } %>
+
+        <div class="bonus-notice"><i class="fas fa-gift"></i> Bonus de bienvenue : <%= (locals.appParams && appParams.welcome_bonus !== undefined && appParams.welcome_bonus !== null && appParams.welcome_bonus !== '') ? appParams.welcome_bonus : 250 %> FCFA offerts !</div>
+
+        <div class="form-title">Rejoignez MFG</div>
+
+        <form action="/inscription1" method="post" id="signup-form">
+            <% if (typeof code_parrain !== 'undefined' && code_parrain) { %>
+            <div class="form-group">
+                <label class="form-label">Code d'invitation</label>
+                <div class="input-wrap locked">
+                    <div class="input-icon"><i class="fas fa-ticket-alt"></i></div>
+                    <input type="text" value="<%= code_parrain %>" readonly tabindex="-1">
+                    <div class="lock-icon"><i class="fas fa-lock"></i></div>
+                </div>
+            </div>
+            <% } %>
+
+            <div class="form-group">
+                <label class="form-label">Nom complet</label>
+                <div class="input-wrap">
+                    <div class="input-icon"><i class="fas fa-user"></i></div>
+                    <input type="text" name="nom" placeholder="Votre nom complet" required
+                           value="<%= typeof form_data !== 'undefined' ? form_data.nom : '' %>">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Numéro WhatsApp</label>
+                <div class="input-wrap">
+                    <div class="input-icon"><i class="fas fa-phone"></i></div>
+                    <select id="indicatif" name="indicatif" required>
+                        <option value="">Code</option>
+                        <% Object.entries(pays_eligibles).forEach(([code, pays]) => { %>
+                            <option value="<%= code %>"
+                                <%= (typeof form_data !== 'undefined' && form_data && form_data.indicatif === code) ? 'selected' : '' %>>
+                                <%= code %>
+                            </option>
+                        <% }) %>
+                    </select>
+                    <div class="phone-divider"></div>
+                    <input type="text" id="telephone" name="telephone" placeholder="Numéro de téléphone" required pattern="[0-9 ]{6,}"
+                           value="<%= typeof form_data !== 'undefined' ? form_data.telephone : '' %>">
+                    <input type="hidden" name="pays" id="pays" value="">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Mot de passe</label>
+                <div class="input-wrap">
+                    <div class="input-icon"><i class="fas fa-lock"></i></div>
+                    <input type="password" id="mot_de_passe" name="mot_de_passe" placeholder="Choisissez un mot de passe" required>
+                    <button type="button" class="eye-toggle" onclick="togglePwd('mot_de_passe',this)"><i class="fas fa-eye"></i></button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Confirmer le mot de passe</label>
+                <div class="input-wrap">
+                    <div class="input-icon"><i class="fas fa-lock"></i></div>
+                    <input type="password" id="confirmation" name="confirmation" placeholder="Confirmez le mot de passe" required>
+                    <button type="button" class="eye-toggle" onclick="togglePwd('confirmation',this)"><i class="fas fa-eye"></i></button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit"><i class="fas fa-user-plus"></i> Créer mon compte</button>
+        </form>
+
+        <div class="login-link">Déjà membre ? <a href="/connexion">Se connecter</a></div>
+    </div>
+
+    <script>
+        const indicatifSelect = document.getElementById('indicatif');
+        const paysInput = document.getElementById('pays');
+        const paysMap = <%- JSON.stringify(pays_eligibles) %>;
+        const isoToIndicatifMap = <%- JSON.stringify(iso_map) %>;
+        function updatePays() { paysInput.value = paysMap[indicatifSelect.value] || ''; }
+
+        // Auto-detect the user's country to preselect the phone prefix, without
+        // overriding a value the user already picked (form re-render, or manual change).
+        function detectFromLocale() {
+            try {
+                const locale = navigator.language || navigator.userLanguage;
+                const parts = (locale || '').split('-');
+                if (parts.length > 1) {
+                    const cc = parts[parts.length - 1].toUpperCase();
+                    if (cc.length === 2 && isoToIndicatifMap.hasOwnProperty(cc)) return cc;
+                }
+            } catch (e) {}
+            return null;
+        }
+        async function detectCountry() {
+            try {
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 2500);
+                const resp = await fetch('https://ipapi.co/json/', { signal: controller.signal });
+                clearTimeout(timeout);
+                if (resp.ok) {
+                    const data = await resp.json();
+                    if (data && data.country_code && isoToIndicatifMap.hasOwnProperty(data.country_code)) {
+                        return data.country_code;
+                    }
+                }
+            } catch (e) {}
+            return detectFromLocale();
+        }
+        const serverIndicatif = '<%= (typeof form_data !== "undefined" && form_data && form_data.indicatif) ? form_data.indicatif : "" %>';
+        (async function() {
+            if (serverIndicatif || indicatifSelect.value) { updatePays(); return; }
+            const cc = await detectCountry();
+            if (cc && !indicatifSelect.value) {
+                const ind = isoToIndicatifMap[cc];
+                if (ind) indicatifSelect.value = ind;
+            } else if (!indicatifSelect.value) {
+                indicatifSelect.value = '+225';
+            }
+            updatePays();
+        })();
+        indicatifSelect.addEventListener('change', updatePays);
+        function togglePwd(id, btn) {
+            const inp = document.getElementById(id);
+            if (inp.type === 'password') { inp.type = 'text'; btn.innerHTML = '<i class="fas fa-eye-slash"></i>'; }
+            else { inp.type = 'password'; btn.innerHTML = '<i class="fas fa-eye"></i>'; }
+        }
+
+        // ── Language switcher ──
+        const i18n = {
+            fr: {
+                langLabel: 'Langue',
+                title: 'Rejoignez MFG',
+                labelInvite: "Code d'invitation",
+                labelName: 'Nom complet',
+                placeholderName: 'Votre nom complet',
+                labelPhone: 'Numéro WhatsApp',
+                placeholderPhone: 'Numéro de téléphone',
+                labelPwd: 'Mot de passe',
+                placeholderPwd: 'Choisissez un mot de passe',
+                labelConfirm: 'Confirmer le mot de passe',
+                placeholderConfirm: 'Confirmez le mot de passe',
+                btnSubmit: '<i class="fas fa-user-plus"></i> Créer mon compte',
+                loginLink: 'Déjà membre ?',
+                loginAnchor: 'Se connecter',
+            },
+            en: {
+                langLabel: 'Language',
+                title: 'Join MFG',
+                labelInvite: 'Invitation code',
+                labelName: 'Full name',
+                placeholderName: 'Your full name',
+                labelPhone: 'WhatsApp Number',
+                placeholderPhone: 'Phone number',
+                labelPwd: 'Password',
+                placeholderPwd: 'Choose a password',
+                labelConfirm: 'Confirm password',
+                placeholderConfirm: 'Confirm your password',
+                btnSubmit: '<i class="fas fa-user-plus"></i> Create my account',
+                loginLink: 'Already a member?',
+                loginAnchor: 'Log in',
+            }
+        };
+
+        function applyLang(lang) {
+            const t = i18n[lang];
+            document.getElementById('langLabel').textContent = t.langLabel;
+            const formTitle = document.querySelector('.form-title');
+            if (formTitle) formTitle.textContent = t.title;
+            const labels = document.querySelectorAll('.form-label');
+            const inputs = document.querySelectorAll('.input-wrap input:not([readonly])');
+            // Map labels dynamically by index
+            const labelKeys = ['labelInvite','labelName','labelPhone','labelPwd','labelConfirm'];
+            const placeholderKeys = ['placeholderName','placeholderPhone','placeholderPwd','placeholderConfirm'];
+            labels.forEach((lbl, i) => { if (t[labelKeys[i]]) lbl.textContent = t[labelKeys[i]]; });
+            // Placeholders: nom, telephone, mot_de_passe, confirmation
+            const nom = document.querySelector('input[name="nom"]');
+            const tel = document.getElementById('telephone');
+            const pwd = document.getElementById('mot_de_passe');
+            const conf = document.getElementById('confirmation');
+            if (nom) nom.placeholder = t.placeholderName;
+            if (tel) tel.placeholder = t.placeholderPhone;
+            if (pwd) pwd.placeholder = t.placeholderPwd;
+            if (conf) conf.placeholder = t.placeholderConfirm;
+            const btnSubmit = document.querySelector('.btn-submit');
+            if (btnSubmit) btnSubmit.innerHTML = t.btnSubmit;
+            const loginLink = document.querySelector('.login-link');
+            if (loginLink) {
+                const anchor = loginLink.querySelector('a');
+                loginLink.childNodes[0].textContent = t.loginLink + ' ';
+                if (anchor) anchor.textContent = t.loginAnchor;
+            }
+            document.querySelectorAll('.lang-option').forEach(el => el.classList.remove('active'));
+            const opts = document.querySelectorAll('.lang-option');
+            if (lang === 'fr') opts[0].classList.add('active');
+            else opts[1].classList.add('active');
+        }
+
+        function setLang(lang) {
+            localStorage.setItem('mfg_lang', lang);
+            applyLang(lang);
+            closeLangMenu();
+        }
+        function toggleLangMenu() {
+            document.getElementById('langBtn').classList.toggle('open');
+            document.getElementById('langDropdown').classList.toggle('open');
+        }
+        function closeLangMenu() {
+            document.getElementById('langBtn').classList.remove('open');
+            document.getElementById('langDropdown').classList.remove('open');
+        }
+        document.addEventListener('click', e => {
+            if (!e.target.closest('.lang-wrap')) closeLangMenu();
+        });
+
+        applyLang(localStorage.getItem('mfg_lang') || 'fr');
+    </script>
+</body>
+</html>

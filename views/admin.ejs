@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= pageTitle %> — Administration</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <% if (currentPage === 'dashboard') { %>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <% } %>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; }
+    body { background:#F5F5F0; color:#1a1a1a; min-height:100vh; overflow-x:hidden; }
+
+    /* ── Top bar ── */
+    .topbar {
+      background:#2563EB; padding:0 16px; height:56px;
+      display:flex; align-items:center; justify-content:space-between;
+      position:sticky; top:0; z-index:300;
+    }
+    .topbar-btn {
+      width:40px; height:40px; background:rgba(255,255,255,0.2); border:none;
+      border-radius:10px; color:#fff; font-size:1.1rem; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; text-decoration:none;
+    }
+    .topbar-title { color:#fff; font-size:1.05rem; font-weight:700; }
+
+    /* ── Notification bell ── */
+    .bell-wrap { position:relative; }
+    .notif-badge {
+      position:absolute; top:-4px; right:-4px; min-width:18px; height:18px;
+      background:#dc2626; color:#fff; border-radius:20px; font-size:0.68rem;
+      font-weight:800; display:flex; align-items:center; justify-content:center;
+      padding:0 4px; border:2px solid #2563EB;
+    }
+    .notif-dropdown {
+      position:absolute; top:52px; right:16px; width:270px; background:#fff;
+      border-radius:14px; box-shadow:0 12px 32px rgba(0,0,0,0.18); z-index:600;
+      overflow:hidden; display:none;
+    }
+    .notif-dropdown.open { display:block; }
+    .notif-dropdown-header { padding:14px 16px; background:#FFF7ED; font-weight:800; font-size:0.9rem; color:#333; }
+    .notif-item {
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:12px 16px; text-decoration:none; color:#333; border-top:1px solid #f2f2f2;
+      font-size:0.85rem; font-weight:600;
+    }
+    .notif-item:hover { background:#FFF8F0; }
+    .notif-count { background:#dc2626; color:#fff; border-radius:12px; padding:2px 9px; font-size:0.75rem; font-weight:800; }
+    .notif-empty { padding:20px 16px; text-align:center; color:#aaa; font-size:0.85rem; }
+
+    /* ── Sidebar ── */
+    .overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:400; opacity:0; pointer-events:none; transition:opacity 0.25s; }
+    .overlay.open { opacity:1; pointer-events:all; }
+    .sidebar { position:fixed; top:0; left:0; width:290px; height:100%; background:#fff; z-index:500; transform:translateX(-100%); transition:transform 0.28s cubic-bezier(.4,0,.2,1); display:flex; flex-direction:column; overflow:hidden; }
+    .sidebar.open { transform:translateX(0); }
+    .sidebar-header { background:#2563EB; padding:22px 20px 18px; position:relative; flex-shrink:0; }
+    .sidebar-close { position:absolute; top:14px; right:14px; width:32px; height:32px; background:rgba(255,255,255,0.25); border:none; border-radius:50%; color:#fff; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .sidebar-shield { width:50px; height:50px; background:rgba(255,255,255,0.25); border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:12px; font-size:1.4rem; color:#fff; }
+    .sidebar-header h2 { color:#fff; font-size:1.15rem; font-weight:800; }
+    .sidebar-header p  { color:rgba(255,255,255,0.8); font-size:0.78rem; margin-top:2px; }
+    .sidebar-nav { flex:1; overflow-y:auto; padding:8px 0; }
+    .nav-item { display:flex; align-items:center; gap:14px; padding:13px 20px; border-left:3px solid transparent; text-decoration:none; transition:background 0.15s; }
+    .nav-item:hover { background:#FFF8F0; }
+    .nav-item.active { background:#FFF3E0; border-left-color:#2563EB; }
+    .nav-item.active .nav-label { color:#2563EB; font-weight:700; }
+    .nav-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:0.95rem; flex-shrink:0; }
+    .nav-label { font-size:0.95rem; color:#2a2a2a; font-weight:500; flex:1; }
+    .nav-badge { min-width:20px; height:20px; padding:0 6px; border-radius:10px; background:#2563EB; color:#fff; font-size:0.72rem; font-weight:700; display:none; align-items:center; justify-content:center; flex-shrink:0; }
+    .nav-badge.show { display:flex; }
+    .sidebar-footer { padding:14px 16px; border-top:1px solid #f0f0f0; }
+    .sidebar-footer a { display:flex; align-items:center; justify-content:center; gap:8px; background:#fff; border:1.5px solid #e0e0e0; border-radius:12px; padding:12px; color:#555; text-decoration:none; font-size:0.9rem; font-weight:600; transition:background 0.15s; }
+    .sidebar-footer a:hover { background:#f5f5f5; }
+
+    /* ── Main ── */
+    .main { padding:16px; max-width:680px; margin:0 auto; }
+
+    /* ── Page header ── */
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+    .page-header-left { display:flex; align-items:center; gap:12px; }
+    .page-icon { width:44px; height:44px; background:#2563EB; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.1rem; }
+    .page-title { font-size:1.2rem; font-weight:800; }
+    .page-count { font-size:0.8rem; color:#888; margin-top:1px; }
+    .btn-add { background:#2563EB; color:#fff; border:none; border-radius:20px; padding:10px 18px; font-size:0.88rem; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; text-decoration:none; }
+    .btn-add:hover { background:#d4820e; }
+
+    /* ── Search ── */
+    .search-box { background:#fff; border-radius:12px; padding:12px 16px; margin-bottom:14px; display:flex; align-items:center; gap:10px; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+    .search-box i { color:#bbb; }
+    .search-box input { border:none; outline:none; flex:1; font-size:0.9rem; background:transparent; color:#1a1a1a; }
+    .search-box input::placeholder { color:#bbb; }
+
+    /* ── Cards ── */
+    .card { background:#fff; border-radius:16px; padding:16px; margin-bottom:12px; box-shadow:0 1px 6px rgba(0,0,0,0.06); position:relative; }
+    .card-row { display:flex; align-items:center; justify-content:space-between; }
+    .card-actions { display:flex; gap:8px; }
+
+    /* Plan cards */
+    .plan-card { background:#fff; border-radius:16px; padding:16px; margin-bottom:12px; box-shadow:0 1px 6px rgba(0,0,0,0.06); display:flex; align-items:flex-start; justify-content:space-between; }
+    .plan-body { flex:1; }
+    .plan-name { font-size:1rem; font-weight:800; margin-bottom:4px; }
+    .plan-meta { font-size:0.82rem; color:#555; margin-bottom:6px; }
+    .plan-meta strong { color:#1a1a1a; }
+    .plan-rend { font-size:0.88rem; font-weight:700; margin-bottom:2px; }
+    .plan-gain { font-size:0.8rem; color:#555; }
+    .icon-btn { width:36px; height:36px; border:none; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.9rem; }
+    .icon-btn-edit { background:#EFF6FF; color:#3b82f6; }
+    .icon-btn-del  { background:#FEF2F2; color:#ef4444; }
+    .icon-btn-edit:hover { background:#dbeafe; }
+    .icon-btn-del:hover  { background:#fee2e2; }
+
+    /* User cards */
+    .avatar { width:44px; height:44px; border-radius:12px; background:#2563EB; color:#fff; font-size:1.1rem; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .user-name { font-size:0.95rem; font-weight:700; }
+    .user-sub  { font-size:0.78rem; color:#888; margin-top:1px; }
+    .user-balance { font-size:0.95rem; font-weight:800; color:#2563EB; margin-top:4px; }
+    .ref-row { display:flex; align-items:center; gap:8px; margin-top:6px; flex-wrap:wrap; }
+    .ref-code { font-size:0.78rem; font-weight:700; color:#6366f1; background:#EEF2FF; padding:3px 10px; border-radius:20px; }
+    .copy-btn { background:#EFF6FF; border:none; border-radius:6px; padding:3px 10px; font-size:0.75rem; color:#3b82f6; cursor:pointer; display:flex; align-items:center; gap:4px; font-weight:600; }
+    .copy-btn:hover { background:#dbeafe; }
+    .menu-btn { width:36px; height:36px; background:#FFF3E0; border:none; border-radius:10px; cursor:pointer; color:#2563EB; font-size:1rem; display:flex; align-items:center; justify-content:center; }
+
+    /* Depot / Retrait cards */
+    .dep-amount { font-size:1.1rem; font-weight:800; color:#2563EB; margin:4px 0; }
+    .dep-ref { font-size:0.78rem; font-weight:700; color:#2563EB; background:#FFF3E0; padding:3px 10px; border-radius:20px; cursor:pointer; }
+    .dep-meta { font-size:0.8rem; color:#888; }
+
+    /* Retrait amount blue */
+    .ret-amount { font-size:1.1rem; font-weight:800; color:#3b82f6; margin:4px 0; }
+
+    /* Transaction cards */
+    .tx-type { font-size:0.88rem; font-weight:700; }
+    .tx-user { font-size:0.78rem; color:#888; }
+    .tx-date { font-size:0.75rem; color:#aaa; }
+    .tx-amount { font-size:1rem; font-weight:800; color:#22c55e; }
+
+    /* Status badges */
+    .badge { display:inline-block; padding:4px 12px; border-radius:20px; font-size:0.75rem; font-weight:700; }
+    .badge-pending  { background:#FFF7ED; color:#EA580C; }
+    .badge-valid    { background:#F0FDF4; color:#16a34a; border:1px solid #bbf7d0; }
+    .badge-rejected { background:#FEF2F2; color:#dc2626; border:1px solid #fecaca; }
+    .badge-admin    { background:#EEF2FF; color:#4f46e5; }
+
+    /* Stat cards dashboard */
+    .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+    .stat-card { background:#fff; border-radius:16px; padding:18px 16px; box-shadow:0 1px 6px rgba(0,0,0,0.07); }
+    .stat-icon { width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; font-size:1.15rem; }
+    .stat-num  { font-size:1.65rem; font-weight:800; color:#1a1a1a; line-height:1; }
+    .stat-sub  { font-size:0.7rem; color:#888; font-weight:600; margin-top:2px; }
+    .stat-label{ font-size:0.82rem; color:#555; margin-top:4px; }
+
+    /* Chart */
+    .chart-card { background:#fff; border-radius:16px; padding:18px 16px; box-shadow:0 1px 6px rgba(0,0,0,0.07); margin-bottom:16px; }
+    .chart-head { display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+    .chart-icon { width:36px; height:36px; background:#FFF3E0; border-radius:10px; display:flex; align-items:center; justify-content:center; }
+    .chart-icon i { color:#2563EB; }
+    .chart-card h3 { font-size:1rem; font-weight:700; }
+    .chart-card .sub { font-size:0.78rem; color:#888; margin-bottom:14px; }
+    .chart-legend { display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
+    .legend-dot { width:10px; height:10px; border-radius:3px; }
+    .legend-item { display:flex; align-items:center; gap:5px; font-size:0.75rem; color:#555; }
+    .tvh-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+    .tvh-card { background:#fff; border-radius:12px; padding:12px 14px; border:1px solid #f0f0f0; }
+    .tvh-label { font-size:0.72rem; color:#888; margin-bottom:4px; }
+    .tvh-num   { font-size:1.15rem; font-weight:800; }
+    .tvh-num small { font-size:0.72rem; font-weight:600; color:#888; }
+    .tvh-diff  { font-size:0.72rem; margin-top:2px; }
+    .tvh-diff.down { color:#ef4444; }
+    .tvh-diff.up   { color:#22c55e; }
+    .rev-card { background:#fff; border-radius:16px; padding:18px 16px; box-shadow:0 1px 6px rgba(0,0,0,0.07); margin-bottom:16px; }
+    .rev-head { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+    .rev-icon { width:40px; height:40px; background:#E8F5E9; border-radius:12px; display:flex; align-items:center; justify-content:center; }
+    .rev-icon i { color:#22c55e; font-size:1.1rem; }
+    .rev-card h3 { font-size:1rem; font-weight:700; }
+    .rev-card .rev-sub { font-size:0.78rem; color:#888; }
+    .rev-card p { font-size:0.85rem; color:#555; line-height:1.5; margin-bottom:14px; }
+    .btn-rev { width:100%; background:#22c55e; color:#fff; border:none; border-radius:12px; padding:14px; font-size:0.95rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.2s; }
+    .btn-rev:hover { background:#16a34a; }
+    .btn-rev:disabled { background:#9ca3af; cursor:not-allowed; }
+
+    /* Filter row */
+    .filter-row { display:flex; gap:10px; margin-bottom:14px; }
+    .filter-sel { flex:1; background:#fff; border:1.5px solid #e8e8e8; border-radius:10px; padding:10px 12px; font-size:0.85rem; color:#1a1a1a; outline:none; cursor:pointer; }
+    .filter-sel:focus { border-color:#2563EB; }
+
+    /* Salaires config */
+    .salaire-card { background:#fff; border-radius:16px; padding:18px; margin-bottom:14px; box-shadow:0 1px 6px rgba(0,0,0,0.06); }
+    .salaire-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+    .salaire-title { font-size:0.95rem; font-weight:700; }
+    .salaire-sub   { font-size:0.75rem; color:#888; }
+    .vip-star { width:32px; height:32px; background:#F0FDF4; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#22c55e; }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+    .form-group label { display:block; font-size:0.75rem; color:#888; font-weight:600; margin-bottom:5px; }
+    .form-group input { width:100%; background:#F5F5F0; border:1.5px solid #e8e8e8; border-radius:10px; padding:11px 14px; font-size:0.9rem; color:#1a1a1a; outline:none; }
+    .form-group input:focus { border-color:#2563EB; }
+    .form-group input[readonly] { color:#888; cursor:not-allowed; }
+    .btn-save { width:100%; background:#2563EB; color:#fff; border:none; border-radius:12px; padding:13px; font-size:0.92rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .btn-save:hover { background:#d4820e; }
+
+    /* Paramètres */
+    .param-card { background:#fff; border-radius:16px; padding:18px; margin-bottom:14px; box-shadow:0 1px 6px rgba(0,0,0,0.06); }
+    .param-head { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+    .param-icon { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1rem; }
+    .param-head-text h3 { font-size:0.95rem; font-weight:700; }
+    .param-head-text p  { font-size:0.75rem; color:#888; margin-top:2px; }
+    .toggle-row { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-radius:12px; margin-bottom:14px; }
+    .toggle-row.green { background:#F0FDF4; }
+    .toggle-row.red   { background:#FEF2F2; }
+    .toggle-label { font-size:0.9rem; font-weight:700; }
+    .toggle-label span { display:block; font-size:0.75rem; font-weight:400; color:#555; margin-top:2px; }
+    .toggle-switch { position:relative; width:48px; height:26px; }
+    .toggle-switch input { opacity:0; width:0; height:0; }
+    .toggle-slider { position:absolute; cursor:pointer; inset:0; background:#ccc; border-radius:26px; transition:0.3s; }
+    .toggle-slider:before { position:absolute; content:""; height:20px; width:20px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:0.3s; }
+    input:checked + .toggle-slider { background:#22c55e; }
+    input:checked + .toggle-slider:before { transform:translateX(22px); }
+    .param-input { width:100%; background:#F5F5F0; border:1.5px solid #e8e8e8; border-radius:10px; padding:11px 14px; font-size:0.9rem; color:#1a1a1a; outline:none; margin-bottom:12px; }
+    .param-input:focus { border-color:#2563EB; }
+    .param-textarea { width:100%; background:#F5F5F0; border:1.5px solid #e8e8e8; border-radius:10px; padding:11px 14px; font-size:0.9rem; color:#1a1a1a; outline:none; resize:vertical; min-height:100px; font-family:inherit; margin-bottom:12px; }
+    .param-textarea:focus { border-color:#2563EB; }
+    .param-label { font-size:0.78rem; color:#555; font-weight:600; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+    .days-row { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+    .day-chip { padding:7px 14px; border-radius:20px; font-size:0.82rem; font-weight:600; border:none; cursor:pointer; background:#e8e8e8; color:#555; }
+    .day-chip.active { background:#3b82f6; color:#fff; }
+    .hours-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+    .comm-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:14px; }
+
+    /* Modal */
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:600; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+    .modal-overlay.open { opacity:1; pointer-events:all; }
+    .modal-box { background:#fff; border-radius:20px; padding:24px; width:100%; max-width:380px; box-shadow:0 20px 60px rgba(0,0,0,0.2); }
+    .modal-box h3 { font-size:1rem; font-weight:700; margin-bottom:16px; }
+    .modal-box label { display:block; font-size:0.8rem; color:#888; font-weight:600; margin:12px 0 5px; }
+    .modal-box input { width:100%; background:#F5F5F0; border:1.5px solid #e8e8e8; border-radius:10px; padding:11px 14px; color:#1a1a1a; font-size:0.9rem; outline:none; }
+    .modal-box input:focus { border-color:#2563EB; }
+    .modal-btns { display:flex; gap:10px; margin-top:18px; }
+    .modal-btns button { flex:1; padding:12px; border:none; border-radius:12px; cursor:pointer; font-weight:700; font-size:0.9rem; }
+    .m-cancel  { background:#F5F5F0; color:#555; }
+    .m-confirm { background:#2563EB; color:#fff; }
+    .m-danger  { background:#ef4444; color:#fff; }
+
+    /* Dropdown menu */
+    .dropdown { position:relative; }
+    .dropdown-menu { position:absolute; right:0; top:42px; background:#fff; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.15); min-width:160px; z-index:50; display:none; overflow:hidden; }
+    .dropdown-menu.open { display:block; }
+    .dropdown-item { padding:11px 16px; font-size:0.88rem; cursor:pointer; display:flex; align-items:center; gap:10px; border:none; width:100%; background:transparent; text-align:left; }
+    .dropdown-item:hover { background:#F5F5F0; }
+    .dropdown-item.danger { color:#ef4444; }
+
+    /* Toast */
+    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:#1a1a1a; color:#fff; padding:12px 22px; border-radius:12px; font-size:0.88rem; font-weight:600; z-index:700; transition:transform 0.3s; white-space:nowrap; box-shadow:0 4px 20px rgba(0,0,0,0.3); }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+    .toast.ok  { background:#16a34a; }
+    .toast.err { background:#dc2626; }
+
+    .empty { text-align:center; padding:40px; color:#aaa; font-size:0.9rem; }
+
+    .btn-xs { padding:5px 11px; border-radius:7px; border:none; cursor:pointer; font-size:0.72rem; font-weight:700; margin:2px; }
+    .btn-v  { background:#F0FDF4; color:#16a34a; }
+    .btn-r  { background:#FEF2F2; color:#dc2626; }
+    .btn-e  { background:#EFF6FF; color:#2563eb; }
+
+    @media(min-width:600px) {
+      .main { padding:20px; }
+      .stats-grid { grid-template-columns:repeat(4,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <button class="topbar-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+  <span class="topbar-title"><%= pageTitle %></span>
+  <div class="bell-wrap">
+    <button class="topbar-btn" id="bellBtn" onclick="toggleNotifDropdown()" title="Notifications">
+      <i class="fas fa-bell"></i>
+      <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+    </button>
+    <div class="notif-dropdown" id="notifDropdown">
+      <div class="notif-dropdown-header">Notifications</div>
+      <div id="notifList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <button class="sidebar-close" onclick="closeSidebar()"><i class="fas fa-times"></i></button>
+    <div class="sidebar-shield"><i class="fas fa-shield-halved"></i></div>
+    <h2>Administration</h2>
+    <p>Market Flow Group</p>
+  </div>
+  <nav class="sidebar-nav">
+    <% const nav = [
+      { page:'dashboard',    href:'/adminxyz/dashboard',    icon:'fas fa-chart-pie',          bg:'#FFF3E0', color:'#2563EB', label:'Tableau de bord' },
+      { page:'plans',        href:'/adminxyz/plans',        icon:'fas fa-chart-line',          bg:'#F0FDF4', color:'#22c55e', label:'Plans VIP' },
+      { page:'utilisateurs', href:'/adminxyz/utilisateurs', icon:'fas fa-users',               bg:'#EFF6FF', color:'#3b82f6', label:'Utilisateurs' },
+      { page:'depots',       href:'/adminxyz/depots',       icon:'fas fa-arrow-down',          bg:'#F0FDF4', color:'#22c55e', label:'Dépôts',       countKey:'depots' },
+      { page:'retraits',     href:'/adminxyz/retraits',     icon:'fas fa-hand-holding-dollar', bg:'#EEF2FF', color:'#6366f1', label:'Retraits',     countKey:'retraits' },
+      { page:'cadeaux',      href:'/adminxyz/cadeaux',      icon:'fas fa-gift',                bg:'#FFF7ED', color:'#2563EB', label:'Cadeaux VIP' },
+      { page:'salaires',     href:'/adminxyz/salaires',     icon:'fas fa-money-bill-wave',     bg:'#F0FDF4', color:'#22c55e', label:'Salaires VIP' },
+      { page:'transactions', href:'/adminxyz/transactions', icon:'fas fa-receipt',             bg:'#F5F3FF', color:'#7c3aed', label:'Transactions' },
+      { page:'affiches',     href:'/adminxyz/affiches',     icon:'fas fa-image',               bg:'#FFF7ED', color:'#2563EB', label:'Affiches',     countKey:'affiches' },
+      { page:'codes-cadeaux', href:'/adminxyz/codes-cadeaux', icon:'fas fa-ticket-alt',         bg:'#FFF7ED', color:'#2563EB', label:'Code Cadeau' },
+      { page:'tuto',         href:'/adminxyz/tuto',         icon:'fas fa-video',               bg:'#FDF2F8', color:'#db2777', label:'Tuto' },
+      { page:'parametres',   href:'/adminxyz/parametres',   icon:'fas fa-gear',                bg:'#F5F5F0', color:'#6b7280', label:'Paramètres' },
+    ]; %>
+    <% nav.forEach(item => {
+      const n = item.countKey ? (pendingCounts && pendingCounts[item.countKey] || 0) : 0;
+    %>
+    <a href="<%= item.href %>" class="nav-item <%= currentPage === item.page ? 'active' : '' %>">
+      <span class="nav-icon" style="background:<%= item.bg %>"><i class="<%= item.icon %>" style="color:<%= item.color %>"></i></span>
+      <span class="nav-label"><%= item.label %></span>
+      <% if (item.countKey) { %>
+      <span class="nav-badge <%= n > 0 ? 'show' : '' %>" data-nav-count="<%= item.countKey %>"><%= n > 99 ? '99+' : n %></span>
+      <% } %>
+    </a>
+    <% }); %>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="/adminxyz/logout"><i class="fas fa-sign-out-alt" style="color:#ef4444"></i> Déconnexion</a>
+  </div>
+</aside>
+
+<div class="main">
+
+<%# ══════════════════ DASHBOARD ══════════════════ %>
+<% if (currentPage === 'dashboard') { %>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#EFF6FF"><i class="fas fa-users" style="color:#3b82f6"></i></div>
+      <div class="stat-num"><%= stats_users.total || 0 %></div>
+      <div class="stat-label">Utilisateurs</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#F0FDF4"><i class="fas fa-chart-line" style="color:#22c55e"></i></div>
+      <div class="stat-num"><%= stats_plans_actifs.total || 0 %></div>
+      <div class="stat-label">Plans actifs</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#FFF7ED"><i class="fas fa-arrow-down" style="color:#2563EB"></i></div>
+      <div class="stat-num"><%= (parseFloat(stats_depots.somme)||0).toLocaleString('fr-FR') %></div>
+      <div class="stat-sub">FCFA</div>
+      <div class="stat-label">Dépôts validés</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#EEF2FF"><i class="fas fa-hand-holding-dollar" style="color:#6366f1"></i></div>
+      <div class="stat-num"><%= (parseFloat(stats_retraits.somme)||0).toLocaleString('fr-FR') %></div>
+      <div class="stat-sub">FCFA</div>
+      <div class="stat-label">Retraits validés</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#FFF7ED"><i class="fas fa-hourglass-half" style="color:#2563EB"></i></div>
+      <div class="stat-num"><%= stats_pending_depots.total || 0 %></div>
+      <div class="stat-label">Dépôts en attente</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#FEF2F2"><i class="fas fa-clock" style="color:#ef4444"></i></div>
+      <div class="stat-num"><%= stats_pending_retraits.total || 0 %></div>
+      <div class="stat-label">Retraits en attente</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#F0FDF4"><i class="fas fa-briefcase" style="color:#22c55e"></i></div>
+      <div class="stat-num"><%= stats_avec_invest.total || 0 %></div>
+      <div class="stat-label">Avec investissement</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#EEF2FF"><i class="fas fa-user-check" style="color:#6366f1"></i></div>
+      <div class="stat-num"><%= stats_users.total || 0 %></div>
+      <div class="stat-label">Total inscrits</div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-head">
+      <div class="chart-icon"><i class="fas fa-chart-bar"></i></div>
+      <div style="flex:1"><h3>Aujourd'hui vs Hier</h3></div>
+    </div>
+    <p class="sub">Comparaison des transactions</p>
+    <canvas id="tvhChart" height="160"></canvas>
+    <div class="tvh-grid">
+      <div class="tvh-card" style="border-left:3px solid #22c55e">
+        <div class="tvh-label">Dépôts auj.</div>
+        <div class="tvh-num"><%= chartData.tvh.dep_today_count %> <small>· <%= (chartData.tvh.dep_today||0).toLocaleString('fr-FR') %> FCFA</small></div>
+        <% const depDiff = chartData.tvh.dep_today - chartData.tvh.dep_yesterday; %>
+        <div class="tvh-diff <%= depDiff >= 0 ? 'up' : 'down' %>"><%= depDiff >= 0 ? '▲' : '▼' %> <%= Math.abs(depDiff).toLocaleString('fr-FR') %> vs hier</div>
+      </div>
+      <div class="tvh-card" style="border-left:3px solid #ef4444">
+        <div class="tvh-label">Retraits auj.</div>
+        <div class="tvh-num"><%= chartData.tvh.ret_today_count %> <small>· <%= (chartData.tvh.ret_today||0).toLocaleString('fr-FR') %> FCFA</small></div>
+        <% const retDiff = chartData.tvh.ret_today - chartData.tvh.ret_yesterday; %>
+        <div class="tvh-diff <%= retDiff >= 0 ? 'up' : 'down' %>"><%= retDiff >= 0 ? '▲' : '▼' %> <%= Math.abs(retDiff).toLocaleString('fr-FR') %> vs hier</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-head">
+      <div class="chart-icon"><i class="fas fa-chart-bar"></i></div>
+      <div><h3>Activité financière</h3></div>
+    </div>
+    <p class="sub">6 derniers mois</p>
+    <canvas id="actChart" height="170"></canvas>
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Dép. validés</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>Dép. rejetés</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Ret. validés</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Ret. rejetés</div>
+    </div>
+  </div>
+
+  <div class="rev-card">
+    <div class="rev-head">
+      <div class="rev-icon"><i class="fas fa-coins"></i></div>
+      <div>
+        <h3>Revenus journaliers</h3>
+        <div class="rev-sub">Automatique chaque jour à 02h00 UTC</div>
+      </div>
+    </div>
+    <p>Crédite le revenu journalier sur le solde de chaque investisseur ayant un plan actif.</p>
+    <button class="btn-rev" id="btnRevenu" onclick="verserRevenus()">
+      <i class="fas fa-paper-plane"></i> Verser les revenus maintenant
+    </button>
+  </div>
+
+<%# ══════════════════ PLANS VIP ══════════════════ %>
+<% } else if (currentPage === 'plans') { %>
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-icon"><i class="fas fa-chart-line"></i></div>
+      <div>
+        <div class="page-title">Plans VIP (<%= plans.length %>)</div>
+      </div>
+    </div>
+    <button class="btn-add" onclick="openAddPlanModal()"><i class="fas fa-plus"></i> Ajouter</button>
+  </div>
+
+  <% const planColors = ['#2563EB','#3b82f6','#22c55e','#7c3aed','#ef4444','#0891b2','#16a34a','#d97706','#6366f1','#ec4899','#14b8a6']; %>
+  <% plans.forEach((p, i) => { %>
+  <%
+    const gain = (parseFloat(p.prix) * parseFloat(p.rendement_journalier) / 100);
+    const color = planColors[i % planColors.length];
+  %>
+  <div class="plan-card" style="border-left:4px solid <%= color %><% if (p.bloque) { %>;opacity:0.75<% } %>">
+    <div class="plan-body">
+      <div class="plan-name" style="color:<%= color %>"><%- p.nom %> <% if (p.bloque) { %><span style="font-size:0.68rem;background:#FEF2F2;color:#dc2626;padding:2px 8px;border-radius:10px;font-weight:700;vertical-align:middle"><i class="fas fa-lock"></i> Bloqué</span><% } %></div>
+      <div class="plan-meta">Prix : <strong><%= parseFloat(p.prix).toLocaleString('fr-FR') %> FCFA</strong> &nbsp; Durée : <strong><%= p.duree_jours %>j</strong></div>
+      <div class="plan-rend" style="color:<%= color %>">Rend. : <%= parseFloat(p.rendement_journalier).toFixed(2) %>%/j</div>
+      <div class="plan-gain">+<%= gain.toLocaleString('fr-FR',{maximumFractionDigits:0}) %> FCFA/jour</div>
+    </div>
+    <div class="card-actions">
+      <button class="icon-btn <%= p.bloque ? 'icon-btn-del' : 'icon-btn-edit' %>"
+        data-pid="<%= p.id %>"
+        title="<%= p.bloque ? 'Débloquer ce plan' : 'Bloquer ce plan' %>"
+        onclick="togglePlanLockBtn(this)">
+        <i class="fas <%= p.bloque ? 'fa-lock' : 'fa-lock-open' %>"></i>
+      </button>
+      <button class="icon-btn icon-btn-edit"
+        data-pid="<%= p.id %>"
+        data-nom="<%- (p.nom||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;') %>"
+        data-prix="<%= p.prix %>"
+        data-duree="<%= p.duree_jours %>"
+        data-rend="<%= p.rendement_journalier %>"
+        data-image="<%- (p.image_url||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;') %>"
+        data-desc="<%- (p.description||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;') %>"
+        onclick="openPlanModalBtn(this)">
+        <i class="fas fa-pen"></i>
+      </button>
+      <button class="icon-btn icon-btn-del"
+        data-pid="<%= p.id %>"
+        data-nom="<%- (p.nom||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;') %>"
+        onclick="deletePlanBtn(this)">
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+  </div>
+  <% }); %>
+  <% if (!plans.length) { %><div class="empty">Aucun plan VIP</div><% } %>
+
+<%# ══════════════════ UTILISATEURS ══════════════════ %>
+<% } else if (currentPage === 'utilisateurs') { %>
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-icon"><i class="fas fa-users"></i></div>
+      <div>
+        <div class="page-title">Utilisateurs (<%= users.length %>)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-box">
+    <i class="fas fa-search"></i>
+    <input type="text" id="userSearch" placeholder="Rechercher par nom ou numéro..." oninput="filterCards('userList', this.value)">
+  </div>
+
+  <div id="userList">
+  <% users.forEach(u => { %>
+  <div class="card" data-search="<%= (u.nom+' '+u.telephone+' '+(u.pays||'')+' '+(u.code_parrainage||'')).toLowerCase() %>">
+    <div class="card-row">
+      <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0">
+        <div class="avatar"><%= (u.nom||'?')[0].toUpperCase() %></div>
+        <div style="min-width:0">
+          <div class="user-name"><%- u.nom %><% if (u.is_admin) { %> <span style="font-size:0.7rem;background:#EEF2FF;color:#4f46e5;padding:2px 7px;border-radius:10px;font-weight:700">Admin</span><% } %></div>
+          <div class="user-sub"><%- u.telephone %> · <%- u.pays || '—' %></div>
+          <div class="user-balance"><%= parseFloat(u.solde||0).toLocaleString('fr-FR') %> FCFA</div>
+          <div class="ref-row">
+            <span class="ref-code"><%= u.code_parrainage || '—' %></span>
+            <button class="copy-btn" onclick="copyText('<%- u.code_parrainage || "" %>')"><i class="fas fa-copy"></i> Copier</button>
+          </div>
+        </div>
+      </div>
+      <a href="/adminxyz/utilisateurs/<%= u.id %>" class="menu-btn" style="text-decoration:none;flex-shrink:0">
+        <i class="fas fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+  <% }); %>
+  </div>
+  <% if (!users.length) { %><div class="empty">Aucun utilisateur</div><% } %>
+
+<%# ══════════════════ DÉPÔTS ══════════════════ %>
+<% } else if (currentPage === 'depots') { %>
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-icon"><i class="fas fa-arrow-down"></i></div>
+      <div><div class="page-title">Dépôts (<%= depots.length %>)</div></div>
+    </div>
+  </div>
+
+  <div class="search-box">
+    <i class="fas fa-search"></i>
+    <input type="text" placeholder="Référence ou numéro de téléphone..." oninput="filterCards('depotList', this.value)">
+  </div>
+
+  <div id="depotList">
+  <% depots.forEach(d => { %>
+  <%
+    const refRaw = (d.numero_transaction||'');
+    const refDisplay = refRaw.includes('|') ? refRaw.split('|')[0] : refRaw.substring(0,15);
+  %>
+  <div class="card" data-search="<%= (d.nom+' '+(d.telephone||'')+' '+refRaw+' '+(d.pays||'')).toLowerCase() %>">
+    <div class="card-row" style="align-items:flex-start">
+      <div style="flex:1">
+        <div style="font-weight:700"><%- d.nom || '—' %></div>
+        <div class="dep-meta"><%- d.telephone || '—' %> · <%- d.pays || '—' %></div>
+        <div class="dep-amount"><%= parseFloat(d.montant||0).toLocaleString('fr-FR') %> FCFA</div>
+        <div class="dep-meta" style="margin-bottom:6px"><%- d.methode || '—' %> · <%= d.date_depot ? new Date(d.date_depot).toLocaleDateString('fr-FR') : '—' %></div>
+        <% if (refDisplay) { %>
+        <span class="dep-ref" onclick="copyText('<%- refRaw %>')"><%- refDisplay %> <i class="fas fa-copy" style="font-size:0.7rem"></i></span>
+        <% } %>
+        <% if (d.statut === 'en_attente') { %>
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button class="btn-xs btn-v" onclick="doAction('validate_deposit',<%= d.id %>)"><i class="fas fa-check"></i> Valider</button>
+          <button class="btn-xs btn-r" onclick="doAction('reject_deposit',<%= d.id %>)"><i class="fas fa-times"></i> Rejeter</button>
+        </div>
+        <% } %>
+      </div>
+      <div>
+        <% if (d.statut === 'en_attente') { %><span class="badge badge-pending">En attente</span>
+        <% } else if (d.statut === 'valide') { %><span class="badge badge-valid">Validé</span>
+        <% } else { %><span class="badge badge-rejected">Rejeté</span><% } %>
+      </div>
+    </div>
+  </div>
+  <% }); %>
+  </div>
+  <% if (!depots.length) { %><div class="empty">Aucun dépôt</div><% } %>
+
+<%# ══════════════════ RETRAITS ══════════════════ %>
+<% } else if (currentPage === 'retraits') { %>
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-icon"><i class="fas fa-hand-holding-dollar"></i></div>
+      <div><div class="page-title">Retraits (<%= retraits.length %>)</div></div>
+    </div>
+  </div>
+
+  <div class="search-box">
+    <i class="fas fa-search"></i>
+    <input type="text" placeholder="Référence ou numéro de téléphone..." oninput="filterCards('retraitList', this.value)">
+  </div>
+
+  <div id="retraitList">
+  <% retraits.forEach(r => { %>
+  <div class="card" data-search="<%= (r.nom+' '+(r.telephone||'')+' '+(r.numero_compte||'')).toLowerCase() %>">
+    <div class="card-row" style="align-items:flex-start">
+      <div style="flex:1">
+        <div style="font-weight:700"><%- r.nom || '—' %></div>
+        <div class="dep-meta"><%- r.telephone || '—' %></div>
+        <div class="ret-amount"><%= parseFloat(r.montant||0).toLocaleString('fr-FR') %> FCFA</div>
+        <div class="dep-meta" style="margin-bottom:6px"><%- r.methode || '—' %> · <%= r.date_demande ? new Date(r.date_demande).toLocaleDateString('fr-FR') : '—' %></div>
+        <% if (r.numero_compte) { %>
+        <div style="margin-bottom:4px">
+          <span style="font-weight:700;font-size:0.85rem;text-decoration:underline"><%- r.numero_compte %></span>
+          <button class="copy-btn" style="display:inline-flex;margin-left:6px" onclick="copyText('<%- r.numero_compte %>')"><i class="fas fa-copy"></i></button>
+        </div>
+        <% } %>
+        <% if (r.statut === 'en_attente') { %>
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button class="btn-xs btn-v" onclick="doAction('validate_retrait',<%= r.id %>)"><i class="fas fa-check"></i> Valider</button>
+          <button class="btn-xs btn-r" onclick="doAction('reject_retrait',<%= r.id %>)"><i class="fas fa-times"></i> Rejeter</button>
+        </div>
+        <% } %>
+      </div>
+      <div>
+        <% if (r.statut === 'en_attente') { %><span class="badge badge-pending">En attente</span>
+        <% } else if (r.statut === 'valide') { %><span class="badge badge-valid">Validé</span>
+        <% } else { %><span class="badge badge-rejected">Rejeté</span><% } %>
+      </div>
+    </div>
+  </div>
+  <% }); %>
+  </div>
+  <% if (!retraits.length) { %><div class="empty">Aucun retrait</div><% } %>
+
+<%# ══════════════════ CADEAUX VIP ══════════════════ %>
+<% } else if (currentPage === 'cadeaux') { %>
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-icon"><i class="fas fa-gift"></i></div>
+      <div><div class="page-title">Cadeaux VIP (<%= codes.length %>)</div></div>
+    </div>
+  </div>
+
+  <% codes.forEach(c => { %>
+  <div class="card">
+    <div class="card-row">
+      <div style="flex:1">
+        <div style="font-weight:700"><%- c.nom || '—' %></div>
+        <div class="dep-meta"><%- c.telephone || '—' %></div>
+        <div class="dep-amount"><%= parseFloat(c.montant||0).toLocaleString('fr-FR') %> FCFA</div>
+        <div class="ref-row">
+          <span class="ref-code"><%- c.code %></span>
+          <button class="copy-btn" onclick="copyText('<%- c.code %>')"><i class="fas fa-copy"></i> Copier</button>
+        </div>
+      </div>
+      <div class="dep-meta" style="text-align:right"><%= c.date_utilisation ? new Date(c.date_utilisation).toLocaleDateString('fr-FR') : '—' %></div>
+    </div>
+  </div>
+  <% }); %>
+  <% if (!codes.length) { %><div class="empty">Aucun code cadeau utilisé</div><% } %>
+
+<%# ══════════════════ SALAIRES VIP ══════════════════ %>
+<% } else if (currentPage === 'salaires') { %>
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-icon"><i class="fas fa-money-bill-wave"></i></div>
+      <div><div class="page-title">Salaires VIP</div></div>
+    </div>
+  </div>
+
+  <% paliers.forEach(p => { %>
+  <div class="salaire-card">
+    <div class="salaire-head">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="vip-star"><i class="fas fa-star"></i></div>
+        <div>
+          <div class="salaire-title">Niveau VIP <%= p.niveau %></div>
+          <div class="salaire-sub">Configuration du palier</div>
+        </div>
+      </div>
+      <button class="icon-btn icon-btn-del" onclick="deletePalier(<%= p.id %>, <%= p.niveau %>)"><i class="fas fa-trash"></i></button>
+    </div>
+    <form onsubmit="savePalier(event, <%= p.id %>)">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Label (nom affiché)</label>
+          <input type="text" name="label" value="<%- p.label %>" placeholder="Ex: Leadeur basic">
+        </div>
+        <div class="form-group">
+          <label>Niveau (numéro)</label>
+          <input type="number" value="<%= p.niveau %>" readonly>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Filleuls requis</label>
+          <input type="number" name="filleuls_requis" value="<%= p.filleuls_requis %>" min="0">
+        </div>
+        <div class="form-group">
+          <label>Montant cadeau (FCFA)</label>
+          <input type="number" name="montant_cadeau" value="<%= parseFloat(p.montant_cadeau).toFixed(2) %>" step="0.01" min="0">
+        </div>
+      </div>
+      <button type="submit" class="btn-save"><i class="fas fa-save"></i> Enregistrer</button>
+    </form>
+  </div>
+  <% }); %>
+
+  <button class="btn-save" style="margin-top:4px" onclick="openAddPalierModal()"><i class="fas fa-plus"></i> Ajouter un palier VIP</button>
+
+<%# ══════════════════ TRANSACTIONS ══════════════════ %>
+<% } else if (currentPage === 'transactions') { %>
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-icon"><i class="fas fa-receipt"></i></div>
+      <div><div class="page-title">Transactions (<%= transactions.length %>)</div></div>
+    </div>
+  </div>
+
+  <div class="search-box">
+    <i class="fas fa-search"></i>
+    <input type="text" placeholder="Référence, nom ou numéro de téléphone..." oninput="filterCards('txList', this.value)">
+  </div>
+
+  <div class="filter-row">
+    <select class="filter-sel" id="txTypeFilter" onchange="filterTx()">
+      <option value="">Tous les types</option>
+      <option value="paiement_journalier">Revenu investissement</option>
+      <option value="parrainage">Parrainage</option>
+      <option value="bonus">Bonus</option>
+      <option value="cadeau">Cadeau</option>
+    </select>
+    <select class="filter-sel" id="txStatutFilter" onchange="filterTx()">
+      <option value="">Tous les statuts</option>
+      <option value="valide">Validé</option>
+    </select>
+  </div>
+
+  <% const typeLabels = { paiement_journalier:'Revenu investissement', parrainage:'Parrainage', bonus:'Bonus', cadeau:'Cadeau' }; %>
+  <div id="txList">
+  <% transactions.forEach(t => { %>
+  <div class="card" data-type="<%= t.type %>" data-search="<%= ((t.nom||'')+' '+(t.telephone||'')).toLowerCase() %>">
+    <div class="card-row">
+      <div style="flex:1">
+        <div class="tx-type"><%- typeLabels[t.type] || t.type || '—' %></div>
+        <div class="tx-user"><%- t.nom || '—' %> · <%- t.telephone || '—' %></div>
+        <div class="tx-date"><%= t.date_creation ? new Date(t.date_creation).toLocaleString('fr-FR') : '—' %></div>
+      </div>
+      <div style="text-align:right">
+        <div class="tx-amount">+<%= parseFloat(t.montant||0).toLocaleString('fr-FR') %></div>
+        <span class="badge badge-valid" style="margin-top:4px;display:inline-block">Validé</span>
+      </div>
+    </div>
+  </div>
+  <% }); %>
+  </div>
+  <% if (!transactions.length) { %><div class="empty">Aucune transaction</div><% } %>
+
+<%# ══════════════════ AFFICHES ══════════════════ %>
+<% } else if (currentPage === 'affiches') { %>
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-icon"><i class="fas fa-image"></i></div>
+      <div><div class="page-title">Affiches (<%= posts.length %>)</div></div>
+    </div>
+  </div>
+
+  <!-- Safe JSON data — not executable, no XSS risk -->
+  <script type="application/json" id="affiche-data"><%- JSON.stringify(posts.map(function(p){ return {
+    id: p.id,
+    nom: p.nom || '—',
+    message: p.message || '',
+    image: p.image || '',
+    statut: p.statut,
+    date: p.date_creation ? new Date(p.date_creation).toLocaleDateString('fr-FR') : '—'
+  }; })) %></script>
+
+  <!-- JS-rendered list with pagination -->
+  <div id="affiche-list"></div>
+  <div id="affiche-pag" style="display:none;justify-content:center;align-items:center;gap:12px;padding:16px 0;">
+    <button class="btn-xs btn-v" id="affPrev" onclick="affChangePage(-1)" style="padding:7px 16px"><i class="fas fa-chevron-left"></i> Préc.</button>
+    <span id="affInfo" style="font-size:13px;color:#555;font-weight:600"></span>
+    <button class="btn-xs btn-v" id="affNext" onclick="affChangePage(1)" style="padding:7px 16px">Suiv. <i class="fas fa-chevron-right"></i></button>
+  </div>
+
+  <script>
+  (function(){
+    const RAW = JSON.parse(document.getElementById('affiche-data').textContent);
+
+    const PAGE_SIZE = 20;
+    let page = 0;
+
+    function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    function badgeHtml(statut) {
+      if (statut==='en_attente') return '<span class="badge badge-pending">En attente</span>';
+      if (statut==='valide')     return '<span class="badge badge-valid">Validé</span>';
+      return '<span class="badge badge-rejected">Refusé</span>';
+    }
+
+    function render() {
+      const list  = document.getElementById('affiche-list');
+      const pagEl = document.getElementById('affiche-pag');
+      const total = RAW.length;
+
+      if (total === 0) {
+        list.innerHTML = '<div class="empty">Aucune affiche</div>';
+        pagEl.style.display = 'none';
+        return;
+      }
+
+      const totalPages = Math.ceil(total / PAGE_SIZE);
+      const slice = RAW.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
+      list.innerHTML = slice.map(p => {
+        const msg   = p.message ? esc(p.message.substring(0,120)) + (p.message.length>120?'…':'') : '';
+        const imgLnk = p.image
+          ? `<a href="/uploads/${esc(p.image)}" target="_blank" style="color:#2563EB;font-size:0.82rem"><i class="fas fa-image"></i> Voir l'image</a>`
+          : '';
+        const actBtns = p.statut === 'en_attente'
+          ? `<div style="margin-top:10px;display:flex;gap:8px">
+               <button class="btn-xs btn-v" onclick="doAction('validate_post',${p.id})"><i class="fas fa-check"></i> Valider</button>
+               <button class="btn-xs btn-r" onclick="doAction('reject_post',${p.id})"><i class="fas fa-times"></i> Rejeter</button>
+             </div>`
+          : '';
+        return `<div class="card" id="post-card-${p.id}">
+          <div class="card-row" style="align-items:flex-start">
+            <div style="flex:1">
+              <div style="font-weight:700">${esc(p.nom)}</div>
+              <div class="dep-meta" style="margin:4px 0">${esc(p.date)}</div>
+              ${msg ? `<div style="font-size:0.85rem;color:#555;line-height:1.5;margin-bottom:8px">${msg}</div>` : ''}
+              ${imgLnk}
+              ${actBtns}
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+              ${badgeHtml(p.statut)}
+              <button class="btn-xs btn-r" onclick="doAction('delete_post',${p.id})" title="Supprimer" style="padding:5px 10px">
+                <i class="fas fa-trash"></i> Supprimer
+              </button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+
+      if (totalPages > 1) {
+        pagEl.style.display = 'flex';
+        document.getElementById('affInfo').textContent = `Page ${page+1} / ${totalPages}`;
+        document.getElementById('affPrev').disabled = (page === 0);
+        document.getElementById('affNext').disabled = (page >= totalPages - 1);
+      } else {
+        pagEl.style.display = 'none';
+      }
+    }
+
+    window.affChangePage = function(delta) {
+      const total = RAW.length;
+      const totalPages = Math.ceil(total / PAGE_SIZE);
+      page = Math.max(0, Math.min(totalPages - 1, page + delta));
+      render();
+    };
+
+    render();
+  })();
+  </script>
+
+<%# ══════════════════ CODE CADEAU ══════════════════ %>
+<% } else if (currentPage === 'codes-cadeaux') { %>
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-icon"><i class="fas fa-ticket-alt"></i></div>
+      <div><div class="page-title">Code Cadeau (<%= codes.length %>)</div></div>
+    </div>
+  </div>
+
+  <div class="param-card">
+    <div class="param-head">
+      <div class="param-icon" style="background:#FFF7ED"><i class="fas fa-plus-circle" style="color:#2563EB"></i></div>
+      <div class="param-head-text">
+        <h3>Créer un code cadeau</h3>
+        <p>Le code est utilisable par les utilisateurs depuis la page "Cadeaux"</p>
+      </div>
+    </div>
+    <div id="codeCadeauError" style="display:none;color:#dc2626;font-size:13px;margin-bottom:10px"></div>
+    <form method="POST" action="/adminxyz/codes-cadeaux/create">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Code</label>
+          <input type="text" name="code" placeholder="Ex: ALTIORA2026" required style="text-transform:uppercase">
+        </div>
+        <div class="form-group">
+          <label>Montant à gagner (FCFA)</label>
+          <input type="number" name="montant" min="1" step="0.01" required>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Places disponibles</label>
+          <input type="number" name="places_disponibles" min="1" step="1" value="1" required>
+        </div>
+        <div class="form-group">
+          <label>Durée de validité (jours, vide = illimitée)</label>
+          <input type="number" name="duree_jours" min="1" step="1" placeholder="Ex: 30">
+        </div>
+      </div>
+      <button type="submit" class="btn-save"><i class="fas fa-save"></i> Créer le code</button>
+    </form>
+  </div>
+
+  <% codes.forEach(c => {
+    const expired = c.date_expiration && new Date(c.date_expiration) < new Date();
+    const full = c.places_utilisees >= c.places_disponibles;
+    const statutLabel = !c.actif ? 'Désactivé' : (expired ? 'Expiré' : (full ? 'Épuisé' : 'Actif'));
+    const statutClass = (!c.actif || expired || full) ? 'badge-rejected' : 'badge-valid';
+  %>
+  <div class="card">
+    <div class="card-row" style="align-items:flex-start">
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:15px;letter-spacing:0.5px"><%= c.code %></div>
+        <div class="dep-meta" style="margin:4px 0">
+          <%= parseFloat(c.montant).toLocaleString('fr-FR') %> FCFA · <%= c.places_utilisees %>/<%= c.places_disponibles %> places
+          <% if (c.date_expiration) { %> · expire le <%= new Date(c.date_expiration).toLocaleDateString('fr-FR') %><% } %>
+        </div>
+        <span class="badge <%= statutClass %>"><%= statutLabel %></span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <form method="POST" action="/adminxyz/codes-cadeaux/toggle/<%= c.id %>">
+          <button type="submit" class="btn-xs btn-v" style="padding:5px 10px"><i class="fas <%= c.actif ? 'fa-pause' : 'fa-play' %>"></i> <%= c.actif ? 'Désactiver' : 'Activer' %></button>
+        </form>
+        <form method="POST" action="/adminxyz/codes-cadeaux/delete/<%= c.id %>" onsubmit="return confirm('Supprimer ce code cadeau ?')">
+          <button type="submit" class="btn-xs btn-r" style="padding:5px 10px"><i class="fas fa-trash"></i> Supprimer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <% }); %>
+  <% if (!codes.length) { %><div class="empty">Aucun code cadeau créé</div><% } %>
+
+  <script>
+    (function() {
+      const params = new URLSearchParams(location.search);
+      const err = params.get('error');
+      if (err) {
+        const el = document.getElementById('codeCadeauError');
+        el.textContent = err;
+        el.style.display = 'block';
+      }
+    })();
+  </script>
+
+<%# ══════════════════ TUTO ══════════════════ %>
+<% } else if (currentPage === 'tuto') { %>
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-icon"><i class="fas fa-video"></i></div>
+      <div><div class="page-title">Tuto</div></div>
+    </div>
+  </div>
+
+  <% const tutoSections = [
+    { key: 'depot',    label: 'Dépôt',    desc: 'Vidéo affichée en tête de la section "Dépôt" de la page Tuto',    icon: 'fas fa-arrow-down',          color: '#22c55e', bg: '#F0FDF4' },
+    { key: 'retrait',  label: 'Retrait',  desc: 'Vidéo affichée en tête de la section "Retrait" de la page Tuto',  icon: 'fas fa-hand-holding-dollar',  color: '#6366f1', bg: '#EEF2FF' },
+    { key: 'investir', label: 'Investir', desc: 'Vidéo affichée en tête de la section "Investir" de la page Tuto', icon: 'fas fa-chart-line',           color: '#2563EB', bg: '#FFF7ED' },
+    { key: 'astuces',  label: 'Astuces',  desc: 'Vidéo affichée en tête de la section "Astuces" de la page Tuto',  icon: 'fas fa-lightbulb',            color: '#db2777', bg: '#FDF2F8' },
+  ]; %>
+
+  <% tutoSections.forEach(sec => { %>
+  <div class="param-card">
+    <div class="param-head">
+      <div class="param-icon" style="background:<%= sec.bg %>"><i class="<%= sec.icon %>" style="color:<%= sec.color %>"></i></div>
+      <div class="param-head-text">
+        <h3>Vidéo — <%= sec.label %></h3>
+        <p><%= sec.desc %></p>
+      </div>
+    </div>
+    <% const currentVideo = params['tuto_video_' + sec.key]; %>
+    <% if (currentVideo) { %>
+      <video src="<%= currentVideo %>" controls style="width:100%; border-radius:12px; margin-bottom:12px; background:#000;"></video>
+    <% } %>
+    <label class="param-label">Téléverser une vidéo (MP4, WebM — 100 Mo max)</label>
+    <input type="file" class="param-input" id="tutoVideo_<%= sec.key %>" accept="video/mp4,video/webm,video/ogg,video/quicktime">
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-save" id="tutoBtn_<%= sec.key %>" onclick="uploadTutoVideo('<%= sec.key %>')"><i class="fas fa-upload"></i> Téléverser</button>
+      <% if (currentVideo) { %>
+      <button class="btn-save" style="background:#ef4444" id="tutoDelBtn_<%= sec.key %>" onclick="deleteTutoVideo('<%= sec.key %>')"><i class="fas fa-trash"></i> Supprimer la vidéo</button>
+      <% } %>
+    </div>
+    <div id="tutoMsg_<%= sec.key %>" style="font-size:13px; margin-top:8px;"></div>
+  </div>
+  <% }) %>
+
+  <script>
+    async function deleteTutoVideo(section) {
+      if (!confirm('Supprimer cette vidéo ?')) return;
+      const btn = document.getElementById('tutoDelBtn_' + section);
+      const msg = document.getElementById('tutoMsg_' + section);
+      btn.disabled = true;
+      try {
+        const resp = await fetch('/adminxyz/tuto/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ section }),
+        });
+        const data = await resp.json();
+        if (data.success) {
+          location.reload();
+        } else {
+          msg.style.color = '#dc2626';
+          msg.textContent = data.message || 'Échec de la suppression.';
+          btn.disabled = false;
+        }
+      } catch (e) {
+        msg.style.color = '#dc2626';
+        msg.textContent = 'Erreur réseau.';
+        btn.disabled = false;
+      }
+    }
+    async function uploadTutoVideo(section) {
+      const input = document.getElementById('tutoVideo_' + section);
+      const btn = document.getElementById('tutoBtn_' + section);
+      const msg = document.getElementById('tutoMsg_' + section);
+      msg.textContent = '';
+      msg.style.color = '';
+      if (!input.files || !input.files[0]) {
+        msg.style.color = '#dc2626';
+        msg.textContent = 'Veuillez choisir un fichier vidéo.';
+        return;
+      }
+      const fd = new FormData();
+      fd.append('video', input.files[0]);
+      fd.append('section', section);
+      btn.disabled = true;
+      const originalHtml = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Téléversement...';
+      try {
+        const resp = await fetch('/adminxyz/tuto/upload', { method: 'POST', body: fd });
+        const data = await resp.json();
+        if (data.success) {
+          msg.style.color = '#16a34a';
+          msg.textContent = 'Vidéo mise à jour avec succès.';
+          setTimeout(() => location.reload(), 900);
+        } else {
+          msg.style.color = '#dc2626';
+          msg.textContent = data.message || 'Échec du téléversement.';
+        }
+      } catch (e) {
+        msg.style.color = '#dc2626';
+        msg.textContent = 'Erreur réseau.';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    }
+  </script>
+
+<%# ══════════════════ PARAMÈTRES ══════════════════ %>
+<% } else if (currentPage === 'parametres') { %>
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-icon"><i class="fas fa-gear"></i></div>
+      <div><div class="page-title">Paramètres</div></div>
+    </div>
+  </div>
+
+  <!-- Retraits toggle -->
+  <% const retraitsActifs = (params.retraits_actifs === '1'); %>
+  <div class="param-card">
+    <div class="toggle-row <%= retraitsActifs ? 'green' : 'red' %>" id="retraitsToggleRow">
+      <div>
+        <div class="toggle-label" style="color:<%= retraitsActifs ? '#16a34a' : '#dc2626' %>">
+          Retraits <%= retraitsActifs ? 'ACTIFS' : 'SUSPENDUS' %>
+          <span>Cliquer pour <%= retraitsActifs ? 'suspendre' : 'activer' %> tous les retraits</span>
+        </div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="retraitsToggle" <%= retraitsActifs ? 'checked' : '' %> onchange="saveParam('retraits_actifs', this.checked ? '1' : '0', refreshRetrait)">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Bonus de bienvenue -->
+  <div class="param-card">
+    <div class="param-head">
+      <div class="param-icon" style="background:#FFF7ED"><i class="fas fa-gift" style="color:#2563EB"></i></div>
+      <div class="param-head-text">
+        <h3>Bonus de bienvenue</h3>
+        <p>Montant crédité automatiquement à l'inscription (FCFA)</p>
+      </div>
+    </div>
+    <label class="param-label">Montant du bonus (FCFA)</label>
+    <input type="number" class="param-input" id="welcomeBonus" value="<%= (params.welcome_bonus !== undefined && params.welcome_bonus !== null && params.welcome_bonus !== '') ? params.welcome_bonus : 250 %>" min="0" placeholder="Entrer le bonus de bienvenue">
+    <button class="btn-save" onclick="saveParam('welcome_bonus', document.getElementById('welcomeBonus').value)"><i class="fas fa-save"></i> Enregistrer</button>
+  </div>
+
+  <!-- Dépôt minimum -->
+  <div class="param-card">
+    <div class="param-head">
+      <div class="param-icon" style="background:#FFF7ED"><i class="fas fa-arrow-down" style="color:#2563EB"></i></div>
+      <div class="param-head-text">
+        <h3>Dépôt minimum</h3>
+        <p>Montant minimal pour déposer (FCFA)</p>
+      </div>
+    </div>
+    <label class="param-label">Montant minimum (FCFA)</label>
+    <input type="number" class="param-input" id="depotMin" value="<%= params.depot_minimum || 200 %>" min="0">
+    <button class="btn-save" onclick="saveParam('depot_minimum', document.getElementById('depotMin').value)"><i class="fas fa-save"></i> Enregistrer</button>
+  </div>
+
+  <!-- Retrait minimum -->
+  <div class="param-card">
+    <div class="param-head">
+      <div class="param-icon" style="background:#EEF2FF"><i class="fas fa-arrow-up" style="color:#6366f1"></i></div>
+      <div class="param-head-text">
+        <h3>Retrait minimum</h3>
+        <p>Montant minimal pour retirer (FCFA)</p>
+      </div>
+    </div>
+    <label class="param-label">Montant minimum (FCFA)</label>
+    <input type="number" class="param-input" id="retraitMin" value="<%= params.retrait_minimum || 500 %>" min="0">
+    <button class="btn-save" onclick="saveParam('retrait_minimum', document.getElementById('retraitMin').value)"><i class="fas fa-save"></i> Enregistrer</button>
+  </div>
+
+  <!-- Frais de retrait -->
+  <div class="param-card">
+    <div class="param-head">
+      <div class="param-icon" style="background:#FEF2F2"><i class="fas fa-percent" style="color:#DC2626"></i></div>
+      <div class="param-head-text">
+        <h3>Frais de retrait</h3>
+        <p>Pourcentage prélevé sur chaque retrait</p>
+      </div>
+    </div>
+    <label class="param-label">Frais (%)</label>
+    <input type="number" class="param-input" id="retraitFrais" value="<%= params.retrait_frais_pourcentage || 0 %>" min="0" max="100" step="0.1" placeholder="Ex : 5">
+    <button class="btn-save" onclick="saveParam('retrait_frais_pourcentage', document.getElementById('retraitFrais').value)"><i class="fas fa-save"></i> Enregistrer</button>
+  </div>
+
+  <!-- Liens service client -->
+  <div class="param-card">
+    <div class="param-head">
+      <div class="param-icon" style="background:#F0FDF4"><i class="fab fa-whatsapp" style="color:#22c55e"></i></div>
+      <div class="param-head-text">
+        <h3>Liens service client</h3>
+        <p>Bouton flottant WhatsApp & liens FAQ</p>
+      </div>
+    </div>
+    <label class="param-label"><i class="fab fa-whatsapp" style="color:#22c55e"></i> WhatsApp service client (bouton flottant)</label>
+    <input type="text" class="param-input" id="whatsappLink" value="<%- params.whatsapp_link || '' %>" placeholder="https://wa.me/message/...">
+    <label class="param-label"><i class="fab fa-telegram" style="color:#2563eb"></i> Lien chaîne Telegram (page FAQ)</label>
+    <input type="text" class="param-input" id="telegramLink" value="<%- params.telegram_link || '' %>" placeholder="https://t.me/...">
+    <label class="param-label"><i class="fab fa-whatsapp" style="color:#22c55e"></i> Lien groupe WhatsApp (page FAQ)</label>
+    <input type="text" class="param-input" id="whatsappGroupLink" value="<%- params.whatsapp_group_link || '' %>" placeholder="https://chat.whatsapp.com/...">
+    <button class="btn-save" onclick="saveLinks()"><i class="fas fa-save"></i> Enregistrer les liens</button>
+  </div>
+
+  <!-- Horaires retraits -->
+  <% const allowedDays = (params.retrait_jours || 'Lun,Mar,Mer,Jeu,Ven').split(',').map(d => d.trim()); %>
+  <div class="param-card">
+    <div class="param-head">
+      <div class="param-icon" style="background:#EFF6FF"><i class="fas fa-clock" style="color:#3b82f6"></i></div>
+      <div class="param-head-text">
+        <h3>Horaires & limite de retrait</h3>
+        <p>Jours, heures et nombre max par utilisateur</p>
+      </div>
+    </div>
+    <label class="param-label">Jours autorisés</label>
+    <div class="days-row" id="daysRow">
+      <% ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].forEach(d => { %>
+      <button type="button" class="day-chip <%= allowedDays.includes(d) ? 'active' : '' %>" data-day="<%= d %>" onclick="toggleDay(this)"><%= d %></button>
+      <% }); %>
+    </div>
+    <label class="param-label">Plage horaire (heure GMT)</label>
+    <div class="hours-grid">
+      <div class="form-group">
+        <label>Heure de début</label>
+        <input type="time" class="param-input" id="heureDebut" value="<%= /^\d{1,2}:\d{2}$/.test(params.retrait_heure_debut) ? params.retrait_heure_debut : String(parseInt(params.retrait_heure_debut) || 8).padStart(2,'0') + ':00' %>">
+      </div>
+      <div class="form-group">
+        <label>Heure de fin</label>
+        <input type="time" class="param-input" id="heureFin" value="<%= /^\d{1,2}:\d{2}$/.test(params.retrait_heure_fin) ? params.retrait_heure_fin : String(parseInt(params.retrait_heure_fin) || 17).padStart(2,'0') + ':00' %>">
+      </div>
+    </div>
+    <label class="param-label">Nombre de retraits max par utilisateur / 24h</label>
+    <input type="number" class="param-input" id="maxRetraits" value="<%= params.retrait_max_par_jour || 2 %>" min="1">
+    <button class="btn-save" onclick="saveHoraires()"><i class="fas fa-save"></i> Enregistrer les horaires</button>
+  </div>
+
+  <!-- Commissions parrainage -->
+  <div class="param-card">
+    <div class="param-head">
+      <div class="param-icon" style="background:#F0FDF4"><i class="fas fa-users" style="color:#22c55e"></i></div>
+      <div class="param-head-text">
+        <h3>Commissions de parrainage</h3>
+        <p>Pourcentage versé au parrain (en %)</p>
+      </div>
+    </div>
+    <div class="comm-grid">
+      <div class="form-group">
+        <label>Niveau 1 (%)</label>
+        <input type="number" class="param-input" id="comm1" value="<%= params.commission_niveau1 || 20 %>" min="0" max="100" step="0.1">
+      </div>
+      <div class="form-group">
+        <label>Niveau 2 (%)</label>
+        <input type="number" class="param-input" id="comm2" value="<%= params.commission_niveau2 || 10 %>" min="0" max="100" step="0.1">
+      </div>
+      <div class="form-group">
+        <label>Niveau 3 (%)</label>
+        <input type="number" class="param-input" id="comm3" value="<%= params.commission_niveau3 || 5 %>" min="0" max="100" step="0.1">
+      </div>
+    </div>
+    <button class="btn-save" onclick="saveCommissions()"><i class="fas fa-save"></i> Enregistrer</button>
+  </div>
+
+  <!-- Message de bienvenue -->
+  <% const popupActive = (params.popup_active === '1'); %>
+  <div class="param-card">
+    <div class="param-head">
+      <div class="param-icon" style="background:#FFF7ED"><i class="fas fa-comment-dots" style="color:#2563EB"></i></div>
+      <div class="param-head-text">
+        <h3>Message de bienvenue (popup)</h3>
+        <p>Affiché aux utilisateurs à chaque connexion sur le tableau de bord</p>
+      </div>
+    </div>
+    <div class="toggle-row <%= popupActive ? 'green' : 'red' %>" style="margin-bottom:14px" id="popupToggleRow">
+      <div class="toggle-label" style="color:<%= popupActive ? '#16a34a' : '#dc2626' %>">
+        Popup <%= popupActive ? 'activé' : 'désactivé' %>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="popupToggle" <%= popupActive ? 'checked' : '' %> onchange="saveParam('popup_active', this.checked ? '1' : '0', refreshPopup)">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <label class="param-label">Message de bienvenue</label>
+    <textarea class="param-textarea" id="popupMessage"><%= params.popup_message || '' %></textarea>
+    <button class="btn-save" onclick="saveParam('popup_message', document.getElementById('popupMessage').value)"><i class="fas fa-save"></i> Enregistrer le message</button>
+  </div>
+
+<% } %>
+
+</div><!-- /main -->
+
+<!-- Balance Modal -->
+<div class="modal-overlay" id="balanceModal">
+  <div class="modal-box">
+    <h3><i class="fas fa-coins" style="color:#2563EB"></i> Modifier le solde</h3>
+    <p id="balanceName" style="color:#888;font-size:0.85rem"></p>
+    <input type="hidden" id="balanceUserId">
+    <label>Nouveau solde (FCFA)</label>
+    <input type="number" id="balanceAmt" step="100" placeholder="0">
+    <div class="modal-btns">
+      <button class="m-cancel" onclick="closeModal('balanceModal')">Annuler</button>
+      <button class="m-confirm" onclick="saveBalance()">Mettre à jour</button>
+    </div>
+  </div>
+</div>
+
+<!-- Plan Modal (edit) -->
+<div class="modal-overlay" id="planModal">
+  <div class="modal-box">
+    <h3><i class="fas fa-chart-line" style="color:#22c55e"></i> Modifier le plan</h3>
+    <input type="hidden" id="planId">
+    <label>Nom du plan</label>
+    <input type="text" id="planNom">
+    <label>Prix (FCFA)</label>
+    <input type="number" id="planPrix" step="100">
+    <label>Durée (jours)</label>
+    <input type="number" id="planDuree">
+    <label>Rendement journalier (%)</label>
+    <input type="number" id="planRend" step="0.01">
+    <label>URL de l'image du plan</label>
+    <input type="text" id="planImage" placeholder="https://... (laisser vide pour l'image par défaut)">
+    <label>Description</label>
+    <input type="text" id="planDesc">
+    <div class="modal-btns">
+      <button class="m-cancel" onclick="closeModal('planModal')">Annuler</button>
+      <button class="m-confirm" onclick="savePlan()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Plan Modal (add) -->
+<div class="modal-overlay" id="addPlanModal">
+  <div class="modal-box">
+    <h3><i class="fas fa-plus" style="color:#2563EB"></i> Ajouter un plan</h3>
+    <label>Nom du plan</label>
+    <input type="text" id="newPlanNom" placeholder="Ex: Action VIP 12">
+    <label>Prix (FCFA)</label>
+    <input type="number" id="newPlanPrix" step="100" min="0">
+    <label>Durée (jours)</label>
+    <input type="number" id="newPlanDuree" min="1">
+    <label>Rendement journalier (%)</label>
+    <input type="number" id="newPlanRend" step="0.01" min="0">
+    <label>URL de l'image du plan</label>
+    <input type="text" id="newPlanImage" placeholder="https://... (laisser vide pour l'image par défaut)">
+    <label>Description</label>
+    <input type="text" id="newPlanDesc">
+    <div class="modal-btns">
+      <button class="m-cancel" onclick="closeModal('addPlanModal')">Annuler</button>
+      <button class="m-confirm" onclick="addPlan()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add palier modal -->
+<div class="modal-overlay" id="addPalierModal">
+  <div class="modal-box">
+    <h3><i class="fas fa-star" style="color:#22c55e"></i> Nouveau palier VIP</h3>
+    <label>Niveau (numéro unique)</label>
+    <input type="number" id="newPalierNiveau" min="1">
+    <label>Label</label>
+    <input type="text" id="newPalierLabel" placeholder="Ex: Leadeur gold">
+    <label>Filleuls requis</label>
+    <input type="number" id="newPalierFilleuls" min="0">
+    <label>Montant cadeau (FCFA)</label>
+    <input type="number" id="newPalierMontant" step="0.01" min="0">
+    <div class="modal-btns">
+      <button class="m-cancel" onclick="closeModal('addPalierModal')">Annuler</button>
+      <button class="m-confirm" onclick="addPalier()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Sidebar ────────────────────────────────────────────────────────────
+document.getElementById('menuBtn').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+});
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ── Toast ──────────────────────────────────────────────────────────────
+function toast(msg, type = '') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (type ? ' ' + type : '');
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ── Notification bell ─────────────────────────────────────────────────
+const NOTIF_LABELS = {
+  depots:   { label: 'Dépôts en attente',   icon: 'fa-arrow-down',          href: '/adminxyz/depots' },
+  retraits: { label: 'Retraits en attente', icon: 'fa-hand-holding-dollar', href: '/adminxyz/retraits' },
+  affiches: { label: 'Affiches en attente', icon: 'fa-image',               href: '/adminxyz/affiches' },
+};
+
+// The bell shows an "unread" style badge: it disappears once the admin opens
+// the dropdown (has "seen" the current pending items), and only reappears
+// when a NEW item arrives on top of what was already seen. The per-item
+// sidebar badges (Dépôts, Retraits, Affiches) are never dismissed this way —
+// they always reflect the true pending count in the database and only
+// disappear once that item is actually validated/rejected.
+let lastCounts = null;   // most recent counts fetched from the server
+let seenCounts = {};     // counts snapshot at the moment the bell was last opened
+
+function renderNotifCounts(counts) {
+  lastCounts = counts || { total: 0, depots: 0, retraits: 0, affiches: 0 };
+  const badge = document.getElementById('notifBadge');
+  const list  = document.getElementById('notifList');
+
+  const unread = {};
+  let unreadTotal = 0;
+  Object.keys(NOTIF_LABELS).forEach(key => {
+    const n = Math.max(0, (lastCounts[key] || 0) - (seenCounts[key] || 0));
+    unread[key] = n;
+    unreadTotal += n;
+  });
+
+  if (unreadTotal <= 0) {
+    badge.style.display = 'none';
+  } else {
+    badge.style.display = 'flex';
+    badge.textContent = unreadTotal > 99 ? '99+' : unreadTotal;
+  }
+
+  if (lastCounts.total <= 0) {
+    list.innerHTML = '<div class="notif-empty">Aucune notification</div>';
+  } else {
+    list.innerHTML = Object.keys(NOTIF_LABELS).map(key => {
+      const n = lastCounts[key] || 0;
+      if (n <= 0) return '';
+      const meta = NOTIF_LABELS[key];
+      return `<a class="notif-item" href="${meta.href}">
+        <span><i class="fas ${meta.icon}" style="color:#2563EB;margin-right:8px"></i>${meta.label}</span>
+        <span class="notif-count">${n}</span>
+      </a>`;
+    }).join('') || '<div class="notif-empty">Aucune notification</div>';
+  }
+
+  // Sidebar nav badges: always the real pending count — persist until the
+  // item's status actually changes, unaffected by opening the bell.
+  document.querySelectorAll('[data-nav-count]').forEach(el => {
+    const n = (lastCounts && lastCounts[el.dataset.navCount]) || 0;
+    el.textContent = n > 99 ? '99+' : n;
+    el.classList.toggle('show', n > 0);
+  });
+}
+
+function toggleNotifDropdown() {
+  const dd = document.getElementById('notifDropdown');
+  const opening = !dd.classList.contains('open');
+  dd.classList.toggle('open');
+  if (opening) {
+    // Mark current counts as seen — hides the bell badge immediately.
+    seenCounts = { ...(lastCounts || {}) };
+    renderNotifCounts(lastCounts);
+  }
+}
+document.addEventListener('click', e => {
+  const dd = document.getElementById('notifDropdown');
+  const btn = document.getElementById('bellBtn');
+  if (dd && btn && !dd.contains(e.target) && !btn.contains(e.target)) dd.classList.remove('open');
+});
+
+let notifPollTimer = null;
+async function refreshNotifCounts() {
+  try {
+    const r = await fetch('/adminxyz/pending-counts');
+    if (r.status === 401) { clearInterval(notifPollTimer); return; }
+    const counts = await r.json();
+    renderNotifCounts(counts);
+  } catch (e) { /* silent */ }
+}
+
+// Initial render from server-side data, then poll for live updates
+renderNotifCounts(<%- JSON.stringify(pendingCounts || { total: 0, depots: 0, retraits: 0, affiches: 0 }) %>);
+notifPollTimer = setInterval(refreshNotifCounts, 15000);
+
+// ── Modals ─────────────────────────────────────────────────────────────
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ── Dropdowns ──────────────────────────────────────────────────────────
+function toggleDropdown(ddId) {
+  const menu = document.getElementById('ddm-' + ddId.replace('dd-', ''));
+  document.querySelectorAll('.dropdown-menu').forEach(m => { if (m !== menu) m.classList.remove('open'); });
+  menu.classList.toggle('open');
+}
+function closeDropdown(ddId) {
+  const menu = document.getElementById('ddm-' + ddId.replace('dd-', ''));
+  if (menu) menu.classList.remove('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.dropdown')) document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+});
+
+// ── Copy ───────────────────────────────────────────────────────────────
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => toast('✓ Copié !', 'ok')).catch(() => toast('Impossible de copier', 'err'));
+}
+
+// ── Card filter ─────────────────────────────────────────────────────────
+function filterCards(listId, q) {
+  q = q.toLowerCase();
+  document.querySelectorAll('#' + listId + ' .card').forEach(card => {
+    const search = card.dataset.search || card.textContent.toLowerCase();
+    card.style.display = search.includes(q) ? '' : 'none';
+  });
+}
+
+// ── Transaction filter ──────────────────────────────────────────────────
+function filterTx() {
+  const typeVal = document.getElementById('txTypeFilter').value;
+  const searchVal = document.querySelector('#txList input') ? '' : '';
+  document.querySelectorAll('#txList .card').forEach(card => {
+    const matchType = !typeVal || card.dataset.type === typeVal;
+    card.style.display = matchType ? '' : 'none';
+  });
+}
+
+// ── AJAX action ─────────────────────────────────────────────────────────
+const actionLabels = {
+  validate_deposit:'Valider ce dépôt ?', reject_deposit:'Rejeter ce dépôt ?',
+  validate_retrait:'Valider ce retrait ?', reject_retrait:'Rejeter ce retrait ?',
+  validate_post:'Valider cette affiche ?', reject_post:'Rejeter cette affiche ?', delete_post:'Supprimer définitivement cette affiche ?',
+  toggle_admin:'Changer le statut administrateur ?'
+};
+async function doAction(action, id) {
+  if (!confirm(actionLabels[action] || action + ' ?')) return;
+  try {
+    const r = await fetch('/adminxyz/action', { method:'POST', body: new URLSearchParams({ action, id }) });
+    const d = await r.json();
+    if (d.success) { toast('✓ Action effectuée', 'ok'); setTimeout(() => location.reload(), 900); }
+    else toast('✗ ' + (d.message || 'Erreur'), 'err');
+  } catch(e) { toast('✗ ' + e.message, 'err'); }
+}
+
+// ── Balance ─────────────────────────────────────────────────────────────
+function openBalanceModal(uid, name, solde) {
+  document.getElementById('balanceUserId').value = uid;
+  document.getElementById('balanceName').textContent = name + ' — Solde : ' + parseFloat(solde).toLocaleString('fr-FR') + ' FCFA';
+  document.getElementById('balanceAmt').value = solde;
+  openModal('balanceModal');
+}
+async function saveBalance() {
+  const user_id = document.getElementById('balanceUserId').value;
+  const montant = document.getElementById('balanceAmt').value;
+  const r = await fetch('/adminxyz/action', { method:'POST', body: new URLSearchParams({ action:'update_balance', user_id, montant }) });
+  const d = await r.json();
+  if (d.success) { closeModal('balanceModal'); toast('✓ Solde mis à jour', 'ok'); setTimeout(() => location.reload(), 900); }
+  else toast('✗ ' + (d.message || 'Erreur'), 'err');
+}
+
+// ── Plan edit ───────────────────────────────────────────────────────────
+function openPlanModalBtn(btn) {
+  document.getElementById('planId').value    = btn.dataset.pid;
+  document.getElementById('planNom').value   = btn.dataset.nom;
+  document.getElementById('planPrix').value  = btn.dataset.prix;
+  document.getElementById('planDuree').value = btn.dataset.duree;
+  document.getElementById('planRend').value  = btn.dataset.rend;
+  document.getElementById('planImage').value = btn.dataset.image || '';
+  document.getElementById('planDesc').value  = btn.dataset.desc;
+  openModal('planModal');
+}
+function openPlanModal(id, nom, prix, duree, rend, desc) {
+  document.getElementById('planId').value    = id;
+  document.getElementById('planNom').value   = nom;
+  document.getElementById('planPrix').value  = prix;
+  document.getElementById('planDuree').value = duree;
+  document.getElementById('planRend').value  = rend;
+  document.getElementById('planDesc').value  = desc;
+  openModal('planModal');
+}
+async function savePlan() {
+  const body = new URLSearchParams({
+    action:'update_plan',
+    id: document.getElementById('planId').value,
+    nom: document.getElementById('planNom').value,
+    prix: document.getElementById('planPrix').value,
+    duree_jours: document.getElementById('planDuree').value,
+    rendement_journalier: document.getElementById('planRend').value,
+    image_url: document.getElementById('planImage').value,
+    description: document.getElementById('planDesc').value,
+  });
+  const r = await fetch('/adminxyz/action', { method:'POST', body });
+  const d = await r.json();
+  if (d.success) { closeModal('planModal'); toast('✓ Plan mis à jour', 'ok'); setTimeout(() => location.reload(), 900); }
+  else toast('✗ ' + (d.message || 'Erreur'), 'err');
+}
+function openAddPlanModal() { openModal('addPlanModal'); }
+async function addPlan() {
+  const body = new URLSearchParams({
+    action:'add_plan',
+    nom: document.getElementById('newPlanNom').value,
+    prix: document.getElementById('newPlanPrix').value,
+    duree_jours: document.getElementById('newPlanDuree').value,
+    rendement_journalier: document.getElementById('newPlanRend').value,
+    image_url: document.getElementById('newPlanImage').value,
+    description: document.getElementById('newPlanDesc').value,
+  });
+  const r = await fetch('/adminxyz/action', { method:'POST', body });
+  const d = await r.json();
+  if (d.success) { closeModal('addPlanModal'); toast('✓ Plan ajouté', 'ok'); setTimeout(() => location.reload(), 900); }
+  else toast('✗ ' + (d.message || 'Erreur'), 'err');
+}
+function togglePlanLockBtn(btn) { togglePlanLock(btn.dataset.pid); }
+async function togglePlanLock(id) {
+  if (!confirm('Changer le statut (bloqué/débloqué) de ce plan ?')) return;
+  const r = await fetch('/adminxyz/action', { method:'POST', body: new URLSearchParams({ action:'toggle_plan_lock', id }) });
+  const d = await r.json();
+  if (d.success) { toast(d.bloque ? '✓ Plan bloqué' : '✓ Plan débloqué', 'ok'); setTimeout(() => location.reload(), 900); }
+  else toast('✗ ' + (d.message || 'Erreur'), 'err');
+}
+function deletePlanBtn(btn) { deletePlan(btn.dataset.pid, btn.dataset.nom); }
+async function deletePlan(id, nom) {
+  if (!confirm('Supprimer le plan "' + nom + '" ? Cette action est irréversible.')) return;
+  const r = await fetch('/adminxyz/action', { method:'POST', body: new URLSearchParams({ action:'delete_plan', id }) });
+  const d = await r.json();
+  if (d.success) { toast('✓ Plan supprimé', 'ok'); setTimeout(() => location.reload(), 900); }
+  else toast('✗ ' + (d.message || 'Erreur'), 'err');
+}
+
+// ── Salaires / Paliers ──────────────────────────────────────────────────
+async function savePalier(e, id) {
+  e.preventDefault();
+  const form = e.target;
+  const body = new URLSearchParams({
+    action: 'update_palier', id,
+    label: form.label.value,
+    filleuls_requis: form.filleuls_requis.value,
+    montant_cadeau: form.montant_cadeau.value,
+  });
+  const r = await fetch('/adminxyz/action', { method:'POST', body });
+  const d = await r.json();
+  if (d.success) toast('✓ Palier enregistré', 'ok');
+  else toast('✗ ' + (d.message || 'Erreur'), 'err');
+}
+async function deletePalier(id, niveau) {
+  if (!confirm('Supprimer le palier VIP ' + niveau + ' ?')) return;
+  const r = await fetch('/adminxyz/action', { method:'POST', body: new URLSearchParams({ action:'delete_palier', id }) });
+  const d = await r.json();
+  if (d.success) { toast('✓ Palier supprimé', 'ok'); setTimeout(() => location.reload(), 900); }
+  else toast('✗ ' + (d.message || 'Erreur'), 'err');
+}
+function openAddPalierModal() { openModal('addPalierModal'); }
+async function addPalier() {
+  const body = new URLSearchParams({
+    action: 'add_palier',
+    niveau: document.getElementById('newPalierNiveau').value,
+    label: document.getElementById('newPalierLabel').value,
+    filleuls_requis: document.getElementById('newPalierFilleuls').value,
+    montant_cadeau: document.getElementById('newPalierMontant').value,
+  });
+  const r = await fetch('/adminxyz/action', { method:'POST', body });
+  const d = await r.json();
+  if (d.success) { closeModal('addPalierModal'); toast('✓ Palier ajouté', 'ok'); setTimeout(() => location.reload(), 900); }
+  else toast('✗ ' + (d.message || 'Erreur'), 'err');
+}
+
+// ── Paramètres ──────────────────────────────────────────────────────────
+async function saveParam(cle, valeur, callback) {
+  const r = await fetch('/adminxyz/parametres/save', { method:'POST', body: new URLSearchParams({ cle, valeur }) });
+  const d = await r.json();
+  if (d.success) { toast('✓ Paramètre enregistré', 'ok'); if (callback) callback(valeur); }
+  else toast('✗ ' + (d.message || 'Erreur'), 'err');
+}
+
+function refreshRetrait(valeur) {
+  const row = document.getElementById('retraitsToggleRow');
+  const isOn = valeur === '1';
+  row.className = 'toggle-row ' + (isOn ? 'green' : 'red');
+  row.querySelector('.toggle-label').style.color = isOn ? '#16a34a' : '#dc2626';
+  row.querySelector('.toggle-label').innerHTML = 'Retraits ' + (isOn ? 'ACTIFS' : 'SUSPENDUS') + '<span>Cliquer pour ' + (isOn ? 'suspendre' : 'activer') + ' tous les retraits</span>';
+}
+
+function refreshPopup(valeur) {
+  const row = document.getElementById('popupToggleRow');
+  const isOn = valeur === '1';
+  row.className = 'toggle-row ' + (isOn ? 'green' : 'red');
+  row.querySelector('.toggle-label').textContent = 'Popup ' + (isOn ? 'activé' : 'désactivé');
+}
+
+async function saveLinks() {
+  const params = [
+    ['whatsapp_link', document.getElementById('whatsappLink').value],
+    ['telegram_link', document.getElementById('telegramLink').value],
+    ['whatsapp_group_link', document.getElementById('whatsappGroupLink').value],
+  ];
+  for (const [cle, valeur] of params) {
+    await fetch('/adminxyz/parametres/save', { method:'POST', body: new URLSearchParams({ cle, valeur }) });
+  }
+  toast('✓ Liens enregistrés', 'ok');
+}
+
+async function saveHoraires() {
+  const activeDays = [...document.querySelectorAll('.day-chip.active')].map(b => b.dataset.day).join(',');
+  const params = [
+    ['retrait_jours', activeDays],
+    ['retrait_heure_debut', document.getElementById('heureDebut').value],
+    ['retrait_heure_fin', document.getElementById('heureFin').value],
+    ['retrait_max_par_jour', document.getElementById('maxRetraits').value],
+  ];
+  for (const [cle, valeur] of params) {
+    await fetch('/adminxyz/parametres/save', { method:'POST', body: new URLSearchParams({ cle, valeur }) });
+  }
+  toast('✓ Horaires enregistrés', 'ok');
+}
+
+async function saveCommissions() {
+  const params = [
+    ['commission_niveau1', document.getElementById('comm1').value],
+    ['commission_niveau2', document.getElementById('comm2').value],
+    ['commission_niveau3', document.getElementById('comm3').value],
+  ];
+  for (const [cle, valeur] of params) {
+    await fetch('/adminxyz/parametres/save', { method:'POST', body: new URLSearchParams({ cle, valeur }) });
+  }
+  toast('✓ Commissions enregistrées', 'ok');
+}
+
+function toggleDay(btn) {
+  btn.classList.toggle('active');
+}
+
+// ── Verser revenus ──────────────────────────────────────────────────────
+<% if (currentPage === 'dashboard') { %>
+async function verserRevenus() {
+  const btn = document.getElementById('btnRevenu');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Versement en cours…';
+  try {
+    const r = await fetch('/adminxyz/verser-revenus', { method:'POST' });
+    const d = await r.json();
+    if (d.success) toast('✓ ' + d.message, 'ok');
+    else toast('✗ ' + (d.message || 'Erreur'), 'err');
+  } catch(e) { toast('✗ ' + e.message, 'err'); }
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fas fa-paper-plane"></i> Verser les revenus maintenant';
+}
+
+const CD = <%- JSON.stringify(chartData) %>;
+new Chart(document.getElementById('tvhChart').getContext('2d'), {
+  type:'bar',
+  data:{ labels:['Dépôts','Retraits'], datasets:[
+    { label:'Auj.', data:[CD.tvh.dep_today, CD.tvh.ret_today], backgroundColor:['rgba(34,197,94,0.85)','rgba(239,68,68,0.85)'], borderRadius:6, barPercentage:0.4 },
+    { label:'Hier', data:[CD.tvh.dep_yesterday,CD.tvh.ret_yesterday], backgroundColor:['rgba(34,197,94,0.25)','rgba(239,68,68,0.25)'], borderRadius:6, barPercentage:0.4 }
+  ]},
+  options:{ responsive:true, plugins:{legend:{display:false}}, scales:{x:{grid:{display:false},ticks:{color:'#888',font:{size:11}}},y:{grid:{color:'#f0f0f0'},ticks:{color:'#aaa',font:{size:10}}}} }
+});
+new Chart(document.getElementById('actChart').getContext('2d'), {
+  type:'bar',
+  data:{ labels: CD.months, datasets:[
+    { label:'Dép. validés', data:CD.monthly.map(m=>m.dep_valides), backgroundColor:'rgba(34,197,94,0.8)', borderRadius:4, barPercentage:0.6 },
+    { label:'Dép. rejetés', data:CD.monthly.map(m=>m.dep_rejetes), backgroundColor:'rgba(239,68,68,0.8)', borderRadius:4, barPercentage:0.6 },
+    { label:'Ret. validés', data:CD.monthly.map(m=>m.ret_valides), backgroundColor:'rgba(59,130,246,0.8)', borderRadius:4, barPercentage:0.6 },
+    { label:'Ret. rejetés', data:CD.monthly.map(m=>m.ret_rejetes), backgroundColor:'rgba(245,158,11,0.8)', borderRadius:4, barPercentage:0.6 }
+  ]},
+  options:{ responsive:true, plugins:{legend:{display:false}}, scales:{x:{grid:{display:false},ticks:{color:'#888',font:{size:11}}},y:{beginAtZero:true,grid:{color:'#f0f0f0'},ticks:{color:'#aaa',font:{size:10}}}} }
+});
+<% } %>
+</script>
+</body>
+</html>

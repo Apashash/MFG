@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tutoriels - Market Flow Group</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins','Segoe UI',sans-serif; }
+        body { background:#EEF2FF; color:#1E293B; min-height:100vh; padding-bottom:90px; }
+        .container { max-width:430px; margin:0 auto; }
+
+        .page-header {
+            background: linear-gradient(135deg, #2563EB, #1D4ED8);
+            padding: 50px 20px 0; text-align:center; color:#fff;
+        }
+        .page-header h1 { font-size:22px; font-weight:800; margin-bottom:4px; }
+        .page-header p { font-size:13px; color:rgba(255,255,255,0.85); margin-bottom:0; }
+
+        /* Tab nav */
+        .tab-nav {
+            background:linear-gradient(135deg,#F97316,#1D4ED8);
+            display:flex; overflow-x:auto; padding:0 16px;
+            scrollbar-width:none; border-bottom:none;
+        }
+        .tab-nav::-webkit-scrollbar { display:none; }
+        .tab-item {
+            padding:14px 14px; white-space:nowrap; font-weight:600;
+            color:rgba(255,255,255,0.65); position:relative; cursor:pointer;
+            font-size:14px; transition:color 0.2s; flex-shrink:0;
+        }
+        .tab-item.active { color:#fff; }
+        .tab-item.active::after {
+            content:''; position:absolute; bottom:0; left:50%;
+            transform:translateX(-50%); width:24px; height:3px;
+            background:#fff; border-radius:3px 3px 0 0;
+        }
+
+        .content { padding:16px; }
+        .section { display:none; }
+        .section.active { display:block; }
+
+        .sec-title {
+            font-size:20px; font-weight:800; color:#2563EB; margin-bottom:6px;
+            padding-left:12px; border-left:4px solid #2563EB; border-radius:0 4px 4px 0;
+        }
+        .sec-desc { font-size:14px; color:#64748B; margin-bottom:20px; }
+
+        /* Video/Link buttons */
+        .tuto-btns { display:flex; flex-direction:column; gap:12px; margin-bottom:22px; }
+        .tuto-btn {
+            display:flex; align-items:center; padding:16px 18px; border-radius:14px;
+            text-decoration:none; transition:all 0.2s;
+            box-shadow:0 4px 14px rgba(0,0,0,0.08);
+        }
+        .tuto-btn:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(0,0,0,0.12); }
+        .tuto-btn-telegram { background:linear-gradient(135deg,#2AABEE,#229ED9); color:#fff; }
+        .btn-ico { font-size:26px; margin-right:14px; min-width:30px; }
+        .btn-txt h3 { font-size:15px; font-weight:700; margin-bottom:3px; }
+        .btn-txt p { font-size:12px; opacity:0.88; }
+
+        /* Steps */
+        .steps-box {
+            background:#fff; border-radius:16px; padding:18px;
+            border:1px solid #BFDBFE; box-shadow:0 2px 10px rgba(37,99,235,0.08);
+            margin-bottom:14px;
+        }
+        .step { display:flex; gap:14px; margin-bottom:18px; }
+        .step:last-child { margin-bottom:0; }
+        .step-num {
+            width:32px; height:32px; border-radius:50%; flex-shrink:0;
+            background:linear-gradient(135deg,#F97316,#EA580C);
+            display:flex; align-items:center; justify-content:center;
+            font-weight:800; font-size:13px; color:#fff; margin-top:2px;
+        }
+        .step-body h4 { color:#2563EB; font-size:14px; margin-bottom:3px; }
+        .step-body p { color:#475569; font-size:13px; line-height:1.5; }
+
+        /* Tips */
+        .tip-card {
+            background:#EFF6FF; border:1px solid #93C5FD; border-left:4px solid #2563EB;
+            border-radius:0 12px 12px 0; padding:13px 15px; margin-bottom:12px;
+            font-size:13px; color:#475569; line-height:1.5;
+        }
+        .tip-card strong { color:#2563EB; }
+    </style>
+</head>
+<body>
+<%- include('partials/menu', { page: 'index' }) %>
+
+<div class="container">
+    <div class="page-header">
+        <h1><i class="fas fa-book-open"></i> Tutoriels</h1>
+        <p>Guides pas à pas pour bien démarrer</p>
+    </div>
+    <div class="tab-nav">
+        <span class="tab-item active" onclick="showSection('depot',this)">Dépôt</span>
+        <span class="tab-item" onclick="showSection('retrait',this)">Retrait</span>
+        <span class="tab-item" onclick="showSection('investir',this)">Investir</span>
+        <span class="tab-item" onclick="showSection('astuces',this)">Astuces</span>
+    </div>
+
+    <div class="content">
+        <!-- Dépôt -->
+        <div class="section active" id="section-depot">
+            <div class="sec-title">Comment déposer</div>
+            <div class="sec-desc">Rechargez votre compte via Mobile Money pour commencer à investir.</div>
+            <% if (locals.appParams && appParams.tuto_video_depot) { %>
+            <video src="<%= appParams.tuto_video_depot %>" controls style="width:100%; border-radius:14px; margin-bottom:18px; background:#000; box-shadow:0 4px 14px rgba(0,0,0,0.12);"></video>
+            <% } %>
+            <div class="tuto-btns">
+                <a href="<%= (locals.appParams && appParams.telegram_link) || 'https://t.me/sonycanal/22' %>" target="_blank" class="tuto-btn tuto-btn-telegram">
+                    <span class="btn-ico"><i class="fab fa-telegram"></i></span>
+                    <div class="btn-txt"><h3>Tutoriel Telegram</h3><p>Pour les utilisateurs Cameroun</p></div>
+                </a>
+                <a href="<%= (locals.appParams && appParams.telegram_link) || 'https://t.me/sonycanal/23' %>" target="_blank" class="tuto-btn tuto-btn-telegram">
+                    <span class="btn-ico"><i class="fab fa-telegram"></i></span>
+                    <div class="btn-txt"><h3>Tutoriel Telegram</h3><p>Pour les autres pays</p></div>
+                </a>
+            </div>
+            <div class="steps-box">
+                <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Allez dans Dépôt</h4><p>Cliquez sur "Dépôt" dans le menu de navigation.</p></div></div>
+                <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Choisissez votre pays et opérateur</h4><p>Sélectionnez votre pays et l'opérateur Mobile Money que vous utilisez.</p></div></div>
+                <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Entrez le montant et votre numéro</h4><p>Minimum <%= Number(locals.appParams && appParams.depot_minimum ? appParams.depot_minimum : 200).toLocaleString('fr-FR') %> FCFA. Saisissez votre numéro Mobile Money.</p></div></div>
+                <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Confirmez sur votre téléphone</h4><p>Vous recevrez une notification. Entrez votre PIN Mobile Money pour confirmer.</p></div></div>
+                <div class="step"><div class="step-num">5</div><div class="step-body"><h4>Crédit automatique</h4><p>Votre solde est mis à jour automatiquement après validation du paiement.</p></div></div>
+            </div>
+        </div>
+
+        <!-- Retrait -->
+        <div class="section" id="section-retrait">
+            <div class="sec-title">Comment retirer</div>
+            <div class="sec-desc">Retirez vos gains sur votre compte Mobile Money.</div>
+            <% if (locals.appParams && appParams.tuto_video_retrait) { %>
+            <video src="<%= appParams.tuto_video_retrait %>" controls style="width:100%; border-radius:14px; margin-bottom:18px; background:#000; box-shadow:0 4px 14px rgba(0,0,0,0.12);"></video>
+            <% } %>
+            <div class="tip-card"><strong>⚠️ Conditions :</strong> Vous devez avoir au moins un plan d'investissement actif.
+            <% if (locals.appParams) {
+                const jours = (appParams.retrait_jours || 'Lun,Mar,Mer,Jeu,Ven,Sam').replace(/,/g, ' – ');
+                const debut = appParams.retrait_heure_debut || '9';
+                const fin   = appParams.retrait_heure_fin   || '19';
+            %>
+            Retraits disponibles : <%= jours %>, de <%= debut %>h à <%= fin %>h GMT.
+            <% } else { %>
+            Retraits disponibles Lun – Sam, de 9h à 19h GMT.
+            <% } %>
+            </div>
+            <div class="steps-box">
+                <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Allez dans Retrait</h4><p>Accédez à la section Retrait depuis le menu de navigation.</p></div></div>
+                <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Remplissez le formulaire</h4><p>Entrez le montant (minimum <%= Number(locals.appParams && appParams.retrait_minimum ? appParams.retrait_minimum : 1200).toLocaleString('fr-FR') %> FCFA), sélectionnez votre pays et opérateur Mobile Money, puis saisissez votre numéro et le nom complet du titulaire du compte.</p></div></div>
+                <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Traitement sous 24h</h4><p>Votre retrait est transmis à notre équipe et envoyé sur le numéro Mobile Money que vous avez indiqué dans les 24 heures.</p></div></div>
+            </div>
+        </div>
+
+        <!-- Investir -->
+        <div class="section" id="section-investir">
+            <div class="sec-title">Comment investir</div>
+            <div class="sec-desc">Choisissez un plan et commencez à générer des revenus passifs.</div>
+            <% if (locals.appParams && appParams.tuto_video_investir) { %>
+            <video src="<%= appParams.tuto_video_investir %>" controls style="width:100%; border-radius:14px; margin-bottom:18px; background:#000; box-shadow:0 4px 14px rgba(0,0,0,0.12);"></video>
+            <% } %>
+            <div class="tuto-btns">
+                <a href="<%= (locals.appParams && appParams.telegram_link) || 'https://t.me/sonycanal/21' %>" target="_blank" class="tuto-btn tuto-btn-telegram">
+                    <span class="btn-ico"><i class="fab fa-telegram"></i></span>
+                    <div class="btn-txt"><h3>Tutoriel Investissement</h3><p>Voir la vidéo complète sur Telegram</p></div>
+                </a>
+            </div>
+            <div class="steps-box">
+                <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Rechargez votre solde</h4><p>Assurez-vous d'avoir assez de FCFA sur votre solde avant de choisir un plan.</p></div></div>
+                <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Allez dans "Action"</h4><p>Cliquez sur l'onglet "Action" dans le menu du bas.</p></div></div>
+                <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Choisissez un plan</h4><p>
+                <% if (locals.plans && plans.length) {
+                    const pMin = Math.min(...plans.map(p => parseFloat(p.prix)));
+                    const pMax = Math.max(...plans.map(p => parseFloat(p.prix)));
+                    const rMin = Math.min(...plans.map(p => parseFloat(p.rendement_journalier)));
+                    const rMax = Math.max(...plans.map(p => parseFloat(p.rendement_journalier)));
+                %>
+                Les plans vont de <%= pMin.toLocaleString('fr-FR') %> à <%= pMax.toLocaleString('fr-FR') %> FCFA avec des rendements de <%= rMin.toFixed(2).replace('.',',') %>% à <%= rMax.toFixed(2).replace('.',',') %>%/jour.
+                <% } else { %>
+                Consultez la section "Action" pour voir les plans disponibles et leurs rendements.
+                <% } %>
+                </p></div></div>
+                <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Confirmez l'achat</h4><p>Votre solde est débité immédiatement et votre plan commence.</p></div></div>
+                <div class="step"><div class="step-num">5</div><div class="step-body"><h4>Revenus versés automatiquement</h4><p>Vos gains journaliers sont crédités automatiquement sur votre solde toutes les 24h, sans aucune action de votre part.</p></div></div>
+            </div>
+        </div>
+
+        <!-- Astuces -->
+        <div class="section" id="section-astuces">
+            <div class="sec-title">Astuces &amp; Conseils</div>
+            <div class="sec-desc">Maximisez vos gains avec ces conseils.</div>
+            <% if (locals.appParams && appParams.tuto_video_astuces) { %>
+            <video src="<%= appParams.tuto_video_astuces %>" controls style="width:100%; border-radius:14px; margin-bottom:18px; background:#000; box-shadow:0 4px 14px rgba(0,0,0,0.12);"></video>
+            <% } %>
+            <div class="tip-card"><strong>💡 Parrainage :</strong> Invitez des amis et gagnez <%= locals.appParams && appParams.commission_niveau1 ? appParams.commission_niveau1 : 20 %>% sur chaque investissement qu'ils font. C'est la méthode la plus rapide pour augmenter vos gains !</div>
+            <div class="tip-card"><strong>🎰 Machine à sous :</strong> Jouez gratuitement toutes les 48 heures pour gagner jusqu'à 2 000 FCFA sans rien dépenser !</div>
+            <div class="tip-card"><strong>👑 Niveaux VIP :</strong> Plus vous avez de filleuls actifs, plus votre niveau VIP est élevé. Chaque palier VIP atteint vous donne droit à un bonus unique à réclamer.</div>
+            <div class="tip-card"><strong>📊 Réinvestir :</strong> Utilisez vos gains quotidiens pour acheter de nouveaux plans et augmenter votre revenu passif progressivement.</div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showSection(section, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('section-' + section).classList.add('active');
+    el.classList.add('active');
+}
+</script>
+</body>
+</html>
